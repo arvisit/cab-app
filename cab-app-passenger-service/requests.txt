@@ -1,0 +1,133 @@
+# save new passenger - 201
+
+curl -i -X POST -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "John Doe",
+        "email": "johndoe@mail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers'
+
+# save new passenger with existing email - 409
+
+curl -i -X POST -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "John Doe",
+        "email": "johndoe@mail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers'
+
+# save new passenger with bad email - 400
+
+curl -i -X POST -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "John Doe",
+        "email": "johndoemail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers'
+
+# get passengers - 200
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers'
+
+# get passenger by id - 200
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cd'
+
+# get passenger by malformed id - 400
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cw'
+
+# get passenger by non-existing id - 404
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cc'
+
+# get passenger by email - 200
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/by-email/johndoe@mail.com'
+
+# get passenger by malformed email - 400
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/by-email/johndoemail.com'
+
+# get passenger by non-existing email - 404
+
+curl -i -X GET -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/by-email/johnydoe@mail.com'
+
+# update passenger - 200
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Johny Doe",
+        "email": "johndoe@mail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cd'
+
+# update passenger with valid card number - 200
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Jane Doe",
+        "email": "janedoe@mail.com",
+        "cardNumber": "1234567890123456"
+     }' \
+     'http://localhost:8080/api/v1/passengers/5f7cdabd-6155-47ac-a77e-d072a064017b'
+
+# update passenger with invalid card number - 400
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Jane Doe",
+        "email": "janedoe@mail.com",
+        "cardNumber": "1w34567890123456"
+     }' \
+     'http://localhost:8080/api/v1/passengers/5f7cdabd-6155-47ac-a77e-d072a064017b'
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Jane Doe",
+        "email": "janedoe@mail.com",
+        "cardNumber": "134567890123456"
+     }' \
+     'http://localhost:8080/api/v1/passengers/5f7cdabd-6155-47ac-a77e-d072a064017b'
+
+# update passenger with malformed email - 400
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Johny Doe",
+        "email": "johndoemail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cd'
+
+# update passenger with already in-use email - 409
+
+curl -i -X PUT -H "Content-Type: application/json" \
+    -d '{ 
+        "name": "Johny Doe",
+        "email": "janedoe@mail.com",
+        "cardNumber": null
+     }' \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cd'
+
+# delete passenger - 204
+
+curl -i -X DELETE -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cd'
+
+# delete non-existing id - 404
+
+curl -i -X DELETE -H "Content-Type: application/json" \
+     'http://localhost:8080/api/v1/passengers/77215fc0-fc73-4d21-8250-a7520c12d9cc'
+
