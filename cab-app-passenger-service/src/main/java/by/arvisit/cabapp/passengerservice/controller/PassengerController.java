@@ -1,7 +1,5 @@
 package by.arvisit.cabapp.passengerservice.controller;
 
-import java.util.List;
-
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,12 +73,10 @@ public class PassengerController {
 
     @GetMapping
     public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
-        List<PassengerResponseDto> passengers = passengerService.getPassengers();
+        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers();
 
-        log.debug("Got all passengers. Total count: {}", passengers.size());
-        return ListContainerResponseDto.<PassengerResponseDto>builder()
-                .withValues(passengers)
-                .build();
+        log.debug("Got all passengers. Total count: {}", response.values().size());
+        return response;
     }
 
 }

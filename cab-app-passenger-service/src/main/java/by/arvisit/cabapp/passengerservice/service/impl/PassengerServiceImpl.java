@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.exception.UsernameAlreadyExistsException;
@@ -33,12 +34,16 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PassengerResponseDto> getPassengers() {
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
         log.debug("Call for PassengerService.getPassengers()");
 
-        return passengerRepository.findAll().stream()
+        List<PassengerResponseDto> passengers = passengerRepository.findAll().stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();
+
+        return ListContainerResponseDto.<PassengerResponseDto>builder()
+                .withValues(passengers)
+                .build();
     }
 
     @Transactional(readOnly = true)

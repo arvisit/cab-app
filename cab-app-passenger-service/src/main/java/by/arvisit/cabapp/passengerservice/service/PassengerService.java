@@ -1,13 +1,12 @@
 package by.arvisit.cabapp.passengerservice.service;
 
-import java.util.List;
-
+import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 
 public interface PassengerService {
 
-    List<PassengerResponseDto> getPassengers();
+    ListContainerResponseDto<PassengerResponseDto> getPassengers();
 
     PassengerResponseDto getPassengerById(String id);
 
