@@ -21,6 +21,7 @@
         <liquibase.url>${env.DB_URL}</liquibase.url>
         <liquibase.username>${env.DB_USERNAME}</liquibase.username>
         <liquibase.password>${env.DB_PASSWORD}</liquibase.password>
+        <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
     </properties>
 
     <dependencies>
@@ -39,6 +40,11 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>by.arvisit</groupId>
+            <artifactId>cab-app-exception-handling-starter</artifactId>
+            <version>${cab-app-exception-handling-starter.version}</version>
         </dependency>
 
         <dependency>
