@@ -51,11 +51,8 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponseDto getPassengerById(String id) {
         log.debug("Call for PassengerService.getPassengerById() with id {}", id);
 
-        String errorMessage = messageSource.getMessage(
-                FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
-                new Object[] { id }, null);
         return passengerMapper.fromEntityToResponseDto(
-                findPassengerByIdOrThrowException(id, errorMessage));
+                findPassengerByIdOrThrowException(id));
     }
 
     @Transactional(readOnly = true)
@@ -92,10 +89,7 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponseDto update(String id, PassengerRequestDto dto) {
         log.debug("Call for PassengerService.update() with id {} and dto {}", id, dto);
 
-        String entityNotFoundErrorMessage = messageSource.getMessage(
-                FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
-                new Object[] { id }, null);
-        Passenger existingPassenger = findPassengerByIdOrThrowException(id, entityNotFoundErrorMessage);
+        Passenger existingPassenger = findPassengerByIdOrThrowException(id);
 
         if (passengerRepository.existsByEmail(dto.email()) && !existingPassenger.getEmail().equals(dto.email())) {
             String emailInUseErrorMessage = messageSource.getMessage(
@@ -124,7 +118,10 @@ public class PassengerServiceImpl implements PassengerService {
         passengerRepository.deleteById(uuid);
     }
 
-    private Passenger findPassengerByIdOrThrowException(String id, String errorMessage) {
+    private Passenger findPassengerByIdOrThrowException(String id) {
+        String errorMessage = messageSource.getMessage(
+                FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
+                new Object[] { id }, null);
         return passengerRepository.findById(UUID.fromString(id))
                 .orElseThrow(
                         () -> new EntityNotFoundException(errorMessage));
