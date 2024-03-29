@@ -23,6 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PassengerServiceImpl implements PassengerService {
 
+    private static final String EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.email.UsernameAlreadyExistsException.template";
+    private static final String FOUND_NO_ENTITY_BY_EMAIL_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.email.EntityNotFoundException.template";
+    private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.id.EntityNotFoundException.template";
+
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
     private final MessageSource messageSource;
@@ -43,7 +47,7 @@ public class PassengerServiceImpl implements PassengerService {
         log.debug("Call for PassengerService.getPassengerById() with id {}", id);
 
         String errorMessage = messageSource.getMessage(
-                "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.id.EntityNotFoundException.template",
+                FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                 new Object[] { id }, null);
         return passengerMapper.fromEntityToResponseDto(
                 passengerRepository.findById(UUID.fromString(id))
@@ -57,7 +61,7 @@ public class PassengerServiceImpl implements PassengerService {
         log.debug("Call for PassengerService.getPassengerByEmail() with email {}", email);
 
         String errorMessage = messageSource.getMessage(
-                "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.email.EntityNotFoundException.template",
+                FOUND_NO_ENTITY_BY_EMAIL_MESSAGE_TEMPLATE_KEY,
                 new Object[] { email }, null);
         return passengerMapper.fromEntityToResponseDto(
                 passengerRepository.findByEmail(email)
@@ -72,7 +76,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         if (passengerRepository.existsByEmail(dto.email())) {
             String errorMessage = messageSource.getMessage(
-                    "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.email.UsernameAlreadyExistsException.template",
+                    EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY,
                     new Object[] { dto.email() }, null);
             throw new UsernameAlreadyExistsException(errorMessage);
         }
@@ -86,7 +90,7 @@ public class PassengerServiceImpl implements PassengerService {
         log.debug("Call for PassengerService.update() with id {} and dto {}", id, dto);
 
         String entityNotFoundErrorMessage = messageSource.getMessage(
-                "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.id.EntityNotFoundException.template",
+                FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                 new Object[] { id }, null);
         Passenger existingPassenger = passengerRepository.findById(UUID.fromString(id))
                 .orElseThrow(
@@ -94,7 +98,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         if (passengerRepository.existsByEmail(dto.email()) && !existingPassenger.getEmail().equals(dto.email())) {
             String emailInUseErrorMessage = messageSource.getMessage(
-                    "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.email.UsernameAlreadyExistsException.template",
+                    EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY,
                     new Object[] { dto.email() }, null);
             throw new UsernameAlreadyExistsException(emailInUseErrorMessage);
         }
@@ -112,7 +116,7 @@ public class PassengerServiceImpl implements PassengerService {
         UUID uuid = UUID.fromString(id);
         if (!passengerRepository.existsById(uuid)) {
             String errorMessage = messageSource.getMessage(
-                    "by.arvisit.cabapp.passengerservice.persistence.model.Passenger.id.EntityNotFoundException.template",
+                    FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                     new Object[] { id }, null);
             throw new EntityNotFoundException(errorMessage);
         }
