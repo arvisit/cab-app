@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
@@ -73,11 +74,13 @@ public class PassengerController {
     }
 
     @GetMapping
-    public List<PassengerResponseDto> getPassengers() {
-        List<PassengerResponseDto> response = passengerService.getPassengers();
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
+        List<PassengerResponseDto> passengers = passengerService.getPassengers();
 
-        log.debug("Got all passengers. Total count: {}", response.size());
-        return response;
+        log.debug("Got all passengers. Total count: {}", passengers.size());
+        return ListContainerResponseDto.<PassengerResponseDto>builder()
+                .withValues(passengers)
+                .build();
     }
 
 }
