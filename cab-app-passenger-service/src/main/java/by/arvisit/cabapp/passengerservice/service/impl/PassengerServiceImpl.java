@@ -50,9 +50,7 @@ public class PassengerServiceImpl implements PassengerService {
                 FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                 new Object[] { id }, null);
         return passengerMapper.fromEntityToResponseDto(
-                passengerRepository.findById(UUID.fromString(id))
-                        .orElseThrow(
-                                () -> new EntityNotFoundException(errorMessage)));
+                findPassengerByIdOrThrowException(id, errorMessage));
     }
 
     @Transactional(readOnly = true)
@@ -92,9 +90,7 @@ public class PassengerServiceImpl implements PassengerService {
         String entityNotFoundErrorMessage = messageSource.getMessage(
                 FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                 new Object[] { id }, null);
-        Passenger existingPassenger = passengerRepository.findById(UUID.fromString(id))
-                .orElseThrow(
-                        () -> new EntityNotFoundException(entityNotFoundErrorMessage));
+        Passenger existingPassenger = findPassengerByIdOrThrowException(id, entityNotFoundErrorMessage);
 
         if (passengerRepository.existsByEmail(dto.email()) && !existingPassenger.getEmail().equals(dto.email())) {
             String emailInUseErrorMessage = messageSource.getMessage(
@@ -121,6 +117,12 @@ public class PassengerServiceImpl implements PassengerService {
             throw new EntityNotFoundException(errorMessage);
         }
         passengerRepository.deleteById(uuid);
+    }
+
+    private Passenger findPassengerByIdOrThrowException(String id, String errorMessage) {
+        return passengerRepository.findById(UUID.fromString(id))
+                .orElseThrow(
+                        () -> new EntityNotFoundException(errorMessage));
     }
 
 }
