@@ -3,6 +3,7 @@ package by.arvisit.cabapp.driverservice.service.impl;
 import java.util.List;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +43,10 @@ public class ColorServiceImpl implements ColorService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<ColorResponseDto> getColors() {
-        log.debug("Call for ColorService.getColors()");
+    public ListContainerResponseDto<ColorResponseDto> getColors(Pageable pageable) {
+        log.debug("Call for ColorService.getColors() with pageable settings: {}", pageable);
 
-        List<ColorResponseDto> colors = colorRepository.findAll().stream()
+        List<ColorResponseDto> colors = colorRepository.findAll(pageable).stream()
                 .map(colorMapper::fromEntityToResponseDto)
                 .toList();
 

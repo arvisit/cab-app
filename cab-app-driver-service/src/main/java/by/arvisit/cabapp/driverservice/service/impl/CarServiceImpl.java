@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +44,10 @@ public class CarServiceImpl implements CarService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<CarResponseDto> getCars() {
-        log.debug("Call for CarService.getCars()");
+    public ListContainerResponseDto<CarResponseDto> getCars(Pageable pageable) {
+        log.debug("Call for CarService.getCars() with pageable settings: {}", pageable);
 
-        List<CarResponseDto> cars = carRepository.findAll().stream()
+        List<CarResponseDto> cars = carRepository.findAll(pageable).stream()
                 .map(carMapper::fromEntityToResponseDto)
                 .toList();
 

@@ -1,9 +1,10 @@
-package by.arvisit.cabapp.driverservice.service;
+package by.arvisit.cabapp.driverservice.service.impl;
 
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.mapper.DriverMapper;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
 import by.arvisit.cabapp.driverservice.persistence.repository.DriverRepository;
+import by.arvisit.cabapp.driverservice.service.DriverService;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +35,8 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<DriverResponseDto> getDrivers() {
-        log.debug("Call for DriverService.getDrivers()");
+    public ListContainerResponseDto<DriverResponseDto> getDrivers(Pageable pageable) {
+        log.debug("Call for DriverService.getDrivers() with pageable settings: {}", pageable);
 
         List<DriverResponseDto> drivers = driverRepository.findAll().stream()
                 .map(driverMapper::fromEntityToResponseDto)

@@ -3,6 +3,7 @@ package by.arvisit.cabapp.driverservice.service.impl;
 import java.util.List;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +43,10 @@ public class CarManufacturerServiceImpl implements CarManufacturerService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<CarManufacturerResponseDto> getCarManufacturers() {
-        log.debug("Call for CarManufacturerService.getCarManufacturers()");
+    public ListContainerResponseDto<CarManufacturerResponseDto> getCarManufacturers(Pageable pageable) {
+        log.debug("Call for CarManufacturerService.getCarManufacturers() with pageable settings: {}", pageable);
 
-        List<CarManufacturerResponseDto> carManufacturers = carManufacturerRepository.findAll().stream()
+        List<CarManufacturerResponseDto> carManufacturers = carManufacturerRepository.findAll(pageable).stream()
                 .map(carManufacturerMapper::fromEntityToResponseDto)
                 .toList();
 

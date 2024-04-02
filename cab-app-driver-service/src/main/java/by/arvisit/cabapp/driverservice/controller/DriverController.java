@@ -1,6 +1,8 @@
 package by.arvisit.cabapp.driverservice.controller;
 
 import org.hibernate.validator.constraints.UUID;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +19,7 @@ import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.service.DriverService;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -72,10 +75,10 @@ public class DriverController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<DriverResponseDto> getDrivers() {
-        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers();
+    public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable) {
+        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable);
 
-        log.debug("Got all drivers. Total count: {}", response.values().size());
+        log.debug("Got all drivers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;
     }
 }
