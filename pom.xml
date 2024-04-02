@@ -10,5 +10,6 @@
     <modules>
         <module>cab-app-passenger-service</module>
         <module>cab-app-exception-handling-starter</module>
+        <module>cab-app-driver-service</module>
     </modules>
 </project>
