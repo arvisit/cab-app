@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="sitko.ar@gmail.com" id="003-01-add-tables">
+
+        <createTable tableName="drivers">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="card_number" type="varchar(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="car_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="cars">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="manufacturer_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_number" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="colors">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="car_manufacturers">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="cars"
+                baseColumnNames="color_id"
+                referencedTableName="colors"
+                referencedColumnNames="id"
+                constraintName="fk_cars_color_id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="cars"
+                baseColumnNames="manufacturer_id"
+                referencedTableName="car_manufacturers"
+                referencedColumnNames="id"
+                constraintName="fk_cars_manufacturer_id"/>
+
+        <addForeignKeyConstraint
+                baseTableName="drivers"
+                baseColumnNames="car_id"
+                referencedTableName="cars"
+                referencedColumnNames="id"
+                constraintName="fk_drivers_car_id"/>
+
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="cars" constraintName="fk_cars_color_id"/>
+            <dropForeignKeyConstraint baseTableName="cars" constraintName="fk_cars_manufacturer_id"/>
+            <dropForeignKeyConstraint baseTableName="drivers" constraintName="fk_drivers_car_id"/>
+            <dropTable tableName="cars"/>
+            <dropTable tableName="colors"/>
+            <dropTable tableName="car_manufacturers"/>
+            <dropTable tableName="drivers"/>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>

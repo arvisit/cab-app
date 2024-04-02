@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="sitko.ar@gmail.com" id="003-02-fill-colors">
+
+        <insert tableName="colors">
+            <column name="name" value="White"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Black"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Gray"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Silver"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Blue"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Red"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Brown"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Green"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Orange"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Beige"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Purple"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Gold"/>
+        </insert>
+        <insert tableName="colors">
+            <column name="name" value="Yellow"/>
+        </insert>
+
+        <rollback>
+            <sql>
+                DELETE FROM colors;
+            </sql>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>
