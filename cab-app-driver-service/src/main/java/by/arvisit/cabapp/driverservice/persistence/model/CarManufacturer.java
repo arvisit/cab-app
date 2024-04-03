@@ -26,7 +26,7 @@ public class CarManufacturer {
 
     @Setter(AccessLevel.NONE)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // TODO Check solution for Postgres!
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @EqualsAndHashCode.Exclude
     private Integer id;
