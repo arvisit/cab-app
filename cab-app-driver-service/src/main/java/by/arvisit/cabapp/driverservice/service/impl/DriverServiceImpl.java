@@ -38,7 +38,7 @@ public class DriverServiceImpl implements DriverService {
     public ListContainerResponseDto<DriverResponseDto> getDrivers(Pageable pageable) {
         log.debug("Call for DriverService.getDrivers() with pageable settings: {}", pageable);
 
-        List<DriverResponseDto> drivers = driverRepository.findAll().stream()
+        List<DriverResponseDto> drivers = driverRepository.findAll(pageable).stream()
                 .map(driverMapper::fromEntityToResponseDto)
                 .toList();
 
