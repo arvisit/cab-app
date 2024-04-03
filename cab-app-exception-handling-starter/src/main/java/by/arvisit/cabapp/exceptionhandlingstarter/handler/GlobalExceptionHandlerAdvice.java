@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.BadRequestException;
+import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.ExceptionResponse;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.MultiExceptionResponse;
@@ -90,6 +91,26 @@ public class GlobalExceptionHandlerAdvice {
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ExceptionResponse handle(UsernameAlreadyExistsException exception) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.CONFLICT.value())
+                .withMessage(exception.getMessage())
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    @ExceptionHandler(ValueAlreadyInUseException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionResponse handle(ValueAlreadyInUseException exception) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.CONFLICT.value())
+                .withMessage(exception.getMessage())
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionResponse handle(IllegalStateException exception) {
         return ExceptionResponse.builder()
                 .withStatus(HttpStatus.CONFLICT.value())
                 .withMessage(exception.getMessage())
