@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
+import static by.arvisit.cabapp.ridesservice.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
 
 import org.springframework.context.MessageSource;
@@ -67,6 +69,10 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
         return ListContainerResponseDto.<PromoCodeResponseDto>builder()
                 .withValues(promoCodes)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(promoCodeRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 
@@ -81,6 +87,10 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
         return ListContainerResponseDto.<PromoCodeResponseDto>builder()
                 .withValues(promoCodes)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(promoCodeRepository.countByIsActiveTrue(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 

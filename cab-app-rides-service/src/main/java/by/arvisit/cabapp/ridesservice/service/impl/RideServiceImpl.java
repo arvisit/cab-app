@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
+import static by.arvisit.cabapp.ridesservice.util.PaginationUtil.getLastPageNumber;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -358,6 +360,10 @@ public class RideServiceImpl implements RideService {
 
         return ListContainerResponseDto.<RideResponseDto>builder()
                 .withValues(rides)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(rideRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 
@@ -373,6 +379,10 @@ public class RideServiceImpl implements RideService {
 
         return ListContainerResponseDto.<RideResponseDto>builder()
                 .withValues(rides)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(rideRepository.countByPassengerId(uuid), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 
@@ -388,6 +398,10 @@ public class RideServiceImpl implements RideService {
 
         return ListContainerResponseDto.<RideResponseDto>builder()
                 .withValues(rides)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(rideRepository.countByDriverId(uuid), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 

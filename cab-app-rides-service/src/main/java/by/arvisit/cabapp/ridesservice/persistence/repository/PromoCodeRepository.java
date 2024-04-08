@@ -16,4 +16,6 @@ public interface PromoCodeRepository extends JpaRepository<PromoCode, Long> {
 
     Optional<PromoCode> findByKeywordAndIsActiveTrue(String keyword);
 
+    long countByIsActiveTrue();
+
 }

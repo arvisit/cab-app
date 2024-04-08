@@ -21,4 +21,8 @@ public interface RideRepository extends JpaRepository<Ride, UUID> {
 
     @Query("SELECT AVG(r.driverScore) FROM Ride r WHERE r.driverId = :id")
     Optional<Double> getDriverAverageScore(UUID id);
+
+    long countByPassengerId(UUID passengerId);
+
+    long countByDriverId(UUID driverId);
 }
