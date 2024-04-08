@@ -42,6 +42,7 @@ public class RideServiceImpl implements RideService {
     private static final String ILLEGAL_STATUS_TO_SCORE_DRIVER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverScore.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_TO_SCORE_PASSENGER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.passengerScore.IllegalStateException.template";
     private static final String RIDE_ALREADY_ACCEPTED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.IllegalStateException.template";
+    private static final String INVALID_PAYMENT_METHOD_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.dto.RideRequestDto.paymentMethod.isValidPaymentMethod.message";
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
@@ -268,7 +269,16 @@ public class RideServiceImpl implements RideService {
             throw new IllegalStateException(errorMessage);
         }
 
-        ride.setPaymentMethod(PaymentMethodEnum.valueOf(paymentMethod));
+        PaymentMethodEnum newPaymentMethod;
+        try {
+            newPaymentMethod = PaymentMethodEnum.valueOf(paymentMethod);
+        } catch (IllegalArgumentException e) {
+            String errorMessage = messageSource.getMessage(
+                    INVALID_PAYMENT_METHOD_TEMPLATE_KEY,
+                    new Object[] { ride.getId() }, null);
+            throw new IllegalArgumentException(errorMessage);
+        }
+        ride.setPaymentMethod(newPaymentMethod);
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
