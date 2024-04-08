@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="sitko.ar@gmail.com" id="004-01-add-tables">
+
+        <createTable tableName="rides">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="initial_cost" type="numeric(10,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="final_cost" type="numeric(10,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passenger_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+            <column name="promo_code_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_method" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_paid" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_address" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination_address" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passenger_score" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="driver_score" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="book_ride" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cancel_ride" type="timestamp with timezone">
+                <constraints nullable="true"/>
+            </column>
+            <column name="accept_ride" type="timestamp with timezone">
+                <constraints nullable="true"/>
+            </column>
+            <column name="begin_ride" type="timestamp with timezone">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_ride" type="timestamp with timezone">
+                <constraints nullable="true"/>
+            </column>
+            <column name="finish_ride" type="timestamp with timezone">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="promo_codes">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="keyword" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discount_percent" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="rides"
+                baseColumnNames="promo_code_id"
+                referencedTableName="promo_codes"
+                referencedColumnNames="id"
+                constraintName="fk_rides_promo_code_id"/>
+
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="rides" constraintName="fk_rides_promo_code_id"/>
+            <dropTable tableName="rides"/>
+            <dropTable tableName="promo_codes"/>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>
