@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import by.arvisit.cabapp.ridesservice.persistence.converter.ZonedDateTimeConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -77,21 +79,27 @@ public class Ride {
     @Column(name = "driver_score", nullable = true)
     private Integer driverScore;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "book_ride", nullable = false)
     private ZonedDateTime bookRide;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "cancel_ride", nullable = true)
     private ZonedDateTime cancelRide;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "accept_ride", nullable = true)
     private ZonedDateTime acceptRide;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "begin_ride", nullable = true)
     private ZonedDateTime beginRide;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "end_ride", nullable = true)
     private ZonedDateTime endRide;
 
+    @Convert(converter = ZonedDateTimeConverter.class)
     @Column(name = "finish_ride", nullable = true)
     private ZonedDateTime finishRide;
 }
