@@ -21,13 +21,12 @@ import by.arvisit.cabapp.ridesservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
-import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.service.RatingService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
 import by.arvisit.cabapp.ridesservice.util.AppConstants;
+import by.arvisit.cabapp.ridesservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -43,15 +42,18 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 public class RideController {
 
+    private static final String DRIVER_ID_KEY = "driverId";
+    private static final String PROMO_CODE_KEYWORD_KEY = "promoCodeKeyword";
+    private static final String PAYMENT_METHOD_KEY = "paymentMethod";
+    private static final String DRIVER_SCORE_KEY = "driverScore";
+    private static final String PASSENGER_SCORE_KEY = "passengerScore";
     private static final String PATCH_VALIDATION_SCORE_POSITIVE_OR_ZERO_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.score.PositiveOrZero.message}";
     private static final String PATCH_VALIDATION_SCORE_MAX_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.score.Max.message}";
     private static final String PATCH_VALIDATION_SCORE_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.score.NotNull.message}";
     private static final String PATCH_VALIDATION_KEYWORD_NOT_BLANK_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.keyword.NotBlank.message}";
     private static final String PATCH_VALIDATION_PAYMENT_METHOD_NOT_BLANK_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.paymentMethod.NotBlank.message}";
-    private static final String PATCH_VALIDATION_IS_VALID_PAYMENT_METHOD_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.paymentMethod.isValidPaymentMethod.message}";
     private static final String PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.NotNull.message}";
     private static final String PATCH_SIZE_VALIDATION_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.Size.message}";
-    private static final String PATCH_KEY_VALIDATION_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.isPatchContainsRequiredKey.message}";
     private final RideService rideService;
     private final RatingService ratingService;
 
@@ -76,11 +78,10 @@ public class RideController {
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
+            @MapContainsKey(DRIVER_ID_KEY)
             @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @UUID String> patch) {
 
-        String key = "driverId";
-        isPatchContainsRequiredKey(patch, key);
-        String driverId = patch.get(key);
+        String driverId = patch.get(DRIVER_ID_KEY);
 
         RideResponseDto response = rideService.acceptRide(id, driverId);
 
@@ -125,12 +126,11 @@ public class RideController {
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
+            @MapContainsKey(PROMO_CODE_KEYWORD_KEY)
             @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @NotBlank(
                     message = PATCH_VALIDATION_KEYWORD_NOT_BLANK_MESSAGE_KEY) String> patch) {
 
-        String key = "promoCodeKeyword";
-        isPatchContainsRequiredKey(patch, key);
-        String promoCodeKeyword = patch.get(key);
+        String promoCodeKeyword = patch.get(PROMO_CODE_KEYWORD_KEY);
 
         RideResponseDto response = rideService.applyPromoCode(id, promoCodeKeyword);
 
@@ -143,12 +143,11 @@ public class RideController {
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
+            @MapContainsKey(PAYMENT_METHOD_KEY)
             @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @NotBlank(
                     message = PATCH_VALIDATION_PAYMENT_METHOD_NOT_BLANK_MESSAGE_KEY) String> patch) {
 
-        String key = "paymentMethod";
-        isPatchContainsRequiredKey(patch, key);
-        String paymentMethod = patch.get(key);
+        String paymentMethod = patch.get(PAYMENT_METHOD_KEY);
 
         RideResponseDto response = rideService.changePaymentMethod(id, paymentMethod);
 
@@ -161,14 +160,13 @@ public class RideController {
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
+            @MapContainsKey(DRIVER_SCORE_KEY)
             @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @NotNull(
                     message = PATCH_VALIDATION_SCORE_NOT_NULL_MESSAGE_KEY) @Max(value = AppConstants.MAX_SCORE,
                             message = PATCH_VALIDATION_SCORE_MAX_MESSAGE_KEY) @PositiveOrZero(
                                     message = PATCH_VALIDATION_SCORE_POSITIVE_OR_ZERO_MESSAGE_KEY) Integer> patch) {
 
-        String key = "driverScore";
-        isPatchContainsRequiredKey(patch, key);
-        Integer driverScore = patch.get(key);
+        Integer driverScore = patch.get(DRIVER_SCORE_KEY);
 
         RideResponseDto response = rideService.scoreDriver(id, driverScore);
 
@@ -181,14 +179,13 @@ public class RideController {
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
+            @MapContainsKey(PASSENGER_SCORE_KEY)
             @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @NotNull(
                     message = PATCH_VALIDATION_SCORE_NOT_NULL_MESSAGE_KEY) @Max(value = AppConstants.MAX_SCORE,
                             message = PATCH_VALIDATION_SCORE_MAX_MESSAGE_KEY) @PositiveOrZero(
                                     message = PATCH_VALIDATION_SCORE_POSITIVE_OR_ZERO_MESSAGE_KEY) Integer> patch) {
 
-        String key = "passengerScore";
-        isPatchContainsRequiredKey(patch, key);
-        Integer passengerScore = patch.get(key);
+        Integer passengerScore = patch.get(PASSENGER_SCORE_KEY);
 
         RideResponseDto response = rideService.scorePassenger(id, passengerScore);
 
@@ -256,24 +253,4 @@ public class RideController {
         return response;
     }
 
-    @AssertTrue(message = PATCH_KEY_VALIDATION_MESSAGE_KEY)
-    private <T> boolean isPatchContainsRequiredKey(Map<String, T> patch, String key) {
-        if (patch != null) {
-            return patch.containsKey(key);
-        }
-        return true;
-    }
-
-    @AssertTrue(message = PATCH_VALIDATION_IS_VALID_PAYMENT_METHOD_MESSAGE_KEY)
-    private boolean isValidPaymentMethod(String paymentMethod) {
-        if (paymentMethod != null) {
-            try {
-                PaymentMethodEnum.valueOf(paymentMethod);
-                return true;
-            } catch (IllegalArgumentException e) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
