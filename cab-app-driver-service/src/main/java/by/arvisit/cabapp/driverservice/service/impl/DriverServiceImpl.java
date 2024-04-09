@@ -55,6 +55,24 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional(readOnly = true)
     @Override
+    public ListContainerResponseDto<DriverResponseDto> getAvailableDrivers(Pageable pageable) {
+        log.debug("Call for DriverService.getDrivers() with pageable settings: {}", pageable);
+
+        List<DriverResponseDto> drivers = driverRepository.findByIsAvailableTrue(pageable).stream()
+                .map(driverMapper::fromEntityToResponseDto)
+                .toList();
+
+        return ListContainerResponseDto.<DriverResponseDto>builder()
+                .withValues(drivers)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(driverRepository.countByIsAvailableTrue(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public DriverResponseDto getDriverById(String id) {
         log.debug("Call for DriverService.getDriverById() with id {}", id);
 
@@ -87,8 +105,11 @@ public class DriverServiceImpl implements DriverService {
                     new Object[] { dto.email() }, null);
             throw new UsernameAlreadyExistsException(errorMessage);
         }
+
+        Driver driverToSave = driverMapper.fromRequestDtoToEntity(dto);
+        driverToSave.setIsAvailable(false);
         return driverMapper.fromEntityToResponseDto(
-                driverRepository.save(driverMapper.fromRequestDtoToEntity(dto)));
+                driverRepository.save(driverToSave));
     }
 
     @Transactional
@@ -106,6 +127,22 @@ public class DriverServiceImpl implements DriverService {
         }
 
         driverMapper.updateEntityWithRequestDto(dto, existingDriver);
+        return driverMapper.fromEntityToResponseDto(
+                driverRepository.save(existingDriver));
+    }
+
+    @Transactional
+    @Override
+    public DriverResponseDto updateAvailability(String id, Boolean value) {
+        log.debug("Call for DriverSerice.updateAvailability() with id {} and value {}", id, value);
+
+        Driver existingDriver = findDriverByIdOrThrowException(id);
+
+        if (existingDriver.getIsAvailable().equals(value)) {
+            return driverMapper.fromEntityToResponseDto(existingDriver);
+        }
+
+        existingDriver.setIsAvailable(value);
         return driverMapper.fromEntityToResponseDto(
                 driverRepository.save(existingDriver));
     }

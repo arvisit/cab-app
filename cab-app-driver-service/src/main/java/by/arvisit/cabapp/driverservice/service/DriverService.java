@@ -10,6 +10,8 @@ public interface DriverService {
 
     ListContainerResponseDto<DriverResponseDto> getDrivers(Pageable pageable);
 
+    ListContainerResponseDto<DriverResponseDto> getAvailableDrivers(Pageable pageable);
+
     DriverResponseDto getDriverById(String id);
 
     DriverResponseDto getDriverByEmail(String email);
@@ -17,6 +19,8 @@ public interface DriverService {
     DriverResponseDto save(DriverRequestDto dto);
 
     DriverResponseDto update(String id, DriverRequestDto dto);
+
+    DriverResponseDto updateAvailability(String id, Boolean value);
 
     void delete(String id);
 }

@@ -48,4 +48,7 @@ public class Driver {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
+
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
 }

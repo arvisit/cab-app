@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.driverservice.controller;
 
+import java.util.Map;
+
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,9 +22,12 @@ import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.service.DriverService;
+import by.arvisit.cabapp.driverservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 public class DriverController {
 
+    private static final String IS_AVAILABLE_KEY = "isAvailable";
+    private static final String PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.NotNull.message}";
+    private static final String PATCH_VALIDATION_SIZE_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.Size.message}";
+    private static final String PATCH_VALIDATION_AVAILABILITY_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.isAvailable.NotNull.message}";
     private final DriverService driverService;
 
     @PostMapping
@@ -79,6 +89,32 @@ public class DriverController {
         ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable);
 
         log.debug("Got all drivers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
+        return response;
+    }
+
+    @GetMapping("/available")
+    public ListContainerResponseDto<DriverResponseDto> getAvailableDrivers(
+            @PageableDefault @Nullable @Valid Pageable pageable) {
+        ListContainerResponseDto<DriverResponseDto> response = driverService.getAvailableDrivers(pageable);
+
+        log.debug("Got available drivers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
+        return response;
+    }
+
+    @PatchMapping("/{id}/availability")
+    public DriverResponseDto updateAvailability(@PathVariable @UUID String id,
+            @RequestBody
+            @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
+            @Valid
+            @MapContainsKey(IS_AVAILABLE_KEY)
+            @Size(min = 1, max = 1, message = PATCH_VALIDATION_SIZE_MESSAGE_KEY) Map<String, @NotNull(
+                    message = PATCH_VALIDATION_AVAILABILITY_NOT_NULL_MESSAGE_KEY) Boolean> patch) {
+
+        Boolean value = patch.get(IS_AVAILABLE_KEY);
+
+        DriverResponseDto response = driverService.updateAvailability(id, value);
+
+        log.debug("Set availability for driver with id {} to {}", id, value);
         return response;
     }
 }

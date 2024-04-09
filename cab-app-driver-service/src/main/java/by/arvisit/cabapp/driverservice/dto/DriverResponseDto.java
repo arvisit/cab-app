@@ -8,6 +8,7 @@ public record DriverResponseDto(
         String name,
         String email,
         String cardNumber,
-        CarResponseDto car) {
+        CarResponseDto car,
+        Boolean isAvailable) {
 
 }
