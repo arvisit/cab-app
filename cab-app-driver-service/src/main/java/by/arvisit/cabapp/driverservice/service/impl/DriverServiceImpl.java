@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.driverservice.service.impl;
 
+import static by.arvisit.cabapp.driverservice.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +46,10 @@ public class DriverServiceImpl implements DriverService {
 
         return ListContainerResponseDto.<DriverResponseDto>builder()
                 .withValues(drivers)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(driverRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 

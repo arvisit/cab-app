@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.driverservice.service.impl;
 
+import static by.arvisit.cabapp.driverservice.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +54,10 @@ public class CarServiceImpl implements CarService {
                 .toList();
 
         return ListContainerResponseDto.<CarResponseDto>builder()
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(carRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .withValues(cars)
                 .build();
     }

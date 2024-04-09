@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.driverservice.service.impl;
 
+import static by.arvisit.cabapp.driverservice.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
 
 import org.springframework.context.MessageSource;
@@ -52,6 +54,10 @@ public class ColorServiceImpl implements ColorService {
 
         return ListContainerResponseDto.<ColorResponseDto>builder()
                 .withValues(colors)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(colorRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 
