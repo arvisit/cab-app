@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.passengerservice.exception;
+package by.arvisit.cabapp.exceptionhandlingstarter.exception;
 
 public class UsernameAlreadyExistsException extends RuntimeException {
 

@@ -16,3 +16,7 @@ logging:
   level:
     root: info
     liquibase: error
+
+exception:
+  handling:
+    include: true

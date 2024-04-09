@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.passengerservice.exception.handler;
+package by.arvisit.cabapp.exceptionhandlingstarter.handler;
 
 import java.net.ConnectException;
 import java.time.ZoneId;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import by.arvisit.cabapp.passengerservice.exception.BadRequestException;
-import by.arvisit.cabapp.passengerservice.exception.UsernameAlreadyExistsException;
-import by.arvisit.cabapp.passengerservice.exception.response.ExceptionResponse;
-import by.arvisit.cabapp.passengerservice.exception.response.MultiExceptionResponse;
+import by.arvisit.cabapp.exceptionhandlingstarter.exception.BadRequestException;
+import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
+import by.arvisit.cabapp.exceptionhandlingstarter.response.ExceptionResponse;
+import by.arvisit.cabapp.exceptionhandlingstarter.response.MultiExceptionResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 
