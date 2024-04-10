@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="sitko.ar@gmail.com" id="003-03-fill-car-manufacturers">
+
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Toyota"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Volkswagen"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Ford"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Chevrolet"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Nissan"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Honda"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Hyundai"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="BMW"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Mercedes-Benz"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Audi"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Kia"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Fiat"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Peugeot"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Renault"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Skoda"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Mazda"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Subaru"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Mitsubishi"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Opel"/>
+        </insert>
+        <insert tableName="car_manufacturers">
+            <column name="name" value="Citroën"/>
+        </insert>
+
+        <rollback>
+            <sql>
+                DELETE FROM car_manufacturers;
+            </sql>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>

@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -123,6 +124,16 @@ public class GlobalExceptionHandlerAdvice {
         return MultiExceptionResponse.builder()
                 .withStatus(HttpStatus.BAD_REQUEST.value())
                 .withMessages(errors)
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionResponse handle(PropertyReferenceException exception) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withMessage(exception.getMessage())
                 .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
                 .build();
     }
