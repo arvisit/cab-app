@@ -37,13 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 public class RideServiceImpl implements RideService {
 
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.id.EntityNotFoundException.template";
-    private static final String STATUS_COULD_NOT_BE_CHANGED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.status.IllegalStateException.template";
-    private static final String ILLEGAL_STATUS_FOR_PAYMENT_CONFIRMATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paid.IllegalStateException.template";
-    private static final String ILLEGAL_STATUS_TO_APPLY_PROMO_CODE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.promoCode.IllegalStateException.template";
-    private static final String ILLEGAL_STATUS_TO_CHANGE_PAYMENT_METHOD_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paymentMethod.IllegalStateException.template";
-    private static final String ILLEGAL_STATUS_TO_SCORE_DRIVER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverScore.IllegalStateException.template";
-    private static final String ILLEGAL_STATUS_TO_SCORE_PASSENGER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.passengerScore.IllegalStateException.template";
-    private static final String RIDE_ALREADY_ACCEPTED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.IllegalStateException.template";
     private static final String INVALID_PAYMENT_METHOD_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.dto.RideRequestDto.paymentMethod.isValidPaymentMethod.message";
 
     private final RideRepository rideRepository;
@@ -51,6 +44,7 @@ public class RideServiceImpl implements RideService {
     private final MessageSource messageSource;
     private final CostService costService;
     private final PromoCodeService promoCodeService;
+    private final RideVerifier rideVerifier;
 
     @Transactional
     @Override
@@ -80,16 +74,12 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = findRideByIdOrThrowException(id);
         RideStatusEnum currentStatus = ride.getStatus();
-
         RideStatusEnum newStatus = RideStatusEnum.CANCELED;
 
-        if (currentStatus == RideStatusEnum.CANCELED) {
-            return rideMapper.fromEntityToResponseDto(ride);
-        }
+        rideVerifier.verifyCancelRide(ride);
 
-        if (currentStatus == RideStatusEnum.BEGIN_RIDE || currentStatus == RideStatusEnum.END_RIDE
-                || currentStatus == RideStatusEnum.FINISHED) {
-            throwExceptionForIllegalStatusChange(ride, newStatus);
+        if (currentStatus == newStatus) {
+            return rideMapper.fromEntityToResponseDto(ride);
         }
 
         ride.setStatus(newStatus);
@@ -105,22 +95,12 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = findRideByIdOrThrowException(rideId);
         RideStatusEnum currentStatus = ride.getStatus();
-
         RideStatusEnum newStatus = RideStatusEnum.ACCEPTED;
-        if (currentStatus == RideStatusEnum.CANCELED || currentStatus == RideStatusEnum.BEGIN_RIDE
-                || currentStatus == RideStatusEnum.END_RIDE || currentStatus == RideStatusEnum.FINISHED) {
-            throwExceptionForIllegalStatusChange(ride, newStatus);
-        }
 
-        if (currentStatus == RideStatusEnum.ACCEPTED && driverId.equals(ride.getDriverId().toString())) {
+        rideVerifier.verifyAcceptRide(ride, driverId);
+
+        if (currentStatus == newStatus && driverId.equals(ride.getDriverId().toString())) {
             return rideMapper.fromEntityToResponseDto(ride);
-        }
-
-        if (currentStatus == RideStatusEnum.ACCEPTED && !driverId.equals(ride.getDriverId().toString())) {
-            String errorMessage = messageSource.getMessage(
-                    RIDE_ALREADY_ACCEPTED_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId(), driverId }, null);
-            throw new IllegalStateException(errorMessage);
         }
 
         ride.setStatus(newStatus);
@@ -137,13 +117,11 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = findRideByIdOrThrowException(id);
         RideStatusEnum currentStatus = ride.getStatus();
-
         RideStatusEnum newStatus = RideStatusEnum.BEGIN_RIDE;
-        if (currentStatus != RideStatusEnum.ACCEPTED && currentStatus != RideStatusEnum.BEGIN_RIDE) {
-            throwExceptionForIllegalStatusChange(ride, newStatus);
-        }
 
-        if (currentStatus == RideStatusEnum.BEGIN_RIDE) {
+        rideVerifier.verifyBeginRide(ride);
+
+        if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
         }
 
@@ -160,13 +138,11 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = findRideByIdOrThrowException(id);
         RideStatusEnum currentStatus = ride.getStatus();
-
         RideStatusEnum newStatus = RideStatusEnum.END_RIDE;
-        if (currentStatus != RideStatusEnum.BEGIN_RIDE && currentStatus != RideStatusEnum.END_RIDE) {
-            throwExceptionForIllegalStatusChange(ride, newStatus);
-        }
 
-        if (currentStatus == RideStatusEnum.END_RIDE) {
+        rideVerifier.verifyBeginRide(ride);
+
+        if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
         }
 
@@ -183,13 +159,11 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = findRideByIdOrThrowException(id);
         RideStatusEnum currentStatus = ride.getStatus();
-
         RideStatusEnum newStatus = RideStatusEnum.FINISHED;
-        if (currentStatus != RideStatusEnum.END_RIDE && currentStatus != RideStatusEnum.FINISHED && !ride.getIsPaid()) {
-            throwExceptionForIllegalStatusChange(ride, newStatus);
-        }
 
-        if (currentStatus == RideStatusEnum.FINISHED) {
+        rideVerifier.verifyFinishRide(ride);
+
+        if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
         }
 
@@ -207,12 +181,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = findRideByIdOrThrowException(id);
         RideStatusEnum currentStatus = ride.getStatus();
 
-        if (currentStatus != RideStatusEnum.END_RIDE && currentStatus != RideStatusEnum.FINISHED) {
-            String errorMessage = messageSource.getMessage(
-                    ILLEGAL_STATUS_FOR_PAYMENT_CONFIRMATION_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId() }, null);
-            throw new IllegalStateException(errorMessage);
-        }
+        rideVerifier.verifyConfirmPayment(ride);
 
         if (currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -230,14 +199,8 @@ public class RideServiceImpl implements RideService {
                 promoCodeKeyword);
 
         Ride ride = findRideByIdOrThrowException(rideId);
-        RideStatusEnum currentStatus = ride.getStatus();
 
-        if (currentStatus == RideStatusEnum.CANCELED || currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
-            String errorMessage = messageSource.getMessage(
-                    ILLEGAL_STATUS_TO_APPLY_PROMO_CODE_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId() }, null);
-            throw new IllegalStateException(errorMessage);
-        }
+        rideVerifier.verifyApplyPromoCode(ride);
 
         PromoCodeResponseDto promoCodeDto = promoCodeService.getActivePromoCodeByKeyword(promoCodeKeyword);
         PromoCode promoCodeEntity = PromoCode.builder()
@@ -246,6 +209,10 @@ public class RideServiceImpl implements RideService {
                 .withDiscountPercent(promoCodeDto.discountPercent())
                 .withIsActive(promoCodeDto.isActive())
                 .build();
+
+        if (promoCodeEntity.equals(ride.getPromoCode())) {
+            return rideMapper.fromEntityToResponseDto(ride);
+        }
 
         BigDecimal finalCost = costService.calculateRideCostWithPromoCode(ride.getInitialCost(), promoCodeEntity);
         ride.setFinalCost(finalCost);
@@ -262,14 +229,8 @@ public class RideServiceImpl implements RideService {
                 paymentMethod);
 
         Ride ride = findRideByIdOrThrowException(rideId);
-        RideStatusEnum currentStatus = ride.getStatus();
 
-        if (currentStatus == RideStatusEnum.CANCELED || currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
-            String errorMessage = messageSource.getMessage(
-                    ILLEGAL_STATUS_TO_CHANGE_PAYMENT_METHOD_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId() }, null);
-            throw new IllegalStateException(errorMessage);
-        }
+        rideVerifier.verifyChangePaymentMethod(ride);
 
         PaymentMethodEnum newPaymentMethod;
         try {
@@ -280,6 +241,11 @@ public class RideServiceImpl implements RideService {
                     new Object[] { ride.getId() }, null);
             throw new IllegalArgumentException(errorMessage);
         }
+
+        if (ride.getPaymentMethod() == newPaymentMethod) {
+            return rideMapper.fromEntityToResponseDto(ride);
+        }
+
         ride.setPaymentMethod(newPaymentMethod);
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
@@ -291,14 +257,8 @@ public class RideServiceImpl implements RideService {
         log.debug("Call for RideService.scoreDriver() with rideId {} and score {}", rideId, score);
 
         Ride ride = findRideByIdOrThrowException(rideId);
-        RideStatusEnum currentStatus = ride.getStatus();
 
-        if (currentStatus != RideStatusEnum.FINISHED || ride.getDriverScore() != null) {
-            String errorMessage = messageSource.getMessage(
-                    ILLEGAL_STATUS_TO_SCORE_DRIVER_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId() }, null);
-            throw new IllegalStateException(errorMessage);
-        }
+        rideVerifier.verifyScoreDriver(ride);
 
         ride.setDriverScore(score);
         return rideMapper.fromEntityToResponseDto(
@@ -311,14 +271,8 @@ public class RideServiceImpl implements RideService {
         log.debug("Call for RideService.scorePassenger() with rideId {} and score {}", rideId, score);
 
         Ride ride = findRideByIdOrThrowException(rideId);
-        RideStatusEnum currentStatus = ride.getStatus();
 
-        if (currentStatus != RideStatusEnum.FINISHED || ride.getPassengerScore() != null) {
-            String errorMessage = messageSource.getMessage(
-                    ILLEGAL_STATUS_TO_SCORE_PASSENGER_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { ride.getId() }, null);
-            throw new IllegalStateException(errorMessage);
-        }
+        rideVerifier.verifyScorePassenger(ride);
 
         ride.setPassengerScore(score);
         return rideMapper.fromEntityToResponseDto(
@@ -414,10 +368,4 @@ public class RideServiceImpl implements RideService {
                         () -> new EntityNotFoundException(errorMessage));
     }
 
-    private void throwExceptionForIllegalStatusChange(Ride ride, RideStatusEnum newStatus) {
-        String errorMessage = messageSource.getMessage(
-                STATUS_COULD_NOT_BE_CHANGED_MESSAGE_TEMPLATE_KEY,
-                new Object[] { ride.getId(), ride.getStatus(), newStatus }, null);
-        throw new IllegalStateException(errorMessage);
-    }
 }
