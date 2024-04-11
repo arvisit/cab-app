@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="sitko.ar@gmail.com" id="005-01-add-tables">
+
+        <createTable tableName="passenger_payments">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ride_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="passenger_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="numeric(10,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_amount" type="numeric(10,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_method" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_number" type="varchar(16)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="driver_payments">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="driver_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="numeric(10,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="card_number" type="varchar(16)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="timestamp with timezone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="passenger_payments"/>
+            <dropTable tableName="driver_payments"/>
+        </rollback>
+
+    </changeSet>
+</databaseChangeLog>
