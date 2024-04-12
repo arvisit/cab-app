@@ -18,7 +18,6 @@ import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
-import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
 import by.arvisit.cabapp.paymentservice.service.DriverPaymentService;
@@ -33,10 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 public class DriverPaymentServiceImpl implements DriverPaymentService {
 
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment.id.EntityNotFoundException.template";
-    private static final String LOW_BALANCE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment.balance.IllegalStateException.template";
+
     private final DriverPaymentRepository driverPaymentRepository;
     private final DriverPaymentMapper driverPaymentMapper;
     private final MessageSource messageSource;
+    private final DriverPaymentVerifier driverPaymentVerifier;
 
     @Transactional
     @Override
@@ -45,17 +45,7 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
 
         DriverPayment newPayment = driverPaymentMapper.fromRequestDtoToEntity(dto);
 
-        BigDecimal balance = driverPaymentRepository.getDriverAccountBalance(
-                newPayment.getDriverId());
-
-        if (newPayment.getOperation() == OperationTypeEnum.WITHDRAWAL
-                && (balance.compareTo(BigDecimal.ZERO) <= 0 || balance.compareTo(newPayment.getAmount()) < 0)) {
-
-            String errorMessage = messageSource.getMessage(
-                    LOW_BALANCE_MESSAGE_TEMPLATE_KEY,
-                    new Object[] {}, null);
-            throw new IllegalArgumentException(errorMessage);
-        }
+        driverPaymentVerifier.verifyNewPayment(newPayment);
 
         newPayment.setStatus(PaymentStatusEnum.SUCCESS);
         newPayment.setTimestamp(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));

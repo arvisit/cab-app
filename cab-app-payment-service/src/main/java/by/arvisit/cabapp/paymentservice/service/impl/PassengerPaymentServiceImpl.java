@@ -31,11 +31,11 @@ import lombok.extern.slf4j.Slf4j;
 public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.id.EntityNotFoundException.template";
-    private static final String RIDE_PASSENGER_DRIVER_ILLEGAL_COMBINATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.IllegalStateException.template";
-    private static final String RIDE_PAYMENT_COMPLITED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.status.IllegalStateException.template";
+
     private final PassengerPaymentRepository passengerPaymentRepository;
     private final PassengerPaymentMapper passengerPaymentMapper;
     private final MessageSource messageSource;
+    private final PassengerPaymentVerifier passengerPaymentVerifier;
 
     @Transactional
     @Override
@@ -44,29 +44,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
         PassengerPayment newPayment = passengerPaymentMapper.fromRequestDtoToEntity(dto);
 
-        List<PassengerPayment> paymentsForCurrentRide = passengerPaymentRepository
-                .findByRideId(newPayment.getRideId());
-
-        UUID newPaymentDriverId = newPayment.getDriverId();
-        UUID newPaymentPassengerId = newPayment.getPassengerId();
-
-        if (!paymentsForCurrentRide.isEmpty() && paymentsForCurrentRide.stream()
-                .noneMatch(p -> p.getDriverId().equals(newPaymentDriverId)
-                        && p.getPassengerId().equals(newPaymentPassengerId))) {
-
-            String coflictWithExistingPaymentDetailsErrorMessage = messageSource.getMessage(
-                    RIDE_PASSENGER_DRIVER_ILLEGAL_COMBINATION_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { dto.rideId() }, null);
-            throw new IllegalStateException(coflictWithExistingPaymentDetailsErrorMessage);
-        }
-
-        if (passengerPaymentRepository.existsSuccessfulPayment(newPayment.getRideId(),
-                newPaymentPassengerId, newPaymentDriverId)) {
-            String existingSuccessfulPaymentErrorMessage = messageSource.getMessage(
-                    RIDE_PAYMENT_COMPLITED_MESSAGE_TEMPLATE_KEY,
-                    new Object[] { dto.rideId() }, null);
-            throw new IllegalStateException(existingSuccessfulPaymentErrorMessage);
-        }
+        passengerPaymentVerifier.verifyNewPayment(newPayment);
 
         BigDecimal aggregatorFeeAmount = dto.amount().multiply(AppConstants.AGGREGATOR_FEE_PERCENT)
                 .divide(AppConstants.BIG_DECIMAL_HUNDRED);
