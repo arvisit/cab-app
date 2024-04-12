@@ -12,27 +12,41 @@ import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 public interface DriverPaymentRepository extends JpaRepository<DriverPayment, UUID> {
 
     @Query("""
-            SELECT (
-                (SELECT COALESCE(SUM(p.amount - p.feeAmount), 0)
-                FROM PassengerPayment p
-                WHERE p.driverId = :id
-                    AND p.paymentMethod = by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum.BANK_CARD
-                    AND p.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS) -
-                (SELECT COALESCE(SUM(p.feeAmount), 0)
-                FROM PassengerPayment p
-                WHERE p.driverId = :id
-                    AND p.paymentMethod = by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum.CASH
-                    AND p.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS) -
-                (SELECT COALESCE(SUM(d.amount), 0)
-                FROM DriverPayment d
-                WHERE d.driverId = :id
-                    AND d.operation = by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum.WITHDRAWAL
-                    AND d.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS) +
-                (SELECT COALESCE(SUM(d.amount), 0)
-                FROM DriverPayment d
-                WHERE d.driverId = :id
-                    AND d.operation = by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum.REPAYMENT
-                    AND d.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS))
+            SELECT
+                SUM(
+                    CASE 
+                        WHEN p.paymentMethod = by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum.BANK_CARD
+                        THEN COALESCE(p.amount - p.feeAmount, 0)
+                        ELSE 0 
+                    END
+                ) -
+                SUM(
+                    CASE 
+                        WHEN p.paymentMethod = by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum.CASH
+                        THEN COALESCE(p.feeAmount, 0)
+                        ELSE 0 
+                    END
+                ) -
+                SUM(
+                    CASE 
+                        WHEN d.operation = by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum.WITHDRAWAL
+                        THEN COALESCE(d.amount, 0)
+                        ELSE 0 
+                    END
+                ) +
+                SUM(
+                    CASE 
+                        WHEN d.operation = by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum.REPAYMENT
+                        THEN COALESCE(d.amount, 0)
+                        ELSE 0 
+                    END
+                )
+            FROM PassengerPayment p
+                LEFT JOIN DriverPayment d ON p.driverId = d.driverId
+            WHERE p.driverId = :id
+                AND p.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS
+                AND (d.status = by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum.SUCCESS
+                    OR d.status IS NULL)
             """)
     BigDecimal getDriverAccountBalance(@Param("id") UUID id);
 }
