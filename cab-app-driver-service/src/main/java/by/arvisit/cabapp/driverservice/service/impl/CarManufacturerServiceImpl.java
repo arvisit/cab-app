@@ -1,6 +1,7 @@
 package by.arvisit.cabapp.driverservice.service.impl;
 
-import static by.arvisit.cabapp.driverservice.util.PaginationUtil.getLastPageNumber;
+
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
-import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.mapper.CarManufacturerMapper;
 import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer;
 import by.arvisit.cabapp.driverservice.persistence.repository.CarManufacturerRepository;
