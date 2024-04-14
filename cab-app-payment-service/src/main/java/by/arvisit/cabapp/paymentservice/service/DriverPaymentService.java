@@ -2,10 +2,10 @@ package by.arvisit.cabapp.paymentservice.service;
 
 import org.springframework.data.domain.Pageable;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
-import by.arvisit.cabapp.paymentservice.dto.ListContainerResponseDto;
 
 public interface DriverPaymentService {
 

@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.paymentservice.service.impl;
 
-import static by.arvisit.cabapp.paymentservice.util.PaginationUtil.getLastPageNumber;
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import by.arvisit.cabapp.paymentservice.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
