@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
@@ -50,7 +51,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
                 .divide(AppConstants.BIG_DECIMAL_HUNDRED);
 
         newPayment.setFeeAmount(aggregatorFeeAmount);
-        newPayment.setTimestamp(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        newPayment.setTimestamp(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         newPayment.setStatus(PaymentStatusEnum.SUCCESS);
 
         return passengerPaymentMapper.fromEntityToResponseDto(

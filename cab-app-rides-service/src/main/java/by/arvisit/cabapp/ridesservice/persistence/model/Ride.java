@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-import by.arvisit.cabapp.ridesservice.persistence.converter.ZonedDateTimeConverter;
+import by.arvisit.cabapp.common.persistence.converter.ZonedDateTimeConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

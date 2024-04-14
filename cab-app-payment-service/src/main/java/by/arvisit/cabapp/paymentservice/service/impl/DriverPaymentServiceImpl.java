@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
@@ -21,7 +22,6 @@ import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
 import by.arvisit.cabapp.paymentservice.service.DriverPaymentService;
-import by.arvisit.cabapp.paymentservice.util.AppConstants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
         driverPaymentVerifier.verifyNewPayment(newPayment);
 
         newPayment.setStatus(PaymentStatusEnum.SUCCESS);
-        newPayment.setTimestamp(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        newPayment.setTimestamp(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
 
         return driverPaymentMapper.fromEntityToResponseDto(
                 driverPaymentRepository.save(newPayment));
