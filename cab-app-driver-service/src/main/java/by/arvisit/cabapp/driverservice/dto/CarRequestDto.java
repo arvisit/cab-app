@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.driverservice.dto;
 
-import static by.arvisit.cabapp.driverservice.util.ValidationRegexp.CAR_REGISTRATION_NUMBER_BY;
+import static by.arvisit.cabapp.common.util.ValidationRegexp.CAR_REGISTRATION_NUMBER_BY;
 
 import by.arvisit.cabapp.driverservice.validation.IsCarManufacturerExistById;
 import by.arvisit.cabapp.driverservice.validation.IsColorExistById;

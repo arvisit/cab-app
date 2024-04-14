@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.driverservice.util;
+package by.arvisit.cabapp.common.util;
 
 public class ValidationRegexp {
 
