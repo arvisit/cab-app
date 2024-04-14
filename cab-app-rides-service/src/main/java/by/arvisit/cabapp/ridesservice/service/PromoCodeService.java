@@ -2,7 +2,7 @@ package by.arvisit.cabapp.ridesservice.service;
 
 import org.springframework.data.domain.Pageable;
 
-import by.arvisit.cabapp.ridesservice.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 
