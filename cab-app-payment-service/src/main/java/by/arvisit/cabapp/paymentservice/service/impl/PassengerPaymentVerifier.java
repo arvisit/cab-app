@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
+import by.arvisit.cabapp.paymentservice.client.PassengerClient;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +18,14 @@ class PassengerPaymentVerifier {
 
     private static final String RIDE_PASSENGER_DRIVER_ILLEGAL_COMBINATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.IllegalStateException.template";
     private static final String RIDE_PAYMENT_COMPLITED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.status.IllegalStateException.template";
+    private static final String CARD_NUMBER_MISMATCH_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.cardNumber.IllegalStateException.template";
 
     private final PassengerPaymentRepository passengerPaymentRepository;
     private final MessageSource messageSource;
+    private final PassengerClient passengerClient;
 
     public void verifyNewPayment(PassengerPayment newPayment) {
+        verifyPassenger(newPayment);
         verifyNewPaymentParametersCombination(newPayment);
         verifyIfSameSuccessfulPaymentExists(newPayment);
     }
@@ -55,5 +60,17 @@ class PassengerPaymentVerifier {
             throw new IllegalStateException(existingSuccessfulPaymentErrorMessage);
         }
 
+    }
+
+    public void verifyPassenger(PassengerPayment newPayment) {
+        PassengerResponseDto passenger = passengerClient.getPassengerById(newPayment.getPassengerId().toString());
+
+        if (!newPayment.getCardNumber().equals(passenger.cardNumber())) {
+
+            String errorMessage = messageSource.getMessage(
+                    CARD_NUMBER_MISMATCH_MESSAGE_TEMPLATE_KEY,
+                    new Object[] {}, null);
+            throw new IllegalStateException(errorMessage);
+        }
     }
 }
