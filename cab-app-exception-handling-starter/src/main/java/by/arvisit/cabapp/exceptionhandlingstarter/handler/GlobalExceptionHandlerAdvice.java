@@ -20,6 +20,7 @@ import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseExc
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.ExceptionResponse;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.MultiExceptionResponse;
+import feign.RetryableException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 
@@ -83,6 +84,16 @@ public class GlobalExceptionHandlerAdvice {
     public ExceptionResponse handle(ConnectException exception) {
         return ExceptionResponse.builder()
                 .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .withMessage(exception.getMessage())
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    @ExceptionHandler(RetryableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ExceptionResponse handle(RetryableException exception) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .withMessage(exception.getMessage())
                 .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
                 .build();
