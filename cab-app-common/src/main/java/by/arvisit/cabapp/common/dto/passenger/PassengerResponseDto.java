@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.ridesservice.dto;
+package by.arvisit.cabapp.common.dto.passenger;
 
 import lombok.Builder;
 
