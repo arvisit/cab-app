@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import by.arvisit.cabapp.ridesservice.dto.PassengerResponseDto;
+import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 
 @FeignClient(value = "cab-app-passenger-service", url = "${spring.settings.cab-app-passenger-service.uri}",
         configuration = CabAppFeignClientConfiguration.class)

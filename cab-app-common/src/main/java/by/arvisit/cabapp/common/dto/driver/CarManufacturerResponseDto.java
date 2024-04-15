@@ -1,9 +1,9 @@
-package by.arvisit.cabapp.ridesservice.dto;
+package by.arvisit.cabapp.common.dto.driver;
 
 import lombok.Builder;
 
 @Builder(setterPrefix = "with")
-public record ColorResponseDto(
+public record CarManufacturerResponseDto(
         Integer id,
         String name) {
 
