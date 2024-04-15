@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import feign.codec.ErrorDecoder;
 
 @Configuration
-public class PassengerClientFeignConfiguration extends FeignClientConfiguration {
+public class CabAppFeignClientConfiguration extends FeignClientConfiguration {
 
     @Bean
     ErrorDecoder errorDecoder() {
-        return new PassengerClientErrorDecoder();
+        return new CabAppErrorDecoder();
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import by.arvisit.cabapp.ridesservice.dto.PassengerResponseDto;
 
 @FeignClient(value = "cab-app-passenger-service", url = "${spring.settings.cab-app-passenger-service.uri}",
-        configuration = PassengerClientFeignConfiguration.class)
+        configuration = CabAppFeignClientConfiguration.class)
 public interface DirectPassengerClient extends PassengerClient {
 
     @Override

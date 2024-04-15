@@ -12,15 +12,15 @@ import feign.Response;
 import feign.codec.ErrorDecoder;
 import jakarta.persistence.EntityNotFoundException;
 
-public class PassengerClientErrorDecoder implements ErrorDecoder {
-    
+public class CabAppErrorDecoder implements ErrorDecoder {
+
     private final ErrorDecoder defaultErrorDecoder = new Default();
 
     @Override
     public Exception decode(String methodKey, Response response) {
         ExceptionResponse message = null;
         try (InputStream bodyIs = response.body().asInputStream()) {
-            
+
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
             message = objectMapper.readValue(bodyIs, ExceptionResponse.class);
