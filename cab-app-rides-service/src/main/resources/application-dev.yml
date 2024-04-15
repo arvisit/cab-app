@@ -3,6 +3,9 @@ spring:
     show-sql: true
     properties:
       '[hibernate.format_sql]': true
+  settings:
+    cab-app-passenger-service:
+      uri: http://localhost:${PASSENGER_SERVICE_PORT}/api/v1/passengers
 
 logging:
   level:
