@@ -3,6 +3,7 @@ package by.arvisit.cabapp.ridesservice.service.impl;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
@@ -22,6 +23,7 @@ class RideVerifier {
 
     private final MessageSource messageSource;
     private final PassengerClient passengerClient;
+    private final DriverClient driverClient;
 
     public void verifyCreateRide(Ride ride) {
         passengerClient.getPassengerById(ride.getPassengerId().toString());
@@ -52,6 +54,8 @@ class RideVerifier {
                     new Object[] { ride.getId(), driverId }, null);
             throw new IllegalStateException(errorMessage);
         }
+
+        driverClient.getDriverById(driverId);
     }
 
     public void verifyBeginRide(Ride ride) {
