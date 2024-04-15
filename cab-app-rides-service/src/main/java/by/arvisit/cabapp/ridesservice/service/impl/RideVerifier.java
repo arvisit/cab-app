@@ -3,6 +3,7 @@ package by.arvisit.cabapp.ridesservice.service.impl;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,11 @@ class RideVerifier {
     private static final String ILLEGAL_STATUS_TO_SCORE_PASSENGER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.passengerScore.IllegalStateException.template";
 
     private final MessageSource messageSource;
+    private final PassengerClient passengerClient;
+
+    public void verifyCreateRide(Ride ride) {
+        passengerClient.getPassengerById(ride.getPassengerId().toString());
+    }
 
     public void verifyCancelRide(Ride ride) {
         RideStatusEnum currentStatus = ride.getStatus();
