@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.paymentservice.client.PassengerClient;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
+import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -65,7 +66,8 @@ class PassengerPaymentVerifier {
     public void verifyPassenger(PassengerPayment newPayment) {
         PassengerResponseDto passenger = passengerClient.getPassengerById(newPayment.getPassengerId().toString());
 
-        if (!newPayment.getCardNumber().equals(passenger.cardNumber())) {
+        if (newPayment.getPaymentMethod() == PaymentMethodEnum.BANK_CARD
+                && !newPayment.getCardNumber().equals(passenger.cardNumber())) {
 
             String errorMessage = messageSource.getMessage(
                     CARD_NUMBER_MISMATCH_MESSAGE_TEMPLATE_KEY,
