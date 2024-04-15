@@ -53,6 +53,8 @@ public class RideServiceImpl implements RideService {
 
         Ride rideToSave = rideMapper.fromRequestDtoToEntity(dto);
 
+        rideVerifier.verifyCreateRide(rideToSave);
+
         BigDecimal initialCost = costService.calculateInitialRideCost(
                 rideToSave.getStartAddress(),
                 rideToSave.getDestinationAddress());
