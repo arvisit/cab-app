@@ -7,8 +7,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
+import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
 import by.arvisit.cabapp.paymentservice.service.PassengerPaymentService;
@@ -37,6 +41,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
     private final PassengerPaymentMapper passengerPaymentMapper;
     private final MessageSource messageSource;
     private final PassengerPaymentVerifier passengerPaymentVerifier;
+    private final StreamBridge streamBridge;
 
     @Transactional
     @Override
@@ -54,8 +59,15 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
         newPayment.setTimestamp(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         newPayment.setStatus(PaymentStatusEnum.SUCCESS);
 
-        return passengerPaymentMapper.fromEntityToResponseDto(
+        PassengerPaymentResponseDto paymentToSend = passengerPaymentMapper.fromEntityToResponseDto(
                 passengerPaymentRepository.save(newPayment));
+
+        if (newPayment.getPaymentMethod() == PaymentMethodEnum.BANK_CARD) {
+            Message<PassengerPaymentResponseDto> message = MessageBuilder.withPayload(paymentToSend).build();
+            streamBridge.send("outPayment", message); // TODO channel to constants, and change its name
+        }
+
+        return paymentToSend;
     }
 
     @Transactional(readOnly = true)
