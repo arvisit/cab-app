@@ -7,7 +7,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
+import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 import by.arvisit.cabapp.paymentservice.client.PassengerClient;
+import by.arvisit.cabapp.paymentservice.client.RideClient;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
@@ -20,15 +22,18 @@ class PassengerPaymentVerifier {
     private static final String RIDE_PASSENGER_DRIVER_ILLEGAL_COMBINATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.IllegalStateException.template";
     private static final String RIDE_PAYMENT_COMPLITED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.rideId.passengerId.driverId.status.IllegalStateException.template";
     private static final String CARD_NUMBER_MISMATCH_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.cardNumber.IllegalStateException.template";
+    private static final String RIDE_DETAILS_MISMATCH_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.details.IllegalStateException.template";
 
     private final PassengerPaymentRepository passengerPaymentRepository;
     private final MessageSource messageSource;
     private final PassengerClient passengerClient;
+    private final RideClient rideClient;
 
     public void verifyNewPayment(PassengerPayment newPayment) {
-        verifyPassenger(newPayment);
         verifyNewPaymentParametersCombination(newPayment);
         verifyIfSameSuccessfulPaymentExists(newPayment);
+        verifyPassenger(newPayment);
+        verifyRide(newPayment);
     }
 
     public void verifyNewPaymentParametersCombination(PassengerPayment newPayment) {
@@ -71,6 +76,22 @@ class PassengerPaymentVerifier {
 
             String errorMessage = messageSource.getMessage(
                     CARD_NUMBER_MISMATCH_MESSAGE_TEMPLATE_KEY,
+                    new Object[] {}, null);
+            throw new IllegalStateException(errorMessage);
+        }
+    }
+
+    public void verifyRide(PassengerPayment newPayment) {
+        RideResponseDto ride = rideClient.getRideById(newPayment.getRideId().toString());
+
+        String newPaymentPassengerId = newPayment.getPassengerId().toString();
+        String newPaymentDriverId = newPayment.getDriverId().toString();
+        if (!newPaymentPassengerId.equals(ride.passengerId())
+                || !newPaymentDriverId.equals(ride.driverId())
+                || newPayment.getAmount().compareTo(ride.finalCost()) != 0) {
+
+            String errorMessage = messageSource.getMessage(
+                    RIDE_DETAILS_MISMATCH_MESSAGE_TEMPLATE_KEY,
                     new Object[] {}, null);
             throw new IllegalStateException(errorMessage);
         }
