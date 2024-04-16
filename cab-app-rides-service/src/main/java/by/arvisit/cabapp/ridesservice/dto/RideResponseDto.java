@@ -1,5 +1,6 @@
 package by.arvisit.cabapp.ridesservice.dto;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 import lombok.Builder;
@@ -7,8 +8,8 @@ import lombok.Builder;
 @Builder(setterPrefix = "with")
 public record RideResponseDto(
         String id,
-        String initialCost,
-        String finalCost,
+        BigDecimal initialCost,
+        BigDecimal finalCost,
         String passengerId,
         String driverId,
         String promoCode,
