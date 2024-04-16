@@ -38,4 +38,8 @@ public interface RideMapper {
     @Mapping(target = "amount", source = "finalCost")
     @Mapping(target = "cardNumber", ignore = true)
     PassengerPaymentRequestDto fromRideToPassengerPaymentRequestDto(Ride entity);
+
+    @Mapping(target = "rideId", source = "entity.id")
+    @Mapping(target = "amount", source = "entity.finalCost")
+    PassengerPaymentRequestDto fromRideToPassengerPaymentRequestDto(Ride entity, String cardNumber);
 }
