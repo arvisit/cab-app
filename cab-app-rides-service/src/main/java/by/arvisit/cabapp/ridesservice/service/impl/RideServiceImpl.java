@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
+import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
+import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
@@ -36,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RideServiceImpl implements RideService {
 
+    private static final String PAYMENT_NOT_SUCCESS_STATUS_MESSAGE_TEMPLATE = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.isPaid.IllegalStateException.template";
+    private static final String SUCCESS_STATUS = "SUCCESS";
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.id.EntityNotFoundException.template";
     private static final String INVALID_PAYMENT_METHOD_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.dto.RideRequestDto.paymentMethod.isValidPaymentMethod.message";
 
@@ -45,6 +50,7 @@ public class RideServiceImpl implements RideService {
     private final CostService costService;
     private final PromoCodeService promoCodeService;
     private final RideVerifier rideVerifier;
+    private final PaymentClient paymentClient;
 
     @Transactional
     @Override
@@ -189,7 +195,21 @@ public class RideServiceImpl implements RideService {
             return rideMapper.fromEntityToResponseDto(ride);
         }
 
+        if (ride.getPaymentMethod() == PaymentMethodEnum.CASH) {
+            PassengerPaymentRequestDto newPayment = rideMapper.fromRideToPassengerPaymentRequestDto(ride);
+            PassengerPaymentResponseDto savedPayment = paymentClient.save(newPayment);
+
+            if (!SUCCESS_STATUS.equals(savedPayment.status())) {
+                String errorMessage = messageSource.getMessage(
+                        PAYMENT_NOT_SUCCESS_STATUS_MESSAGE_TEMPLATE,
+                        new Object[] {}, null);
+                throw new IllegalStateException(errorMessage);
+            }
+        }
+
         ride.setIsPaid(true);
+        ride.setStatus(RideStatusEnum.FINISHED);
+        ride.setFinishRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
