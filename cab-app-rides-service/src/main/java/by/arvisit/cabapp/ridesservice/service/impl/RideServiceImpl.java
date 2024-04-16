@@ -7,16 +7,21 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
+import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
@@ -51,6 +56,8 @@ public class RideServiceImpl implements RideService {
     private final PromoCodeService promoCodeService;
     private final RideVerifier rideVerifier;
     private final PaymentClient paymentClient;
+    private final PassengerClient passengerClient;
+    private final StreamBridge streamBridge;
 
     @Transactional
     @Override
@@ -156,6 +163,17 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(newStatus);
         ride.setEndRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
+
+        if (ride.getPaymentMethod() == PaymentMethodEnum.BANK_CARD) {
+            PassengerResponseDto passenger = passengerClient.getPassengerById(ride.getPassengerId().toString());
+
+            PassengerPaymentRequestDto payment = rideMapper.fromRideToPassengerPaymentRequestDto(ride,
+                    passenger.cardNumber());
+
+            Message<PassengerPaymentRequestDto> message = MessageBuilder.withPayload(payment).build();
+            streamBridge.send("outPayment", message); // TODO topic to constants
+        }
+
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
