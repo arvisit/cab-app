@@ -35,6 +35,7 @@ import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
 import by.arvisit.cabapp.ridesservice.service.CostService;
 import by.arvisit.cabapp.ridesservice.service.PromoCodeService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
+import by.arvisit.cabapp.ridesservice.util.PaymentVerifier;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +46,6 @@ import lombok.extern.slf4j.Slf4j;
 public class RideServiceImpl implements RideService {
 
     private static final String OUT_CREATE_CARD_PAYMENT_CHANNEL = "outCreateCardPayment";
-    private static final String PAYMENT_NOT_SUCCESS_STATUS_MESSAGE_TEMPLATE = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.isPaid.IllegalStateException.template";
-    private static final String SUCCESS_STATUS = "SUCCESS";
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.id.EntityNotFoundException.template";
     private static final String INVALID_PAYMENT_METHOD_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.dto.RideRequestDto.paymentMethod.isValidPaymentMethod.message";
 
@@ -59,6 +58,7 @@ public class RideServiceImpl implements RideService {
     private final PaymentClient paymentClient;
     private final PassengerClient passengerClient;
     private final StreamBridge streamBridge;
+    private final PaymentVerifier paymentVerifier;
 
     @Transactional
     @Override
@@ -218,12 +218,7 @@ public class RideServiceImpl implements RideService {
             PassengerPaymentRequestDto newPayment = rideMapper.fromRideToPassengerPaymentRequestDto(ride);
             PassengerPaymentResponseDto savedPayment = paymentClient.save(newPayment);
 
-            if (!SUCCESS_STATUS.equals(savedPayment.status())) {
-                String errorMessage = messageSource.getMessage(
-                        PAYMENT_NOT_SUCCESS_STATUS_MESSAGE_TEMPLATE,
-                        new Object[] {}, null);
-                throw new IllegalStateException(errorMessage);
-            }
+            paymentVerifier.verifyPaymentStatus(savedPayment);
         }
 
         ride.setIsPaid(true);
