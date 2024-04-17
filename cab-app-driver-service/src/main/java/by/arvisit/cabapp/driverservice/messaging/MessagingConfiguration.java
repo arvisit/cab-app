@@ -52,6 +52,8 @@ public class MessagingConfiguration {
 
                 DriverResponseDto selectedDriver = availableDrivers.get(RANDOM.nextInt(0, availableDrivers.size()));
                 rideClient.acceptRide(newRide.id(), Collections.singletonMap("driverId", selectedDriver.id()));
+                driverService.updateAvailability(newRide.driverId(), false);
+
             } catch (InterruptedException e) {
                 log.error(e.getMessage());
                 Thread.currentThread().interrupt();
@@ -65,6 +67,8 @@ public class MessagingConfiguration {
     Consumer<RideResponseDto> notifyAboutRideCancellation() {
         return ride -> {
             log.info("Consumer received message about ride cancellation: {}", ride);
+
+            driverService.updateAvailability(ride.driverId(), true);
         };
     }
 }
