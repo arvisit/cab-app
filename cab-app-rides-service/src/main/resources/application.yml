@@ -31,6 +31,9 @@ spring:
         outNewRide:
           destination: newRideTopic
           content-type: application/json
+        outAcceptedRide:
+          destination: acceptedRideTopic
+          content-type: application/json
       kafka:
         binder:
           brokers: localhost:29092
