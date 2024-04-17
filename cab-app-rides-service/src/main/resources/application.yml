@@ -17,6 +17,9 @@ spring:
         max-page-size: 50
 
   cloud:
+    openfeign:
+      okhttp:
+        enabled: true
     function:
       definition: confirmCardPayment
     stream:

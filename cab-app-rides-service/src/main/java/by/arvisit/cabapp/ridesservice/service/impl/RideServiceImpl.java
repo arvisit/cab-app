@@ -4,6 +4,7 @@ import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
+import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
@@ -62,6 +64,7 @@ public class RideServiceImpl implements RideService {
     private final PassengerClient passengerClient;
     private final StreamBridge streamBridge;
     private final PaymentVerifier paymentVerifier;
+    private final DriverClient driverClient;
 
     @Transactional
     @Override
@@ -108,10 +111,10 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(newStatus);
         ride.setCancelRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        
+
         RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
-        
+
         Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
         streamBridge.send(OUT_CANCELED_RIDE_CHANNEL, message);
 
@@ -139,6 +142,8 @@ public class RideServiceImpl implements RideService {
 
         RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+
+        driverClient.updateAvailability(driverId, Collections.singletonMap("isAvailable", false));
 
         Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
         streamBridge.send(OUT_ACCEPTED_RIDE_CHANNEL, message);
