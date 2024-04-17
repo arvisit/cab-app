@@ -33,6 +33,9 @@ public class CabAppErrorDecoder implements ErrorDecoder {
         if (message.status() == 404) {
             throw new EntityNotFoundException(message.message());
         }
+        if (message.status() == 409) {
+            throw new IllegalStateException(message.message());
+        }
 
         return defaultErrorDecoder.decode(methodKey, response);
     }
