@@ -16,6 +16,16 @@ spring:
       pageable:
         max-page-size: 50
 
+  cloud:
+    stream:
+      function:
+        definition: notifyDriversAboutNewRide
+      bindings:
+        notifyDriversAboutNewRide-in-0:
+          destination: newRideTopic
+          content-type: application/json
+          group: newRideDriversNotifing
+
 logging:
   level:
     root: info
