@@ -17,9 +17,9 @@ spring:
         max-page-size: 50
 
   cloud:
+    function:
+      definition: notifyDriversAboutNewRide;notifyAboutRideCancellation
     stream:
-      function:
-        definition: notifyDriversAboutNewRide;notifyAboutRideCancellation
       bindings:
         notifyDriversAboutNewRide-in-0:
           destination: newRideTopic
