@@ -21,7 +21,7 @@ spring:
       okhttp:
         enabled: true
     function:
-      definition: notifyDriversAboutNewRide;notifyAboutRideCancellation
+      definition: notifyDriversAboutNewRide;notifyAboutRideCancellation;notifyAboutRideFinished
     stream:
       bindings:
         notifyDriversAboutNewRide-in-0:
@@ -30,6 +30,10 @@ spring:
           group: drivers
         notifyAboutRideCancellation-in-0:
           destination: canceledRideTopic
+          content-type: application/json
+          group: drivers
+        notifyAboutRideFinished-in-0:
+          destination: finishedRideTopic
           content-type: application/json
           group: drivers
       kafka:

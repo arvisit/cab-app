@@ -40,6 +40,9 @@ spring:
         outCanceledRide:
           destination: canceledRideTopic
           content-type: application/json
+        outFinishRide:
+          destination: finishedRideTopic
+          content-type: application/json
       kafka:
         binder:
           brokers: localhost:29092

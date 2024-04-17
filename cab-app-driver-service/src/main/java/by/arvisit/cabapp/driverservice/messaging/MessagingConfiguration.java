@@ -71,4 +71,13 @@ public class MessagingConfiguration {
             driverService.updateAvailability(ride.driverId(), true);
         };
     }
+
+    @Bean
+    Consumer<RideResponseDto> notifyAboutRideFinished() {
+        return ride -> {
+            log.info("Consumer received message about ride finished: {}", ride);
+
+            driverService.updateAvailability(ride.driverId(), true);
+        };
+    }
 }
