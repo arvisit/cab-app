@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RideServiceImpl implements RideService {
 
+    private static final String OUT_CANCELED_RIDE_CHANNEL = "outCanceledRide";
     private static final String OUT_ACCEPTED_RIDE_CHANNEL = "outAcceptedRide";
     private static final String OUT_NEW_RIDE_CHANNEL = "outNewRide";
     private static final String OUT_CREATE_CARD_PAYMENT_CHANNEL = "outCreateCardPayment";
@@ -107,8 +108,14 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(newStatus);
         ride.setCancelRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        return rideMapper.fromEntityToResponseDto(
+        
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+        
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_CANCELED_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional
