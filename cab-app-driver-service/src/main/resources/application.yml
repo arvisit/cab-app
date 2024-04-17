@@ -19,12 +19,16 @@ spring:
   cloud:
     stream:
       function:
-        definition: notifyDriversAboutNewRide
+        definition: notifyDriversAboutNewRide;notifyAboutRideCancellation
       bindings:
         notifyDriversAboutNewRide-in-0:
           destination: newRideTopic
           content-type: application/json
           group: newRideDriversNotifing
+        notifyAboutRideCancellation-in-0:
+          destination: canceledRideTopic
+          content-type: application/json
+          group: drivers
 
 logging:
   level:

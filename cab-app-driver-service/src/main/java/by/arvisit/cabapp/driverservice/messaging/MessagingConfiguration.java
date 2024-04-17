@@ -58,4 +58,11 @@ public class MessagingConfiguration {
             }
         };
     }
+
+    @Bean
+    Consumer<RideResponseDto> notifyAboutRideCancellation() {
+        return ride -> {
+            log.info("Consumer received message about ride cancellation: {}", ride);
+        };
+    }
 }
