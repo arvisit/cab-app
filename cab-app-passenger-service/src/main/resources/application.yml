@@ -13,9 +13,9 @@ spring:
       fail-on-unknown-properties: true
 
   cloud:
+    function:
+      definition: notifyAboutRideAcceptance
     stream:
-      function:
-        definition: notifyAboutRideAcceptance
       bindings:
         notifyAboutRideAcceptance-in-0:
           destination: acceptedRideTopic
