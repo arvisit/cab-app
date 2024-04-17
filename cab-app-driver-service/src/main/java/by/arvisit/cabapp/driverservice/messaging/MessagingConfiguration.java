@@ -55,6 +55,8 @@ public class MessagingConfiguration {
             } catch (InterruptedException e) {
                 log.error(e.getMessage());
                 Thread.currentThread().interrupt();
+            } catch (IllegalStateException e) {
+                log.warn(e.getMessage());
             }
         };
     }
