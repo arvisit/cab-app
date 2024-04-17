@@ -1,6 +1,7 @@
 package by.arvisit.cabapp.driverservice.messaging;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Pageable;
 
-import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 import by.arvisit.cabapp.driverservice.client.RideClient;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
@@ -38,10 +38,11 @@ public class MessagingConfiguration {
             try {
                 TimeUnit.SECONDS.sleep(SLEEP_BEFORE_DRIVER_SELECTION);
 
-                ListContainerResponseDto<DriverResponseDto> availableDrivers = driverService
-                        .getAvailableDrivers(Pageable.ofSize(10));
+                List<DriverResponseDto> availableDrivers = driverService
+                        .getAvailableDrivers(Pageable.ofSize(10))
+                        .values();
 
-                if (availableDrivers.values().isEmpty()) {
+                if (availableDrivers.isEmpty()) {
 
                     String errorMessage = messageSource.getMessage(
                             NO_AVAILABLE_DRIVERS_MESSAGE_TEMPLATE,
@@ -49,8 +50,7 @@ public class MessagingConfiguration {
                     throw new IllegalStateException(errorMessage);
                 }
 
-                DriverResponseDto selectedDriver = availableDrivers.values()
-                        .get(RANDOM.nextInt(0, availableDrivers.values().size()));
+                DriverResponseDto selectedDriver = availableDrivers.get(RANDOM.nextInt(0, availableDrivers.size()));
                 rideClient.acceptRide(newRide.id(), Collections.singletonMap("driverId", selectedDriver.id()));
             } catch (InterruptedException e) {
                 log.error(e.getMessage());
