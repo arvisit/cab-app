@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -47,6 +48,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RideServiceImpl implements RideService {
 
+    private static final String OUT_FINISH_RIDE_CHANNEL = "outFinishRide";
+    private static final Map<String, Boolean> SET_NOT_AVAILABLE_PATCH = Collections.singletonMap("isAvailable", false);
     private static final String OUT_CANCELED_RIDE_CHANNEL = "outCanceledRide";
     private static final String OUT_ACCEPTED_RIDE_CHANNEL = "outAcceptedRide";
     private static final String OUT_NEW_RIDE_CHANNEL = "outNewRide";
@@ -143,7 +146,7 @@ public class RideServiceImpl implements RideService {
         RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
 
-        driverClient.updateAvailability(driverId, Collections.singletonMap("isAvailable", false));
+        driverClient.updateAvailability(driverId, SET_NOT_AVAILABLE_PATCH);
 
         Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
         streamBridge.send(OUT_ACCEPTED_RIDE_CHANNEL, message);
@@ -249,8 +252,14 @@ public class RideServiceImpl implements RideService {
         ride.setIsPaid(true);
         ride.setStatus(RideStatusEnum.FINISHED);
         ride.setFinishRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        return rideMapper.fromEntityToResponseDto(
+
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_FINISH_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional
