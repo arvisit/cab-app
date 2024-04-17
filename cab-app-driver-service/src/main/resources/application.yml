@@ -24,7 +24,7 @@ spring:
         notifyDriversAboutNewRide-in-0:
           destination: newRideTopic
           content-type: application/json
-          group: newRideDriversNotifing
+          group: drivers
         notifyAboutRideCancellation-in-0:
           destination: canceledRideTopic
           content-type: application/json
