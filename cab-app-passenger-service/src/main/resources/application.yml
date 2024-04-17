@@ -12,6 +12,16 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 
+  cloud:
+    stream:
+      function:
+        definition: notifyAboutRideAcceptance
+      bindings:
+        notifyAboutRideAcceptance-in-0:
+          destination: acceptedRideTopic
+          content-type: application/json
+          group: passengers
+
 logging:
   level:
     root: info
