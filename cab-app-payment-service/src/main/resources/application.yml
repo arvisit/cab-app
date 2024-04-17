@@ -15,6 +15,22 @@ spring:
     web:
       pageable:
         max-page-size: 50
+  
+  cloud:
+    stream:
+      function:
+        definition: createPayment
+      bindings:
+        createPayment-in-0:
+          destination: passengerPayCardTopic
+          content-type: application/json
+          group: passengerPayCardCreating
+        outCardPaymentCreated:
+          destination: cardPaymentCreatedTopic
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:29092
 
 logging:
   level:
