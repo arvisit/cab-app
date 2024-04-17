@@ -10,20 +10,6 @@ spring:
       uri: http://localhost:${DRIVER_SERVICE_PORT}/api/v1/drivers
     cab-app-payment-service:
       uri: http://localhost:${PAYMENT_SERVICE_PORT}/api/v1/passenger-payments
-  cloud:
-    stream:
-      function:
-        definition: confirmCardPayment
-      bindings:
-        outPayment:
-          destination: passengerPayCardTopic
-          content-type: application/json
-        confirmCardPayment-in-0:
-          destination: confirmPayCardTopic
-          content-type: application/json
-      kafka:
-        binder:
-          brokers: localhost:29092
 
 logging:
   level:

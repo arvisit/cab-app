@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
+    private static final String OUT_CARD_PAYMENT_CREATED_CHANNEL = "outCardPaymentCreated";
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment.id.EntityNotFoundException.template";
 
     private final PassengerPaymentRepository passengerPaymentRepository;
@@ -64,7 +65,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
         if (newPayment.getPaymentMethod() == PaymentMethodEnum.BANK_CARD) {
             Message<PassengerPaymentResponseDto> message = MessageBuilder.withPayload(paymentToSend).build();
-            streamBridge.send("outPayment", message); // TODO channel to constants, and change its name
+            streamBridge.send(OUT_CARD_PAYMENT_CREATED_CHANNEL, message);
         }
 
         return paymentToSend;

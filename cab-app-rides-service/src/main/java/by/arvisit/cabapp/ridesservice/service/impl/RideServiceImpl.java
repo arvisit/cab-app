@@ -44,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RideServiceImpl implements RideService {
 
+    private static final String OUT_CREATE_CARD_PAYMENT_CHANNEL = "outCreateCardPayment";
     private static final String PAYMENT_NOT_SUCCESS_STATUS_MESSAGE_TEMPLATE = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.isPaid.IllegalStateException.template";
     private static final String SUCCESS_STATUS = "SUCCESS";
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.id.EntityNotFoundException.template";
@@ -171,7 +172,7 @@ public class RideServiceImpl implements RideService {
                     passenger.cardNumber());
 
             Message<PassengerPaymentRequestDto> message = MessageBuilder.withPayload(payment).build();
-            streamBridge.send("outPayment", message); // TODO topic to constants
+            streamBridge.send(OUT_CREATE_CARD_PAYMENT_CHANNEL, message);
         }
 
         return rideMapper.fromEntityToResponseDto(
