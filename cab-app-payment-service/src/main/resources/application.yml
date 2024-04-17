@@ -17,9 +17,9 @@ spring:
         max-page-size: 50
   
   cloud:
+    function:
+      definition: createPayment
     stream:
-      function:
-        definition: createPayment
       bindings:
         createPayment-in-0:
           destination: passengerPayCardTopic

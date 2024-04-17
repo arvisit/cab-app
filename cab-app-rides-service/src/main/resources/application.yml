@@ -17,9 +17,9 @@ spring:
         max-page-size: 50
 
   cloud:
+    function:
+      definition: confirmCardPayment
     stream:
-      function:
-        definition: confirmCardPayment
       bindings:
         outCreateCardPayment:
           destination: passengerPayCardTopic
