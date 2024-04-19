@@ -52,7 +52,6 @@ public class MessagingConfiguration {
 
                 DriverResponseDto selectedDriver = availableDrivers.get(RANDOM.nextInt(0, availableDrivers.size()));
                 rideClient.acceptRide(newRide.id(), Collections.singletonMap("driverId", selectedDriver.id()));
-                driverService.updateAvailability(newRide.driverId(), false);
 
             } catch (InterruptedException e) {
                 log.error(e.getMessage());
