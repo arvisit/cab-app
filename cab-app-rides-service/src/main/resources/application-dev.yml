@@ -12,6 +12,7 @@ spring:
       uri: http://localhost:${PAYMENT_SERVICE_PORT}/api/v1/passenger-payments
 
 logging:
+  config: classpath:logback-dev.xml
   level:
     '[by.arvisit.cabapp]': debug
     '[org.springframework.security]': debug

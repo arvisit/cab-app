@@ -12,6 +12,7 @@ spring:
       uri: http://localhost:${RIDES_SERVICE_PORT}/api/v1/rides
 
 logging:
+  config: classpath:logback-dev.xml
   level:
     '[by.arvisit.cabapp]': debug
     '[org.springframework.security]': debug
