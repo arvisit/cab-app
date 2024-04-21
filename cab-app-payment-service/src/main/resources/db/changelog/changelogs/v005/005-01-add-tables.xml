@@ -53,7 +53,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="card_number" type="varchar(16)">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="status" type="varchar(20)">
                 <constraints nullable="false"/>

@@ -49,7 +49,7 @@ public class DriverPayment {
     @Enumerated(EnumType.STRING)
     private OperationTypeEnum operation;
 
-    @Column(name = "card_number", length = 16)
+    @Column(name = "card_number", length = 16, nullable = false)
     private String cardNumber;
 
     @Column(name = "status", length = 20, nullable = false)
