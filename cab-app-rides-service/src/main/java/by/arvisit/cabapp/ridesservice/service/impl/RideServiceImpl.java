@@ -184,7 +184,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.END_RIDE;
 
-        rideVerifier.verifyBeginRide(ride);
+        rideVerifier.verifyEndRide(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
