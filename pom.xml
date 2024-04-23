@@ -12,5 +12,6 @@
         <module>cab-app-exception-handling-starter</module>
         <module>cab-app-driver-service</module>
         <module>cab-app-rides-service</module>
+        <module>cab-app-payment-service</module>
     </modules>
 </project>

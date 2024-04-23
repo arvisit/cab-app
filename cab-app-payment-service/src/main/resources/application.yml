@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/changelog/changelog.xml
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  data:
+    web:
+      pageable:
+        max-page-size: 50
+
+logging:
+  level:
+    root: info
+    liquibase: error
+
+exception:
+  handling:
+    include: true
