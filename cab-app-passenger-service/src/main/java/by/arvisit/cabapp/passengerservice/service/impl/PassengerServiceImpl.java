@@ -1,14 +1,17 @@
 package by.arvisit.cabapp.passengerservice.service.impl;
 
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
-import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.mapper.PassengerMapper;
@@ -34,15 +37,19 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
-        log.debug("Call for PassengerService.getPassengers()");
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers(Pageable pageable) {
+        log.debug("Call for PassengerService.getPassengers() with pageable settings: {}", pageable);
 
-        List<PassengerResponseDto> passengers = passengerRepository.findAll().stream()
+        List<PassengerResponseDto> passengers = passengerRepository.findAll(pageable).stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();
 
         return ListContainerResponseDto.<PassengerResponseDto>builder()
                 .withValues(passengers)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(passengerRepository.count(), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 
