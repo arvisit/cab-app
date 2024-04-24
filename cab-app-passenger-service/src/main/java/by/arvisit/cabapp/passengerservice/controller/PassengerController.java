@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.passengerservice.controller;
 
+import java.util.Map;
+
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -76,8 +79,9 @@ public class PassengerController {
 
     @GetMapping
     public ListContainerResponseDto<PassengerResponseDto> getPassengers(
-            @PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable);
+            @PageableDefault @Nullable @Valid Pageable pageable, @RequestParam Map<String, String> requestParams) {
+        log.debug("Get all passengers according to request parameters: {}", requestParams);
+        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable, requestParams);
 
         log.debug("Got all passengers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;
