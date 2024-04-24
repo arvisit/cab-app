@@ -87,7 +87,7 @@ public class DriverController {
 
     @GetMapping
     public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable,
-            @RequestParam Map<String, String> requestParams) {
+            @RequestParam @Nullable Map<String, String> requestParams) {
         log.debug("Get all drivers according to request parameters: {}", requestParams);
         ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable, requestParams);
 
