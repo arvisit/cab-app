@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -210,8 +211,10 @@ public class RideController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable);
+    public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable Map<String, String> requestParams) {
+        log.debug("Get all rides according to request parameters: {}", requestParams);
+        ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable, requestParams);
 
         log.debug("Got all rides. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;

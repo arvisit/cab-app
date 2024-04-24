@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.ridesservice.service;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Pageable;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -34,7 +36,7 @@ public interface RideService {
 
     RideResponseDto getRideById(String id);
 
-    ListContainerResponseDto<RideResponseDto> getRides(Pageable pageable);
+    ListContainerResponseDto<RideResponseDto> getRides(Pageable pageable, Map<String, String> params);
 
     ListContainerResponseDto<RideResponseDto> getRidesByPassengerId(String id, Pageable pageable);
 
