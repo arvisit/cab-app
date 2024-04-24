@@ -37,6 +37,7 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
     private final MessageSource messageSource;
+    private final PassengerSpecs passengerSpecs;
 
     @Transactional(readOnly = true)
     @Override
@@ -44,7 +45,7 @@ public class PassengerServiceImpl implements PassengerService {
         log.debug("Call for PassengerService.getPassengers() with pageable settings: {} and request parametes: {}",
                 pageable, params);
 
-        Specification<Passenger> spec = PassengerSpecs.getAllByFilter(params);
+        Specification<Passenger> spec = passengerSpecs.getAllByFilter(params);
         List<PassengerResponseDto> passengers = passengerRepository.findAll(spec, pageable).stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();

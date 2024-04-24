@@ -4,16 +4,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 
+@Component
 public class PassengerSpecs {
 
     private static final Set<String> VALID_PARAM_NAMES = Set.of("name", "email");
 
-    public static Specification<Passenger> getAllByFilter(Map<String, String> filterParams) {
+    public Specification<Passenger> getAllByFilter(Map<String, String> filterParams) {
         return (root, query, criteriaBuilder) -> {
             CriteriaBuilder cb = criteriaBuilder;
             Predicate spec = cb.conjunction();
@@ -31,7 +33,7 @@ public class PassengerSpecs {
         };
     }
 
-    private static String toLikePattern(String str) {
+    private String toLikePattern(String str) {
         return "%" + str.toLowerCase() + "%";
     }
 
