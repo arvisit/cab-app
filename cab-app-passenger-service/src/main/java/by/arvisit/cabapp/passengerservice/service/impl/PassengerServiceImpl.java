@@ -3,10 +3,12 @@ package by.arvisit.cabapp.passengerservice.service.impl;
 import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.mapper.PassengerMapper;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
+import by.arvisit.cabapp.passengerservice.persistence.util.PassengerSpecs;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -37,10 +40,12 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<PassengerResponseDto> getPassengers(Pageable pageable) {
-        log.debug("Call for PassengerService.getPassengers() with pageable settings: {}", pageable);
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers(Pageable pageable, Map<String, String> params) {
+        log.debug("Call for PassengerService.getPassengers() with pageable settings: {} and request parametes: {}",
+                pageable, params);
 
-        List<PassengerResponseDto> passengers = passengerRepository.findAll(pageable).stream()
+        Specification<Passenger> spec = PassengerSpecs.getAllByFilter(params);
+        List<PassengerResponseDto> passengers = passengerRepository.findAll(spec, pageable).stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();
 
@@ -48,7 +53,7 @@ public class PassengerServiceImpl implements PassengerService {
                 .withValues(passengers)
                 .withCurrentPage(pageable.getPageNumber())
                 .withSize(pageable.getPageSize())
-                .withLastPage(getLastPageNumber(passengerRepository.count(), pageable.getPageSize()))
+                .withLastPage(getLastPageNumber(passengerRepository.count(spec), pageable.getPageSize()))
                 .withSort(pageable.getSort().toString())
                 .build();
     }
