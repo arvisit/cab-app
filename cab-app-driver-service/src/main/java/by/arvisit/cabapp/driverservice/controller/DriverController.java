@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -85,8 +86,10 @@ public class DriverController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable);
+    public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam Map<String, String> requestParams) {
+        log.debug("Get all drivers according to request parameters: {}", requestParams);
+        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable, requestParams);
 
         log.debug("Got all drivers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;
