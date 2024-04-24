@@ -3,10 +3,12 @@ package by.arvisit.cabapp.driverservice.service.impl;
 import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.mapper.DriverMapper;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
 import by.arvisit.cabapp.driverservice.persistence.repository.DriverRepository;
+import by.arvisit.cabapp.driverservice.persistence.util.DriverSpecs;
 import by.arvisit.cabapp.driverservice.service.DriverService;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -34,13 +37,16 @@ public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
     private final MessageSource messageSource;
+    private final DriverSpecs driverSpecs;
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<DriverResponseDto> getDrivers(Pageable pageable) {
-        log.debug("Call for DriverService.getDrivers() with pageable settings: {}", pageable);
+    public ListContainerResponseDto<DriverResponseDto> getDrivers(Pageable pageable, Map<String, String> params) {
+        log.debug("Call for DriverService.getDrivers() with pageable settings: {} and request parameters: {}", pageable,
+                params);
 
-        List<DriverResponseDto> drivers = driverRepository.findAll(pageable).stream()
+        Specification<Driver> spec = driverSpecs.getAllByFilter(params);
+        List<DriverResponseDto> drivers = driverRepository.findAll(spec, pageable).stream()
                 .map(driverMapper::fromEntityToResponseDto)
                 .toList();
 
@@ -48,7 +54,7 @@ public class DriverServiceImpl implements DriverService {
                 .withValues(drivers)
                 .withCurrentPage(pageable.getPageNumber())
                 .withSize(pageable.getPageSize())
-                .withLastPage(getLastPageNumber(driverRepository.count(), pageable.getPageSize()))
+                .withLastPage(getLastPageNumber(driverRepository.count(spec), pageable.getPageSize()))
                 .withSort(pageable.getSort().toString())
                 .build();
     }
