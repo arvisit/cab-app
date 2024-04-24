@@ -79,9 +79,11 @@ public class PassengerController {
 
     @GetMapping
     public ListContainerResponseDto<PassengerResponseDto> getPassengers(
-            @PageableDefault @Nullable @Valid Pageable pageable, @RequestParam Map<String, String> requestParams) {
+            @PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable Map<String, String> requestParams) {
         log.debug("Get all passengers according to request parameters: {}", requestParams);
-        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable, requestParams);
+        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable,
+                requestParams);
 
         log.debug("Got all passengers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;
