@@ -1,7 +1,8 @@
-package by.arvisit.cabapp.driverservice.validation;
+package by.arvisit.cabapp.common.validation.provider;
 
 import java.util.Map;
 
+import by.arvisit.cabapp.common.validation.MapContainsKey;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

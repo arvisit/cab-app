@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.MapContainsKey;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
 import by.arvisit.cabapp.ridesservice.service.RatingService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
 import by.arvisit.cabapp.ridesservice.util.AppConstants;
-import by.arvisit.cabapp.ridesservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
