@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.ridesservice.validation;
+package by.arvisit.cabapp.common.validation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -8,7 +8,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import by.arvisit.cabapp.ridesservice.validation.provider.MapContainsKeyValidator;
+import by.arvisit.cabapp.common.validation.provider.MapContainsKeyValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -20,7 +20,7 @@ public @interface MapContainsKey {
 
     String value();
 
-    String message() default "{by.arvisit.cabapp.ridesservice.validation.MapContainsKey.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.MapContainsKey.message}";
 
     Class<?>[] groups() default {};
 
