@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import by.arvisit.cabapp.common.util.ValidationRegexp;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -25,8 +26,7 @@ import lombok.Setter;
 @Component
 public class RideSpecs {
 
-    private static final String DATE_AS_FILTER_PARAM_VALIDATION_REGEXP = "[0-9]{4}(-(0[1-9]|1[0-2]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[1-9]|1[0-9]|2[0-3]))?";
-    private static final Pattern DATE_AS_FILTER_PARAM_PATTERN = Pattern.compile(DATE_AS_FILTER_PARAM_VALIDATION_REGEXP);
+    private static final Pattern DATE_AS_FILTER_PARAM_PATTERN = Pattern.compile(ValidationRegexp.DATE_AS_FILTER_PARAM_VALIDATION_REGEXP);
     private static final Set<String> VALID_LIKE_STRING_PARAM_NAMES = Set.of("startAddress", "destinationAddress");
     private static final Set<String> VALID_EQUAL_STRING_PARAM_NAMES = Set.of("status", "paymentMethod");
     private static final Set<String> VALID_EQUAL_UUID_PARAM_NAMES = Set.of("passengerId", "driverId");
