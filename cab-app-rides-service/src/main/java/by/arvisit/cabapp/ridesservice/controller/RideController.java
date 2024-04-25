@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
 import by.arvisit.cabapp.common.validation.MapContainsKey;
+import by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
@@ -219,7 +220,9 @@ public class RideController {
                     keys = { "page", "size", "sort", "startAddress, destinationAddress, status, paymentMethod",
                             "passengerId", "driverId", "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
                             "finishRide" },
-                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE) Map<String, @NotBlank String> requestParams) {
+                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
+            @MapContainsParseableUUIDValues(
+                    keys = { "passengerId", "driverId" }) Map<String, @NotBlank String> requestParams) {
         log.debug("Get all rides according to request parameters: {}", requestParams);
         ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable, requestParams);
 
