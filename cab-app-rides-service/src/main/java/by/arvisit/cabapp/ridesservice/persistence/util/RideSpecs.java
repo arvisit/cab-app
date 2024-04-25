@@ -8,6 +8,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +27,9 @@ public class RideSpecs {
 
     private static final String DATE_AS_FILTER_PARAM_VALIDATION_REGEXP = "[0-9]{4}(-(0[1-9]|1[0-2]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[1-9]|1[0-9]|2[0-3]))?";
     private static final Pattern DATE_AS_FILTER_PARAM_PATTERN = Pattern.compile(DATE_AS_FILTER_PARAM_VALIDATION_REGEXP);
-    private static final Set<String> VALID_STRING_PARAM_NAMES = Set.of("passengerId", "driverId", "status",
-            "paymentMethod", "startAddress", "destinationAddress");
+    private static final Set<String> VALID_LIKE_STRING_PARAM_NAMES = Set.of("startAddress", "destinationAddress");
+    private static final Set<String> VALID_EQUAL_STRING_PARAM_NAMES = Set.of("status", "paymentMethod");
+    private static final Set<String> VALID_EQUAL_UUID_PARAM_NAMES = Set.of("passengerId", "driverId");
     private static final Set<String> VALID_DATE_PARAM_NAMES = Set.of("bookRide", "cancelRide", "acceptRide",
             "beginRide", "endRide", "finishRide");
 
@@ -43,9 +45,15 @@ public class RideSpecs {
             for (Map.Entry<String, String> param : filterParams.entrySet()) {
                 String paramKey = param.getKey();
                 String paramValue = param.getValue();
-                if (VALID_STRING_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
+                if (VALID_LIKE_STRING_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
                     String likePattern = toLikePattern(paramValue);
                     spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
+                }
+                if (VALID_EQUAL_STRING_PARAM_NAMES.contains(paramKey) && !paramValue.isEmpty()) {
+                    spec = cb.and(spec, cb.equal(root.get(paramKey), paramValue));
+                }
+                if (VALID_EQUAL_UUID_PARAM_NAMES.contains(paramKey) && !paramValue.isEmpty()) { // TODO Check for UUID
+                    spec = cb.and(spec, cb.equal(root.get(paramKey), UUID.fromString(paramValue)));
                 }
                 if (VALID_DATE_PARAM_NAMES.contains(paramKey) && isParseableDate(paramValue)) {
                     DateRange dateRange = parseToDateRange(paramValue);
