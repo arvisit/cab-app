@@ -24,7 +24,8 @@ import lombok.Setter;
 @Component
 public class RideSpecs {
 
-    private static final String DATE_AS_FILTER_PARAM_REGEXP = "[0-9]{4}(-(0[1-9]|1[0-2]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[1-9]|1[0-9]|2[0-3]))?";
+    private static final String DATE_AS_FILTER_PARAM_VALIDATION_REGEXP = "[0-9]{4}(-(0[1-9]|1[0-2]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1]))?(-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[1-9]|1[0-9]|2[0-3]))?";
+    private static final Pattern DATE_AS_FILTER_PARAM_PATTERN = Pattern.compile(DATE_AS_FILTER_PARAM_VALIDATION_REGEXP);
     private static final Set<String> VALID_STRING_PARAM_NAMES = Set.of("passengerId", "driverId", "status",
             "paymentMethod", "startAddress", "destinationAddress");
     private static final Set<String> VALID_DATE_PARAM_NAMES = Set.of("bookRide", "cancelRide", "acceptRide",
@@ -61,7 +62,7 @@ public class RideSpecs {
     }
 
     private boolean isParseableDate(String str) {
-        Pattern pattern = Pattern.compile(DATE_AS_FILTER_PARAM_REGEXP);
+        Pattern pattern = DATE_AS_FILTER_PARAM_PATTERN;
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
     }
