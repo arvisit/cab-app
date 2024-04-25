@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.paymentservice.service;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Pageable;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -12,6 +14,6 @@ public interface PassengerPaymentService {
 
     PassengerPaymentResponseDto getPaymentById(String id);
 
-    ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(Pageable pageable);
+    ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(Pageable pageable, Map<String, String> params);
 
 }
