@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PassengerController {
 
+    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.passengerservice.controller.PassengerController.requestParams.MapContainsAllowedKeys.message}";
     private final PassengerService passengerService;
 
     @PostMapping
@@ -80,7 +83,12 @@ public class PassengerController {
     @GetMapping
     public ListContainerResponseDto<PassengerResponseDto> getPassengers(
             @PageableDefault @Nullable @Valid Pageable pageable,
-            @RequestParam @Nullable Map<String, String> requestParams) {
+            @RequestParam @Nullable
+            @MapContainsAllowedKeys(
+                    keys = { "page", "size", "sort", "name", "email" },
+                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
+            Map<String, @NotBlank String> requestParams) {
+
         log.debug("Get all passengers according to request parameters: {}", requestParams);
         ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable,
                 requestParams);
