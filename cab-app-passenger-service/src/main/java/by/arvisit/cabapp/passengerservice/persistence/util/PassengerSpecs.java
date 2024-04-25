@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import by.arvisit.cabapp.common.util.SpecUtil;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -24,7 +25,7 @@ public class PassengerSpecs {
                     String paramKey = param.getKey();
                     String paramValue = param.getValue();
                     if (VALID_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
-                        String likePattern = toLikePattern(paramValue);
+                        String likePattern = SpecUtil.toLikePattern(paramValue);
                         spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
                     }
                 }
@@ -32,9 +33,4 @@ public class PassengerSpecs {
             return spec;
         };
     }
-
-    private String toLikePattern(String str) {
-        return "%" + str.toLowerCase() + "%";
-    }
-
 }
