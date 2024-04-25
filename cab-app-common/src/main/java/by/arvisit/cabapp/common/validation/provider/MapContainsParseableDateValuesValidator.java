@@ -25,7 +25,7 @@ public class MapContainsParseableDateValuesValidator
         if (value == null) {
             return true;
         }
-        Pattern pattern = Pattern.compile(ValidationRegexp.DATE_AS_FILTER_PARAM_VALIDATION_REGEXP);
+        Pattern pattern = ValidationRegexp.DATE_AS_FILTER_PARAM_VALIDATION_COMPILED;
         for (String key : targetKeys) {
             if (value.containsKey(key)) {
                 Matcher matcher = pattern.matcher(value.get(key));
