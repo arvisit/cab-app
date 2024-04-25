@@ -218,7 +218,7 @@ public class RideController {
     public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
             @MapContainsAllowedKeys(
-                    keys = { "page", "size", "sort", "startAddress, destinationAddress, status, paymentMethod",
+                    keys = { "page", "size", "sort", "startAddress", "destinationAddress", "status", "paymentMethod",
                             "passengerId", "driverId", "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
                             "finishRide" },
                     message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
