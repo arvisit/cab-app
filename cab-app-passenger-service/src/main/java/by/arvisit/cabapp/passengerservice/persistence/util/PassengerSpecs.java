@@ -24,7 +24,7 @@ public class PassengerSpecs {
                 for (Map.Entry<String, String> param : filterParams.entrySet()) {
                     String paramKey = param.getKey();
                     String paramValue = param.getValue();
-                    if (VALID_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
+                    if (VALID_PARAM_NAMES.contains(paramKey)) {
                         String likePattern = SpecUtil.toLikePattern(paramValue);
                         spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
                     }

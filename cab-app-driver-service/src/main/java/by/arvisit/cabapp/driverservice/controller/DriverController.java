@@ -20,13 +20,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
 import by.arvisit.cabapp.common.validation.MapContainsKey;
+import by.arvisit.cabapp.common.validation.MapContainsParseableBooleanValues;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.service.DriverService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DriverController {
 
     private static final String IS_AVAILABLE_KEY = "isAvailable";
+    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.driverservice.controller.DriverController.requestParams.MapContainsAllowedKeys.message}";
     private static final String PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.NotNull.message}";
     private static final String PATCH_VALIDATION_SIZE_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.Size.message}";
     private static final String PATCH_VALIDATION_AVAILABILITY_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.isAvailable.NotNull.message}";
@@ -87,7 +91,14 @@ public class DriverController {
 
     @GetMapping
     public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable,
-            @RequestParam @Nullable Map<String, String> requestParams) {
+            @RequestParam @Nullable
+            @MapContainsAllowedKeys(
+                    keys = { "page", "size", "sort", "name", "email", "isAvailable", "carManufacturerName" },
+                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
+            @MapContainsParseableBooleanValues(
+                    keys = { "isAvailable" })
+            Map<String, @NotBlank String> requestParams) {
+
         log.debug("Get all drivers according to request parameters: {}", requestParams);
         ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable, requestParams);
 

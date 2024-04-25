@@ -31,7 +31,7 @@ public class DriverSpecs {
             }
 
             String carManufacturerNameValue = filterParams.get(CAR_MANUFACTURER_NAME_PARAM_NAME);
-            if (carManufacturerNameValue != null && !carManufacturerNameValue.trim().isEmpty()) {
+            if (carManufacturerNameValue != null) {
                 spec = cb.and(spec, getAllByCarManufacturerName(carManufacturerNameValue)
                         .toPredicate(root, query, criteriaBuilder));
             }
@@ -39,12 +39,12 @@ public class DriverSpecs {
             for (Map.Entry<String, String> param : filterParams.entrySet()) {
                 String paramKey = param.getKey();
                 String paramValue = param.getValue();
-                if (VALID_DIRECT_STRING_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
+                if (VALID_DIRECT_STRING_PARAM_NAMES.contains(paramKey)) {
                     String likePattern = SpecUtil.toLikePattern(paramValue);
                     spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
                 }
-                if (VALID_DIRECT_BOOLEAN_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
-                    Boolean parsedValue = Boolean.valueOf(paramValue);
+                if (VALID_DIRECT_BOOLEAN_PARAM_NAMES.contains(paramKey)) {
+                    Boolean parsedValue = SpecUtil.fromString(paramValue);
                     spec = cb.and(spec, cb.equal(root.get(paramKey), parsedValue));
                 }
             }
