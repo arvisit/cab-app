@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import by.arvisit.cabapp.common.util.DateRange;
+import by.arvisit.cabapp.common.util.SpecUtil;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -34,7 +35,7 @@ public class RideSpecs {
                 String paramKey = param.getKey();
                 String paramValue = param.getValue();
                 if (VALID_LIKE_STRING_PARAM_NAMES.contains(paramKey)) {
-                    String likePattern = toLikePattern(paramValue);
+                    String likePattern = SpecUtil.toLikePattern(paramValue);
                     spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
                 }
                 if (VALID_EQUAL_STRING_PARAM_NAMES.contains(paramKey)) {
@@ -51,9 +52,5 @@ public class RideSpecs {
             }
             return spec;
         };
-    }
-
-    private String toLikePattern(String str) {
-        return "%" + str.toLowerCase() + "%";
     }
 }

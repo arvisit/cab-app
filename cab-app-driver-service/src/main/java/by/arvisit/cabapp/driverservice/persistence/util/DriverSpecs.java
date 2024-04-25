@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import by.arvisit.cabapp.common.util.SpecUtil;
 import by.arvisit.cabapp.driverservice.persistence.model.Car;
 import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
@@ -39,7 +40,7 @@ public class DriverSpecs {
                 String paramKey = param.getKey();
                 String paramValue = param.getValue();
                 if (VALID_DIRECT_STRING_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
-                    String likePattern = toLikePattern(paramValue);
+                    String likePattern = SpecUtil.toLikePattern(paramValue);
                     spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
                 }
                 if (VALID_DIRECT_BOOLEAN_PARAM_NAMES.contains(paramKey) && !paramValue.trim().isEmpty()) {
@@ -56,13 +57,8 @@ public class DriverSpecs {
             CriteriaBuilder cb = criteriaBuilder;
             Join<Driver, Car> joinCar = root.join("car");
             Join<Car, CarManufacturer> joinCarManufacturer = joinCar.join("manufacturer");
-            String likePattern = toLikePattern(carManufacturerName);
+            String likePattern = SpecUtil.toLikePattern(carManufacturerName);
             return cb.like(cb.lower(joinCarManufacturer.get("name")), likePattern);
         };
     }
-
-    private String toLikePattern(String str) {
-        return "%" + str.toLowerCase() + "%";
-    }
-
 }
