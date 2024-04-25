@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.paymentservice.service;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Pageable;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
@@ -13,7 +15,7 @@ public interface DriverPaymentService {
 
     DriverPaymentResponseDto getPaymentById(String id);
 
-    ListContainerResponseDto<DriverPaymentResponseDto> getPayments(Pageable pageable);
+    ListContainerResponseDto<DriverPaymentResponseDto> getPayments(Pageable pageable, Map<String, String> params);
 
     DriverAccountBalanceResponseDto getDriverAccountBalance(String id);
 }

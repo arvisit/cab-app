@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.paymentservice.controller;
 
+import java.util.Map;
+
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -11,15 +13,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
+import by.arvisit.cabapp.common.validation.MapContainsParseableDateValues;
+import by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.service.DriverPaymentService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DriverPaymentController {
 
+    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.paymentservice.controller.DriverPaymentController.requestParams.MapContainsAllowedKeys.message}";
     private final DriverPaymentService driverPaymentService;
 
     @PostMapping
@@ -50,8 +58,19 @@ public class DriverPaymentController {
 
     @GetMapping
     public ListContainerResponseDto<DriverPaymentResponseDto> getPayments(
-            @PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<DriverPaymentResponseDto> response = driverPaymentService.getPayments(pageable);
+            @PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable
+            @MapContainsAllowedKeys(
+                    keys = { "page", "size", "sort", "status", "operation", "driverId", "timestamp" },
+                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
+            @MapContainsParseableUUIDValues(
+                    keys = { "driverId" })
+            @MapContainsParseableDateValues(
+                    keys = { "timestamp" }) Map<String, @NotBlank String> requestParams) {
+
+        log.debug("Get all driver payments according to request parameters: {}", requestParams);
+        ListContainerResponseDto<DriverPaymentResponseDto> response = driverPaymentService.getPayments(pageable,
+                requestParams);
 
         log.debug("Got all driver payments. Total count: {}. Pageable settings: {}", response.values().size(),
                 pageable);
