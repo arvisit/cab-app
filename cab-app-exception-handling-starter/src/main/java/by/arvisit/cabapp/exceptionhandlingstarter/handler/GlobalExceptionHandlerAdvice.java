@@ -137,7 +137,7 @@ public class GlobalExceptionHandlerAdvice {
                 .forEach(error -> {
                     String fieldName = error.getField();
                     String errorMessage = error.getDefaultMessage();
-                    errors.put(fieldName, errorMessage);
+                    errors.put(errorMessage, fieldName);
                 });
         return MultiExceptionResponse.builder()
                 .withStatus(HttpStatus.BAD_REQUEST.value())
