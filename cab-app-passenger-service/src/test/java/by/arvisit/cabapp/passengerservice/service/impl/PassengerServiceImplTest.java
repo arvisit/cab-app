@@ -2,6 +2,7 @@ package by.arvisit.cabapp.passengerservice.service.impl;
 
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_EMAIL;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_ID_STRING;
+import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_PAGEABLE_SIZE;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.NEW_NAME;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.NEW_EMAIL;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getPassenger;
@@ -59,7 +60,7 @@ class PassengerServiceImplTest {
         PassengerResponseDto passengerResponseDto = getPassengerResponseDto().build();
         Passenger passenger = getPassenger().build();
 
-        Pageable pageable = Pageable.ofSize(1);
+        Pageable pageable = Pageable.ofSize(DEFAULT_PAGEABLE_SIZE);
         List<Passenger> passengers = List.of(passenger);
         Page<Passenger> passengersPage = new PageImpl<>(passengers);
         Specification<Passenger> spec = (root, query, cb) -> cb.conjunction();
@@ -74,7 +75,7 @@ class PassengerServiceImplTest {
                 .thenReturn(1L);
 
         assertThat(passengerService.getPassengers(pageable, any()))
-                .isEqualTo(getPassengerResponseDtoInListContainer());
+                .isEqualTo(getPassengerResponseDtoInListContainer().build());
     }
 
     @Test
