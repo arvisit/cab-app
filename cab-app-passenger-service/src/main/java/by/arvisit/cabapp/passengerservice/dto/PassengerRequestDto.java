@@ -14,6 +14,7 @@ public record PassengerRequestDto(
         @Size(max = 100, message = "{by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto.name.Size.message}")
         String name,
         @NotBlank(message = "{by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto.email.NotBlank.message}")
+        @Size(max = 100, message = "{by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto.email.Size.message}")
         @Email(message = "{by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto.email.Email.message}")
         String email,
         @Pattern(regexp = CARD_NUMBER,
