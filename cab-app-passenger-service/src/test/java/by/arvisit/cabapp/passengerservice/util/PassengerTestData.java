@@ -1,13 +1,16 @@
 package by.arvisit.cabapp.passengerservice.util;
 
+import java.util.List;
 import java.util.UUID;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 
 public final class PassengerTestData {
 
+    private static final String UNSORTED = "UNSORTED";
     public static final String DEFAULT_CARD_NUMBER = "7853471929691513";
     public static final String NEW_CARD_NUMBER = "1111222233334444";
     public static final String DEFAULT_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
@@ -43,5 +46,15 @@ public final class PassengerTestData {
                 .withName(DEFAULT_NAME)
                 .withEmail(DEFAULT_EMAIL)
                 .withCardNumber(DEFAULT_CARD_NUMBER);
+    }
+
+    public static ListContainerResponseDto<PassengerResponseDto> getPassengerResponseDtoInListContainer() {
+        return ListContainerResponseDto.<PassengerResponseDto>builder()
+                .withValues(List.of(getPassengerResponseDto().build()))
+                .withCurrentPage(0)
+                .withSize(1)
+                .withLastPage(0)
+                .withSort(UNSORTED)
+                .build();
     }
 }
