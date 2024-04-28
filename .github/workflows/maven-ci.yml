@@ -41,7 +41,7 @@ jobs:
                 break
             fi
         done
-        if [[ $flag -eq 1 ]]; then
+        if [[ "$flag" -eq 1 ]]; then
             mvn test
         else
             for i in $INNER_DEPENDENCIES; do
@@ -64,7 +64,7 @@ jobs:
                 break
             fi
         done
-        if [[ $flag -eq 1 ]]; then
+        if [[ "$flag" -eq 1 ]]; then
             mvn verify
         else
             for i in $INNER_DEPENDENCIES; do
@@ -87,7 +87,7 @@ jobs:
                 break
             fi
         done
-        if [[ $flag -eq 1 ]]; then
+        if [[ "$flag" -eq 1 ]]; then
             mvn verify
         else
             for i in $INNER_DEPENDENCIES; do
