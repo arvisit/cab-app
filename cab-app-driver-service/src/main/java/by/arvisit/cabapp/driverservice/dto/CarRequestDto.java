@@ -16,6 +16,7 @@ public record CarRequestDto(
         @NotNull(message = "{by.arvisit.cabapp.driverservice.dto.CarRequestDto.colorId.NotNull.message}")
         @IsColorExistById
         Integer colorId,
+        @NotNull(message = "{by.arvisit.cabapp.driverservice.dto.CarRequestDto.registrationNumber.NotNull.message}")
         @Pattern(regexp = CAR_REGISTRATION_NUMBER_BY,
             message = "{by.arvisit.cabapp.driverservice.dto.CarRequestDto.registrationNumber.Pattern.message}")
         String registrationNumber) {
