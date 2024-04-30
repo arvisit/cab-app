@@ -16,8 +16,10 @@ public record DriverRequestDto(
         @Size(max = 100, message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.name.Size.message}")
         String name,
         @NotBlank(message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.email.NotBlank.message}")
+        @Size(max = 100, message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.email.Size.message}")
         @Email(message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.email.Email.message}")
         String email,
+        @NotNull(message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.cardNumber.NotNull.message}")
         @Pattern(regexp = CARD_NUMBER,
             message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.cardNumber.Pattern.message}")
         String cardNumber,
