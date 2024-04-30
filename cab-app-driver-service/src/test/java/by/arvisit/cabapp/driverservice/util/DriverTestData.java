@@ -36,6 +36,21 @@ public final class DriverTestData {
     public static final String UNSORTED = "UNSORTED";
     public static final String NEW_DRIVER_NAME = "John Doe";
     public static final String NEW_DRIVER_EMAIL = "john.doe@mail.com";
+    public static final String ENCODING_UTF_8 = "UTF-8";
+    public static final String URL_COLORS = "/api/v1/colors";
+    public static final String URL_CAR_MANUFACTURERS = "/api/v1/car-manufacturers";
+    public static final String URL_CARS = "/api/v1/cars";
+    public static final String URL_CARS_ID_TEMPLATE = "/api/v1/cars/{id}";
+    public static final String URL_DRIVERS = "/api/v1/drivers";
+    public static final String URL_AVAILABLE_DRIVERS = "/api/v1/drivers/available";
+    public static final String URL_DRIVERS_ID_TEMPLATE = "/api/v1/drivers/{id}";
+    public static final String URL_DRIVERS_ID_AVAILABILITY_TEMPLATE = "/api/v1/drivers/{id}/availability";
+    public static final String URL_DRIVERS_EMAIL_TEMPLATE = "/api/v1/drivers/by-email/{email}";
+    public static final String URL_DRIVERS_PARAM_VALUE_TEMPLATE = "/api/v1/drivers?{param}={value}";
+    public static final String NOT_ALLOWED_REQUEST_PARAM = "driverId";
+    public static final String NAME_REQUEST_PARAM = "name";
+    public static final String IS_AVAILABLE_REQUEST_PARAM = "isAvailable";
+    public static final String IS_AVAILABLE_KEY = "isAvailable";
 
     private DriverTestData() {
     }
