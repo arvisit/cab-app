@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DriverController {
 
     private static final String IS_AVAILABLE_KEY = "isAvailable";
-    private static final String PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.NotNull.message}";
+    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.driverservice.controller.DriverController.requestParams.MapContainsAllowedKeys.message}";
     private static final String PATCH_VALIDATION_SIZE_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.Size.message}";
     private static final String PATCH_VALIDATION_AVAILABILITY_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.driverservice.controller.DriverController.patch.isAvailable.NotNull.message}";
     private final DriverService driverService;
@@ -115,7 +115,6 @@ public class DriverController {
     @PatchMapping("/{id}/availability")
     public DriverResponseDto updateAvailability(@PathVariable @UUID String id,
             @RequestBody
-            @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
             @MapContainsKey(IS_AVAILABLE_KEY)
             @Size(min = 1, max = 1, message = PATCH_VALIDATION_SIZE_MESSAGE_KEY) Map<String, @NotNull(
