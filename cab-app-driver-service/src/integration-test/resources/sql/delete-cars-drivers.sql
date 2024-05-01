@@ -1,0 +1,2 @@
+DELETE FROM drivers;
+DELETE FROM cars;
