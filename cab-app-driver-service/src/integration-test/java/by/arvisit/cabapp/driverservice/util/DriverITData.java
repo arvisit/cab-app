@@ -37,12 +37,12 @@ public final class DriverITData {
     public static final String JANE_DOE_CAR_ID_STRING = "fd937a51-12ea-47aa-bb1a-68289a50111c";
 
     public static final String JOHN_DOE_EMAIL = "john.doe@mail.com";
+    public static final boolean JOHN_DOE_IS_AVAILABLE = false;
 
     public static final String NEW_DRIVER_NAME = "Jack Black";
     public static final String NEW_DRIVER_EMAIL = "jack.black@mail.com";
     public static final String NEW_DRIVER_CARD_NUMBER = "0000111122223333";
 
-    
     public static final int NEW_CAR_MANUFACTURER_ID = 1;
     public static final int NEW_CAR_COLOR_ID = 1;
     public static final String NEW_CAR_REGISTRATION_NUMBER = "0000AA-1";
@@ -73,7 +73,7 @@ public final class DriverITData {
                 .withEmail(NEW_DRIVER_EMAIL)
                 .withCardNumber(NEW_DRIVER_CARD_NUMBER)
                 .withCar(getNewCarResponse().build())
-                .withIsAvailable(true);
+                .withIsAvailable(false);
     }
 
     public static CarResponseDto.CarResponseDtoBuilder getNewCarResponse() {
@@ -99,7 +99,7 @@ public final class DriverITData {
                 .withEmail(NEW_DRIVER_EMAIL)
                 .withCardNumber(NEW_DRIVER_CARD_NUMBER)
                 .withCar(getNewCarResponse().build())
-                .withIsAvailable(true);
+                .withIsAvailable(JOHN_DOE_IS_AVAILABLE);
     }
 
     public static DriverResponseDto.DriverResponseDtoBuilder getJohnnyDoe() {
@@ -127,7 +127,7 @@ public final class DriverITData {
                 .withEmail("john.doe@mail.com")
                 .withCardNumber("3917881684449050")
                 .withCar(getJohnDoeCar().build())
-                .withIsAvailable(false);
+                .withIsAvailable(JOHN_DOE_IS_AVAILABLE);
     }
 
     public static CarResponseDto.CarResponseDtoBuilder getJohnDoeCar() {
@@ -145,13 +145,13 @@ public final class DriverITData {
                 .withEmail("janny.doe@yahoo.com.br")
                 .withCardNumber("9239176603428452")
                 .withCar(getJannyDoeCar().build())
-                .withIsAvailable(false);
+                .withIsAvailable(true);
     }
 
     public static CarResponseDto.CarResponseDtoBuilder getJannyDoeCar() {
         return CarResponseDto.builder()
                 .withId(JANNY_DOE_CAR_ID_STRING)
-                .withManufacturer(CAR_MANUFACTURERS.get(7 - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(8 - SHIFT))
                 .withColor(COLORS.get(1 - SHIFT))
                 .withRegistrationNumber("E472XH-5");
     }
@@ -174,8 +174,9 @@ public final class DriverITData {
                 .withRegistrationNumber("E391MP-4");
     }
 
-    public static ListContainerResponseDto.ListContainerResponseDtoBuilder<DriverResponseDto> getListContainerForDrivers() {
-        return ListContainerResponseDto.<DriverResponseDto>builder()
+    public static <T> ListContainerResponseDto.ListContainerResponseDtoBuilder<T> getListContainerForResponse(
+            Class<T> clazz) {
+        return ListContainerResponseDto.<T>builder()
                 .withValues(Collections.emptyList())
                 .withCurrentPage(0)
                 .withSize(DEFAULT_PAGEABLE_SIZE)
