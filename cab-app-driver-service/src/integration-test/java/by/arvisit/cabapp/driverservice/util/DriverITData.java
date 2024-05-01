@@ -42,6 +42,9 @@ public final class DriverITData {
     public static final String NEW_DRIVER_EMAIL = "jack.black@mail.com";
     public static final String NEW_DRIVER_CARD_NUMBER = "0000111122223333";
 
+    
+    public static final int NEW_CAR_MANUFACTURER_ID = 1;
+    public static final int NEW_CAR_COLOR_ID = 1;
     public static final String NEW_CAR_REGISTRATION_NUMBER = "0000AA-1";
 
     public static final int DEFAULT_PAGEABLE_SIZE = 10;
@@ -58,8 +61,8 @@ public final class DriverITData {
 
     public static CarRequestDto.CarRequestDtoBuilder getNewCarRequest() {
         return CarRequestDto.builder()
-                .withColorId(1 - SHIFT)
-                .withManufacturerId(1 - SHIFT)
+                .withColorId(NEW_CAR_COLOR_ID)
+                .withManufacturerId(NEW_CAR_MANUFACTURER_ID)
                 .withRegistrationNumber(NEW_CAR_REGISTRATION_NUMBER);
     }
 
@@ -76,8 +79,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getNewCarResponse() {
         return CarResponseDto.builder()
                 .withId(null)
-                .withColor(COLORS.get(1))
-                .withManufacturer(CAR_MANUFACTURERS.get(1))
+                .withColor(COLORS.get(NEW_CAR_COLOR_ID - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(NEW_CAR_MANUFACTURER_ID - SHIFT))
                 .withRegistrationNumber(NEW_CAR_REGISTRATION_NUMBER);
     }
 
