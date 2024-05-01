@@ -1,7 +1,7 @@
 package by.arvisit.cabapp.driverservice.util;
 
-import static by.arvisit.cabapp.driverservice.util.CarManufacturerITData.CAR_MANUFACTURER_RESPONSE_DTOS;
-import static by.arvisit.cabapp.driverservice.util.ColorITData.COLOR_RESPONSE_DTOS;
+import static by.arvisit.cabapp.driverservice.util.CarManufacturerITData.CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.ColorITData.COLORS;
 
 import java.util.Collections;
 
@@ -76,8 +76,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getNewCarResponse() {
         return CarResponseDto.builder()
                 .withId(null)
-                .withColor(COLOR_RESPONSE_DTOS.get(1))
-                .withManufacturer(CAR_MANUFACTURER_RESPONSE_DTOS.get(1))
+                .withColor(COLORS.get(1))
+                .withManufacturer(CAR_MANUFACTURERS.get(1))
                 .withRegistrationNumber(NEW_CAR_REGISTRATION_NUMBER);
     }
 
@@ -112,8 +112,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getJohnnyDoeCar() {
         return CarResponseDto.builder()
                 .withId(JOHNNY_DOE_CAR_ID_STRING)
-                .withManufacturer(CAR_MANUFACTURER_RESPONSE_DTOS.get(9 - SHIFT))
-                .withColor(COLOR_RESPONSE_DTOS.get(7 - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(9 - SHIFT))
+                .withColor(COLORS.get(7 - SHIFT))
                 .withRegistrationNumber("E070CC-4");
     }
 
@@ -130,8 +130,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getJohnDoeCar() {
         return CarResponseDto.builder()
                 .withId(JOHN_DOE_CAR_ID_STRING)
-                .withManufacturer(CAR_MANUFACTURER_RESPONSE_DTOS.get(1 - SHIFT))
-                .withColor(COLOR_RESPONSE_DTOS.get(2 - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(1 - SHIFT))
+                .withColor(COLORS.get(2 - SHIFT))
                 .withRegistrationNumber("E635TO-6");
     }
 
@@ -148,8 +148,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getJannyDoeCar() {
         return CarResponseDto.builder()
                 .withId(JANNY_DOE_CAR_ID_STRING)
-                .withManufacturer(CAR_MANUFACTURER_RESPONSE_DTOS.get(7 - SHIFT))
-                .withColor(COLOR_RESPONSE_DTOS.get(1 - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(7 - SHIFT))
+                .withColor(COLORS.get(1 - SHIFT))
                 .withRegistrationNumber("E472XH-5");
     }
 
@@ -166,8 +166,8 @@ public final class DriverITData {
     public static CarResponseDto.CarResponseDtoBuilder getJaneDoeCar() {
         return CarResponseDto.builder()
                 .withId(JANE_DOE_CAR_ID_STRING)
-                .withManufacturer(CAR_MANUFACTURER_RESPONSE_DTOS.get(3 - SHIFT))
-                .withColor(COLOR_RESPONSE_DTOS.get(2 - SHIFT))
+                .withManufacturer(CAR_MANUFACTURERS.get(3 - SHIFT))
+                .withColor(COLORS.get(2 - SHIFT))
                 .withRegistrationNumber("E391MP-4");
     }
 
