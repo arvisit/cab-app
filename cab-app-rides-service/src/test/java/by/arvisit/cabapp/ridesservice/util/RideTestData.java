@@ -67,6 +67,7 @@ public final class RideTestData {
     public static final String PROMO_CODE_NEW_KEYWORD = "NEWPROMO";
     public static final int DEFAULT_PAGEABLE_SIZE = 10;
     public static final String UNSORTED = "UNSORTED";
+    public static final String INVALID_PAYMENT_METHOD = "DIAMONDS";
     public static final String DEFAULT_PASSENGER_CARD_NUMBER = "7853471929691513";
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
