@@ -72,6 +72,7 @@ public final class RideTestData {
     public static final String DEFAULT_PASSENGER_CARD_NUMBER = "7853471929691513";
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
+    public static final String ENCODING_UTF_8 = "UTF-8";
     
     public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
     public static final String DEFAULT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
