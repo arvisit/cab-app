@@ -89,7 +89,7 @@ class RideVerifier {
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.FINISHED;
 
-        if (currentStatus != RideStatusEnum.END_RIDE && currentStatus != RideStatusEnum.FINISHED && !ride.getIsPaid()) {
+        if ((currentStatus != RideStatusEnum.END_RIDE || !ride.getIsPaid()) && currentStatus != RideStatusEnum.FINISHED ) {
             throwExceptionForIllegalStatusChange(ride, newStatus);
         }
     }
