@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
@@ -71,6 +72,12 @@ public final class RideTestData {
     public static final String DEFAULT_PASSENGER_CARD_NUMBER = "7853471929691513";
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
+    
+    public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
+    public static final String DEFAULT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
+    public static final String DEFAULT_DRIVER_NAME = "Jeremias Olsen";
+    public static final boolean DEFAULT_DRIVER_IS_AVAILABLE = true;
+    public static final String ANOTHER_DRIVER_ID_STRING = "a3575427-0f96-4725-b280-609a11fcd0ab";
 
     public static final String URL_PROMO_CODES = "/api/v1/promo-codes";
     public static final String URL_PROMO_CODES_ACTIVE = "/api/v1/promo-codes/active";
@@ -126,6 +133,29 @@ public final class RideTestData {
                 .withPaymentMethod(RIDE_DEFAULT_PAYMENT_METHOD_STRING)
                 .withStartAddress(RIDE_DEFAULT_START_ADDRESS)
                 .withDestinationAddress(RIDE_DEFAULT_DESTINATION_ADDRESS);
+    }
+    
+    public static Ride.RideBuilder getRideToSave() {
+        return Ride.builder()
+                .withPassengerId(RIDE_DEFAULT_PASSENGER_ID_UUID)
+                .withPaymentMethod(RIDE_DEFAULT_PAYMENT_METHOD_ENUM)
+                .withStartAddress(RIDE_DEFAULT_START_ADDRESS)
+                .withDestinationAddress(RIDE_DEFAULT_DESTINATION_ADDRESS)
+                .withId(null)
+                .withDriverId(null)
+                .withInitialCost(null)
+                .withFinalCost(null)
+                .withIsPaid(null)
+                .withStatus(null)
+                .withPromoCode(null)
+                .withPassengerScore(null)
+                .withDriverScore(null)
+                .withBookRide(null)
+                .withCancelRide(null)
+                .withAcceptRide(null)
+                .withBeginRide(null)
+                .withEndRide(null)
+                .withFinishRide(null);
     }
 
     public static Ride.RideBuilder getBookedRide() {
@@ -586,6 +616,15 @@ public final class RideTestData {
                 .withName(DEFAULT_PASSENGER_NAME)
                 .withEmail(DEFAULT_PASSENGER_EMAIL)
                 .withCardNumber(DEFAULT_PASSENGER_CARD_NUMBER);
+    }
+    
+    public static DriverResponseDto.DriverResponseDtoBuilder getDriverResponseDto() {
+        return DriverResponseDto.builder()
+                .withIsAvailable(DEFAULT_DRIVER_IS_AVAILABLE)
+                .withId(RIDE_DEFAULT_DRIVER_ID_STRING)
+                .withName(DEFAULT_DRIVER_NAME)
+                .withEmail(DEFAULT_DRIVER_EMAIL)
+                .withCardNumber(DEFAULT_DRIVER_CARD_NUMBER);
     }
 
     public static ListContainerResponseDto.ListContainerResponseDtoBuilder<PromoCodeResponseDto> getPromoCodeResponseDtoInListContainer() {
