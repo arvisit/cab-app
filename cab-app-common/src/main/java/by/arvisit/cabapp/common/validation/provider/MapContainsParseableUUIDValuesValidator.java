@@ -25,7 +25,9 @@ public class MapContainsParseableUUIDValuesValidator implements ConstraintValida
         for (String key : targetKeys) {
             if (value.containsKey(key)) {
                 try {
-                    UUID.fromString(value.get(key));
+                    String valueForKey = value.get(key);
+                    UUID possibleUUID = UUID.fromString(valueForKey);
+                    return possibleUUID.toString().equals(valueForKey);
                 } catch (IllegalArgumentException e) {
                     return false;
                 }
