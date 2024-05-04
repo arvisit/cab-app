@@ -102,6 +102,17 @@ public final class RideTestData {
     public static final String URL_RIDES_PASSENGER_ID_TEMPLATE = "/api/v1/rides/passengers/{id}";
     public static final String URL_RIDES_DRIVER_ID_TEMPLATE = "/api/v1/rides/drivers/{id}";
     public static final String URL_RIDES_PARAM_VALUE_TEMPLATE = "/api/v1/rides?{param}={value}";
+    
+    public static final String DRIVER_ID_KEY = "driverId";
+    public static final String PROMO_CODE_KEYWORD_KEY = "promoCodeKeyword";
+    public static final String PAYMENT_METHOD_KEY = "paymentMethod";
+    public static final String DRIVER_SCORE_KEY = "driverScore";
+    public static final String PASSENGER_SCORE_KEY = "passengerScore";
+    
+    public static final String NOT_ALLOWED_REQUEST_PARAM = "noSuchParam";
+    public static final String DRIVER_ID_REQUEST_PARAM = "driverId";
+    public static final String BOOK_RIDE_REQUEST_PARAM = "bookRide";
+    
 
     private RideTestData() {
     }
