@@ -56,6 +56,7 @@ public class RideController {
     private static final String PATCH_VALIDATION_SCORE_MAX_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.score.Max.message}";
     private static final String PATCH_VALIDATION_SCORE_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.score.NotNull.message}";
     private static final String PATCH_VALIDATION_KEYWORD_NOT_BLANK_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.keyword.NotBlank.message}";
+    private static final String PATCH_VALIDATION_DRIVER_ID_NOT_BLANK_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.driverId.NotBlank.message}";
     private static final String PATCH_VALIDATION_PAYMENT_METHOD_NOT_BLANK_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.paymentMethod.NotBlank.message}";
     private static final String PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.NotNull.message}";
     private static final String PATCH_SIZE_VALIDATION_MESSAGE_KEY = "{by.arvisit.cabapp.ridesservice.controller.RideController.patch.Size.message}";
@@ -84,7 +85,8 @@ public class RideController {
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
             @Valid
             @MapContainsKey(DRIVER_ID_KEY)
-            @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @UUID String> patch) {
+            @Size(min = 1, max = 1, message = PATCH_SIZE_VALIDATION_MESSAGE_KEY) Map<String, @UUID @NotBlank(
+                    message = PATCH_VALIDATION_DRIVER_ID_NOT_BLANK_MESSAGE_KEY) String> patch) {
 
         String driverId = patch.get(DRIVER_ID_KEY);
 
