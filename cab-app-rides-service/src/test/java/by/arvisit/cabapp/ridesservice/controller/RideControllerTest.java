@@ -466,7 +466,7 @@ class RideControllerTest {
 
         @Test
         void shouldReturn200_whenValidInput() throws Exception {
-            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_ID_STRING);
+            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_DRIVER_ID_STRING);
 
             mockMvc.perform(patch(URL_RIDES_ID_ACCEPT_TEMPLATE, RIDE_DEFAULT_ID_STRING)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -479,7 +479,7 @@ class RideControllerTest {
         @ParameterizedTest
         @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
-            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_ID_STRING);
+            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_DRIVER_ID_STRING);
 
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -510,7 +510,7 @@ class RideControllerTest {
 
         @Test
         void shouldReturn404_whenNonExistingRideIdOrDriverId() throws Exception {
-            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_ID_STRING);
+            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_DRIVER_ID_STRING);
 
             when(rideService.acceptRide(anyString(), anyString()))
                     .thenThrow(EntityNotFoundException.class);
@@ -525,7 +525,7 @@ class RideControllerTest {
 
         @Test
         void shouldMapToBusinessModel_whenValidInput() throws Exception {
-            String existingDriverId = RIDE_DEFAULT_ID_STRING;
+            String existingDriverId = RIDE_DEFAULT_DRIVER_ID_STRING;
             Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, existingDriverId);
             RideResponseDto responseDto = getAcceptedRideResponseDto().build();
 
@@ -554,7 +554,7 @@ class RideControllerTest {
 
         @Test
         void shouldReturnValidRide_whenValidInput() throws Exception {
-            String existingDriverId = RIDE_DEFAULT_ID_STRING;
+            String existingDriverId = RIDE_DEFAULT_DRIVER_ID_STRING;
             Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, existingDriverId);
             RideResponseDto responseDto = getAcceptedRideResponseDto().build();
 
@@ -592,7 +592,7 @@ class RideControllerTest {
 
         @Test
         void shouldReturn400_whenMoreThanOneKeyValuePairMapInBody() throws Exception {
-            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_ID_STRING,
+            Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_DRIVER_ID_STRING,
                     PROMO_CODE_KEYWORD_KEY, PROMO_CODE_DEFAULT_KEYWORD);
 
             String expectedContent = MORE_THAN_ONE_KEY_VALUE_PAIR_MESSAGE;
