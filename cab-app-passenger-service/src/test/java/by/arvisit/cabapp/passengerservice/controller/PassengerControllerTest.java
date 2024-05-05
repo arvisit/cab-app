@@ -265,7 +265,7 @@ class PassengerControllerTest {
         }
 
         @Test
-        void shouldReturn400_whenEmailInUse() throws Exception {
+        void shouldReturn409_whenEmailInUse() throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto().build();
 
             when(passengerService.save(any(PassengerRequestDto.class)))
@@ -496,7 +496,7 @@ class PassengerControllerTest {
         }
 
         @Test
-        void shouldReturn400_whenEmailInUse() throws Exception {
+        void shouldReturn409_whenEmailInUse() throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto().build();
 
             when(passengerService.update(anyString(), any(PassengerRequestDto.class)))
