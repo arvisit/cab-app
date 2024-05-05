@@ -510,7 +510,7 @@ class DriverControllerTest {
         }
 
         @Test
-        void shouldReturn400_whenEmailInUse() throws Exception {
+        void shouldReturn409_whenEmailInUse() throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto().build();
 
             when(driverService.save(any(DriverRequestDto.class)))
@@ -969,7 +969,7 @@ class DriverControllerTest {
         }
 
         @Test
-        void shouldReturn400_whenEmailInUse() throws Exception {
+        void shouldReturn409_whenEmailInUse() throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto().build();
 
             when(driverService.update(anyString(), any(DriverRequestDto.class)))
