@@ -40,7 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -188,7 +187,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#blankStrings")
         void shouldReturn400_whenBlankName(String name) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withName(name)
@@ -233,7 +232,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#blankStrings")
         void shouldReturn400_whenBlankEmail(String email) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withEmail(email)
@@ -256,7 +255,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withEmail(email)
@@ -301,7 +300,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedCardNumbers")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedCardNumbers")
         void shouldReturn400_whenMalformedCardNumber(String cardNumber) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withCardNumber(cardNumber)
@@ -484,7 +483,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedCarRegistrationNumbers")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedCarRegistrationNumbers")
         void shouldReturn400_whenMalformedCarRegistrationNumber(String registrationNumber) throws Exception {
             CarRequestDto carRequestDto = DriverTestData.getCarRequestDto()
                     .withRegistrationNumber(registrationNumber)
@@ -550,7 +549,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto().build();
 
@@ -647,7 +646,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#blankStrings")
         void shouldReturn400_whenBlankName(String name) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withName(name)
@@ -692,7 +691,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#blankStrings")
         void shouldReturn400_whenBlankEmail(String email) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withEmail(email)
@@ -715,7 +714,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withEmail(email)
@@ -760,7 +759,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedCardNumbers")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedCardNumbers")
         void shouldReturn400_whenMalformedCardNumber(String cardNumber) throws Exception {
             DriverRequestDto requestDto = getDriverRequestDto()
                     .withCardNumber(cardNumber)
@@ -943,7 +942,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedCarRegistrationNumbers")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedCarRegistrationNumbers")
         void shouldReturn400_whenMalformedCarRegistrationNumber(String registrationNumber) throws Exception {
             CarRequestDto carRequestDto = DriverTestData.getCarRequestDto()
                     .withRegistrationNumber(registrationNumber)
@@ -1013,7 +1012,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -1054,7 +1053,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -1138,7 +1137,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             mockMvc.perform(get(URL_DRIVERS_EMAIL_TEMPLATE, email)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -1291,7 +1290,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedBooleans")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedBooleans")
         void shouldReturn400_whenNotParseableBooleanForIsAvailableRequestParam(String value) throws Exception {
             String expectedContent = UNPARSEABLE_BOOLEAN_MESSAGE;
 
@@ -1387,7 +1386,7 @@ class DriverControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.DriverControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             Map<String, Boolean> requestDto = Map.of(IS_AVAILABLE_KEY, true);
 
@@ -1533,35 +1532,5 @@ class DriverControllerTest {
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string(containsString(expectedContent)));
         }
-
-    }
-
-    static Stream<String> blankStrings() {
-        return Stream.of("", "   ", null);
-    }
-
-    static Stream<String> malformedEmails() {
-        return Stream.of("   ", "not-email", "not-email.mail.com", "not email", "not email@mail.com");
-    }
-
-    static Stream<String> malformedCardNumbers() {
-        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444");
-    }
-
-    static Stream<String> malformedCarRegistrationNumbers() {
-        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444", "A000AA-1", "0000YA-1",
-                "0000AA1", "0000AA_1", "0000AA-0", "0000AA-9", "E000YA-1", "E000AA1", "E000AA_1", "E000AA-0",
-                "E000AA-9");
-    }
-
-    static Stream<String> malformedUUIDs() {
-        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
-                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
-                "111122223333-444");
-    }
-
-    static Stream<String> malformedBooleans() {
-        return Stream.of("", "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
-                "111122223333-444", "truth", "lies", "trui", "falce");
     }
 }

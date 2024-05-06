@@ -2,6 +2,7 @@ package by.arvisit.cabapp.driverservice.util;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
@@ -164,5 +165,34 @@ public final class DriverTestData {
                 .withLastPage(0)
                 .withSort(UNSORTED)
                 .withValues(List.of(getCarResponseDto().build()));
+    }
+
+    public static Stream<String> blankStrings() {
+        return Stream.of("", "   ", null);
+    }
+
+    public static Stream<String> malformedEmails() {
+        return Stream.of("   ", "not-email", "not-email.mail.com", "not email", "not email@mail.com");
+    }
+
+    public static Stream<String> malformedCardNumbers() {
+        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444");
+    }
+
+    public static Stream<String> malformedCarRegistrationNumbers() {
+        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444", "A000AA-1", "0000YA-1",
+                "0000AA1", "0000AA_1", "0000AA-0", "0000AA-9", "E000YA-1", "E000AA1", "E000AA_1", "E000AA-0",
+                "E000AA-9");
+    }
+
+    public static Stream<String> malformedUUIDs() {
+        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
+                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
+                "111122223333-444");
+    }
+
+    public static Stream<String> malformedBooleans() {
+        return Stream.of("", "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
+                "111122223333-444", "truth", "lies", "trui", "falce");
     }
 }

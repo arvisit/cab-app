@@ -19,8 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -138,7 +136,7 @@ class CarControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.driverservice.controller.CarControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.driverservice.util.DriverTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -206,13 +204,5 @@ class CarControllerTest {
             assertThat(result)
                     .isEqualTo(responseDto);
         }
-
     }
-
-    static Stream<String> malformedUUIDs() {
-        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
-                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
-                "111122223333-444");
-    }
-
 }
