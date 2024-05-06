@@ -13,6 +13,7 @@ import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
         builder = @Builder(disableBuilder = true))
 public interface PassengerPaymentMapper {
 
+    @Mapping(target = "feeAmount", ignore = true)
     @Mapping(target = "timestamp", ignore = true)
     @Mapping(target = "status", ignore = true)
     PassengerPayment fromRequestDtoToEntity(PassengerPaymentRequestDto dto);
