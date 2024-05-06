@@ -28,8 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -143,7 +141,7 @@ class PromoCodeControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.PromoCodeControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenBlankKeyword(String keyword) throws Exception {
             PromoCodeRequestDto requestDto = getPromoCodeRequestDto()
                     .withKeyword(keyword)
@@ -353,7 +351,7 @@ class PromoCodeControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.PromoCodeControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenBlankKeyword(String keyword) throws Exception {
             PromoCodeRequestDto requestDto = getPromoCodeRequestDto()
                     .withKeyword(keyword)
@@ -805,9 +803,4 @@ class PromoCodeControllerTest {
                     .isEqualTo(responseDto);
         }
     }
-
-    static Stream<String> blankStrings() {
-        return Stream.of("", "   ", null);
-    }
-
 }

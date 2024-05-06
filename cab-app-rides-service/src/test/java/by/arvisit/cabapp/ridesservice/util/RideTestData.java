@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
@@ -655,5 +656,20 @@ public final class RideTestData {
                 .withSize(DEFAULT_PAGEABLE_SIZE)
                 .withLastPage(0)
                 .withSort(UNSORTED);
+    }
+
+    public static Stream<String> blankStrings() {
+        return Stream.of("", "   ", null);
+    }
+
+    public static Stream<String> malformedUUIDs() {
+        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
+                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
+                "111122223333-444");
+    }
+
+    public static Stream<String> malformedDates() {
+        return Stream.of("", "   ", "abc", "111122223333444a", "111122223333-444", "truth", "lies", "trui",
+                "falce", "232", "2004-18", "23-121", "2004-12-88", "2004-11-11T25", "2004-11-11 11");
     }
 }

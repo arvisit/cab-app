@@ -66,7 +66,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -210,7 +209,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedPassengerId(String id) throws Exception {
             RideRequestDto requestDto = getRideRequestDto()
                     .withPassengerId(id)
@@ -243,7 +242,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenBlankStartAddress(String startAddress) throws Exception {
             RideRequestDto requestDto = getRideRequestDto()
                     .withStartAddress(startAddress)
@@ -278,7 +277,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenBlankDestinationAddress(String destinationAddress) throws Exception {
             RideRequestDto requestDto = getRideRequestDto()
                     .withDestinationAddress(destinationAddress)
@@ -313,7 +312,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenBlankPaymentMethod(String paymentMethod) throws Exception {
             RideRequestDto requestDto = getRideRequestDto()
                     .withPaymentMethod(paymentMethod)
@@ -424,7 +423,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -477,7 +476,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, RIDE_DEFAULT_DRIVER_ID_STRING);
 
@@ -493,7 +492,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedDriverId(String id) throws Exception {
             Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, id);
 
@@ -622,7 +621,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenDriverIdValueIsBlank(String value) throws Exception {
             Map<String, String> requestDto = Collections.singletonMap(DRIVER_ID_KEY, value);
 
@@ -699,7 +698,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -797,7 +796,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -895,7 +894,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -990,7 +989,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -1043,7 +1042,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             Map<String, String> requestDto = Map.of(PROMO_CODE_KEYWORD_KEY, PROMO_CODE_DEFAULT_KEYWORD);
 
@@ -1174,7 +1173,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenPromoCodeKeywordValueIsBlank(String value) throws Exception {
             Map<String, String> requestDto = Collections.singletonMap(PROMO_CODE_KEYWORD_KEY, value);
 
@@ -1206,7 +1205,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             Map<String, String> requestDto = Map.of(PAYMENT_METHOD_KEY, RIDE_DEFAULT_PAYMENT_METHOD_STRING);
 
@@ -1350,7 +1349,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#blankStrings")
         void shouldReturn400_whenPaymentMethodValueIsBlank(String value) throws Exception {
             Map<String, String> requestDto = Collections.singletonMap(PAYMENT_METHOD_KEY, value);
 
@@ -1383,7 +1382,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             Map<String, Integer> requestDto = Map.of(DRIVER_SCORE_KEY, RIDE_DEFAULT_DRIVER_SCORE);
 
@@ -1573,7 +1572,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             Map<String, Integer> requestDto = Map.of(PASSENGER_SCORE_KEY, RIDE_DEFAULT_PASSENGER_SCORE);
 
@@ -1772,7 +1771,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedRideId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -1813,7 +1812,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -1972,7 +1971,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedDates")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedDates")
         void shouldReturn400_whenNotParseableDateForDateTypeRequestParam(String value) throws Exception {
             String expectedContent = UNPARSEABLE_DATE_MESSAGE;
 
@@ -1985,7 +1984,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenNotParseableUUIDForUUIDTypeRequestParam(String value) throws Exception {
             String expectedContent = UNPARSEABLE_UUID_MESSAGE;
 
@@ -2017,7 +2016,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -2100,7 +2099,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -2182,7 +2181,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -2272,7 +2271,7 @@ class RideControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.ridesservice.controller.RideControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.ridesservice.util.RideTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -2342,20 +2341,5 @@ class RideControllerTest {
                     .ignoringFields(TIMESTAMP_FIELDS)
                     .isEqualTo(responseDto);
         }
-    }
-
-    static Stream<String> blankStrings() {
-        return Stream.of("", "   ", null);
-    }
-
-    static Stream<String> malformedUUIDs() {
-        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
-                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
-                "111122223333-444");
-    }
-
-    static Stream<String> malformedDates() {
-        return Stream.of("", "   ", "abc", "111122223333444a", "111122223333-444", "truth", "lies", "trui",
-                "falce", "232", "2004-18", "23-121", "2004-12-88", "2004-11-11T25", "2004-11-11 11");
     }
 }
