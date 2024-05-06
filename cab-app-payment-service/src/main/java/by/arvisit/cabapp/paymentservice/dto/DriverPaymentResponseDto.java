@@ -1,6 +1,7 @@
 package by.arvisit.cabapp.paymentservice.dto;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 
 import lombok.Builder;
 
@@ -12,6 +13,6 @@ public record DriverPaymentResponseDto(
         String operation,
         String cardNumber,
         String status,
-        String timestamp) {
+        ZonedDateTime timestamp) {
 
 }
