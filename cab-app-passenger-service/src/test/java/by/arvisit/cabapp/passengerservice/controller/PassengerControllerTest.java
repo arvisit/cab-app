@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -145,7 +144,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#blankStrings")
         void shouldReturn400_whenBlankName(String name) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withName(name)
@@ -180,7 +179,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#blankStrings")
         void shouldReturn400_whenBlankEmail(String email) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withEmail(email)
@@ -198,7 +197,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withEmail(email)
@@ -233,7 +232,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedCardNumbers")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedCardNumbers")
         void shouldReturn400_whenMalformedCardNumber(String cardNumber) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withCardNumber(cardNumber)
@@ -296,7 +295,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto().build();
 
@@ -376,7 +375,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#blankStrings")
         void shouldReturn400_whenBlankName(String name) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withName(name)
@@ -411,7 +410,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#blankStrings")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#blankStrings")
         void shouldReturn400_whenBlankEmail(String email) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withEmail(email)
@@ -429,7 +428,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withEmail(email)
@@ -464,7 +463,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedCardNumbers")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedCardNumbers")
         void shouldReturn400_whenMalformedCardNumber(String cardNumber) throws Exception {
             PassengerRequestDto requestDto = getPassengerRequestDto()
                     .withCardNumber(cardNumber)
@@ -536,7 +535,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -577,7 +576,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedUUIDs")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedUUIDs")
         void shouldReturn400_whenMalformedId(String id) throws Exception {
             String expectedContent = MALFORMED_UUID_MESSAGE;
 
@@ -661,7 +660,7 @@ class PassengerControllerTest {
         }
 
         @ParameterizedTest
-        @MethodSource("by.arvisit.cabapp.passengerservice.controller.PassengerControllerTest#malformedEmails")
+        @MethodSource("by.arvisit.cabapp.passengerservice.util.PassengerTestData#malformedEmails")
         void shouldReturn400_whenMalformedEmail(String email) throws Exception {
             mockMvc.perform(get(URL_PASSENGERS_EMAIL_TEMPLATE, email)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -812,23 +811,5 @@ class PassengerControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
-    }
-
-    static Stream<String> blankStrings() {
-        return Stream.of("", "   ", null);
-    }
-
-    static Stream<String> malformedEmails() {
-        return Stream.of("   ", "not-email", "not-email.mail.com", "not email", "not email@mail.com");
-    }
-
-    static Stream<String> malformedCardNumbers() {
-        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444");
-    }
-
-    static Stream<String> malformedUUIDs() {
-        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
-                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
-                "111122223333-444");
     }
 }

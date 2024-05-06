@@ -2,6 +2,7 @@ package by.arvisit.cabapp.passengerservice.util;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
@@ -63,5 +64,23 @@ public final class PassengerTestData {
                 .withSize(DEFAULT_PAGEABLE_SIZE)
                 .withLastPage(0)
                 .withSort(UNSORTED);
+    }
+
+    public static Stream<String> blankStrings() {
+        return Stream.of("", "   ", null);
+    }
+
+    public static Stream<String> malformedEmails() {
+        return Stream.of("   ", "not-email", "not-email.mail.com", "not email", "not email@mail.com");
+    }
+
+    public static Stream<String> malformedCardNumbers() {
+        return Stream.of("", "   ", "1234", "abc", "111122223333444a", "111122223333-444");
+    }
+
+    public static Stream<String> malformedUUIDs() {
+        return Stream.of("3abcc6a1-94da-4185-1-8a11c1b8efd2", "3abcc6a1-94da-4185-aaa1-8a11c1b8efdw",
+                "3ABCC6A1-94DA-4185-AAA1-8A11C1B8EFD2", "   ", "1234", "abc", "111122223333444a",
+                "111122223333-444");
     }
 }
