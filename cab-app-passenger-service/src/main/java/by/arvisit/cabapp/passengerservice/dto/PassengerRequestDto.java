@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.passengerservice.dto;
 
-import static by.arvisit.cabapp.passengerservice.util.ValidationRegexp.CARD_NUMBER;
+import static by.arvisit.cabapp.common.util.ValidationRegexp.CARD_NUMBER;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

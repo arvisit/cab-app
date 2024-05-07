@@ -2,9 +2,9 @@ package by.arvisit.cabapp.driverservice.service;
 
 import org.springframework.data.domain.Pageable;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
-import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 
 public interface DriverService {
 

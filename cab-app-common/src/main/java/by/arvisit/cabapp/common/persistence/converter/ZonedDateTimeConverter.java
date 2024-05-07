@@ -1,9 +1,9 @@
-package by.arvisit.cabapp.ridesservice.persistence.converter;
+package by.arvisit.cabapp.common.persistence.converter;
 
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 
-import by.arvisit.cabapp.ridesservice.util.AppConstants;
+import by.arvisit.cabapp.common.util.CommonConstants;
 import jakarta.persistence.AttributeConverter;
 
 public class ZonedDateTimeConverter implements AttributeConverter<ZonedDateTime, Timestamp> {
@@ -15,7 +15,7 @@ public class ZonedDateTimeConverter implements AttributeConverter<ZonedDateTime,
 
     @Override
     public ZonedDateTime convertToEntityAttribute(Timestamp dbData) {
-        return dbData == null ? null : dbData.toLocalDateTime().atZone(AppConstants.EUROPE_MINSK_TIMEZONE);
+        return dbData == null ? null : dbData.toLocalDateTime().atZone(CommonConstants.EUROPE_MINSK_TIMEZONE);
     }
 
 }

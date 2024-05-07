@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.paymentservice.dto;
+package by.arvisit.cabapp.common.dto;
 
 import java.util.List;
 

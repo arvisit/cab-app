@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
-import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.service.CarManufacturerService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;

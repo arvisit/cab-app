@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
-import static by.arvisit.cabapp.ridesservice.util.PaginationUtil.getLastPageNumber;
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
-import by.arvisit.cabapp.ridesservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.mapper.PromoCodeMapper;

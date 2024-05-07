@@ -13,5 +13,6 @@
         <module>cab-app-driver-service</module>
         <module>cab-app-rides-service</module>
         <module>cab-app-payment-service</module>
+        <module>cab-app-common</module>
     </modules>
 </project>

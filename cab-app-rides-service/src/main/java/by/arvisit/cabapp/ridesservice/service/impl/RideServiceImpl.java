@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
-import static by.arvisit.cabapp.ridesservice.util.PaginationUtil.getLastPageNumber;
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -12,8 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
-import by.arvisit.cabapp.ridesservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
@@ -26,7 +27,6 @@ import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
 import by.arvisit.cabapp.ridesservice.service.CostService;
 import by.arvisit.cabapp.ridesservice.service.PromoCodeService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
-import by.arvisit.cabapp.ridesservice.util.AppConstants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class RideServiceImpl implements RideService {
 
         rideToSave.setInitialCost(initialCost);
         rideToSave.setFinalCost(initialCost);
-        rideToSave.setBookRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        rideToSave.setBookRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         rideToSave.setIsPaid(false);
         rideToSave.setStatus(RideStatusEnum.BOOKED);
 
@@ -83,7 +83,7 @@ public class RideServiceImpl implements RideService {
         }
 
         ride.setStatus(newStatus);
-        ride.setCancelRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        ride.setCancelRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
@@ -105,7 +105,7 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(newStatus);
         ride.setDriverId(UUID.fromString(driverId));
-        ride.setAcceptRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        ride.setAcceptRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
@@ -126,7 +126,7 @@ public class RideServiceImpl implements RideService {
         }
 
         ride.setStatus(newStatus);
-        ride.setBeginRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        ride.setBeginRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
@@ -147,7 +147,7 @@ public class RideServiceImpl implements RideService {
         }
 
         ride.setStatus(newStatus);
-        ride.setEndRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        ride.setEndRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }
@@ -168,7 +168,7 @@ public class RideServiceImpl implements RideService {
         }
 
         ride.setStatus(newStatus);
-        ride.setFinishRide(ZonedDateTime.now(AppConstants.EUROPE_MINSK_TIMEZONE));
+        ride.setFinishRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
         return rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
     }

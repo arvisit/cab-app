@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
-import by.arvisit.cabapp.driverservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.service.DriverService;
 import by.arvisit.cabapp.driverservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;

@@ -22,6 +22,7 @@
         <liquibase.username>${env.DB_USERNAME}</liquibase.username>
         <liquibase.password>${env.DB_PASSWORD}</liquibase.password>
         <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
+        <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,11 @@
             <groupId>by.arvisit</groupId>
             <artifactId>cab-app-exception-handling-starter</artifactId>
             <version>${cab-app-exception-handling-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>by.arvisit</groupId>
+            <artifactId>cab-app-common</artifactId>
+            <version>${cab-app-common.version}</version>
         </dependency>
 
         <dependency>

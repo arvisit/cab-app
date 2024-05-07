@@ -1,6 +1,6 @@
 package by.arvisit.cabapp.paymentservice.dto;
 
-import static by.arvisit.cabapp.paymentservice.util.ValidationRegexp.CARD_NUMBER;
+import static by.arvisit.cabapp.common.util.ValidationRegexp.CARD_NUMBER;
 
 import java.math.BigDecimal;
 
