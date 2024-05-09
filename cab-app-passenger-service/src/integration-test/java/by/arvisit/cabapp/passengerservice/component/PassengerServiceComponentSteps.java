@@ -5,7 +5,6 @@ import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSEN
 import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_EMAIL_TEMPLATE;
 import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_ID_TEMPLATE;
 import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getAddedPassengerResponse;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatePassengerRequest;
 import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatedPassengerResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,19 +55,19 @@ public class PassengerServiceComponentSteps {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    PassengerRequestDto saveNewPassengerRequest;
-    Response saveNewPassengerResponse;
-    PassengerRequestDto updatePassengerRequest;
-    Response updatePassengerResponse;
-    String deletePassengerId;
-    List<Passenger> passengersBeforeDelete;
-    Response deletePassengerResponse;
-    String idToGetPassengerBy;
-    Response getPassengerByIdResponse;
-    String emailToGetPassengerBy;
-    Response getPassengerByEmailResponse;
-    Response getPassengersWithNoRequestParamsResponse;
-    Response getPassengersWithNameEmailParamsResponse;
+    private PassengerRequestDto saveNewPassengerRequest;
+    private Response saveNewPassengerResponse;
+    private PassengerRequestDto updatePassengerRequest;
+    private Response updatePassengerResponse;
+    private String deletePassengerId;
+    private List<Passenger> passengersBeforeDelete;
+    private Response deletePassengerResponse;
+    private String idToGetPassengerBy;
+    private Response getPassengerByIdResponse;
+    private String emailToGetPassengerBy;
+    private Response getPassengerByEmailResponse;
+    private Response getPassengersWithNoRequestParamsResponse;
+    private Response getPassengersWithNameEmailParamsResponse;
 
     @BeforeAll
     public static void setUpDB() {
@@ -127,7 +126,7 @@ public class PassengerServiceComponentSteps {
     public void sendUpdatePassengerRequest(String id) {
         updatePassengerResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(getUpdatePassengerRequest().build())
+                .body(updatePassengerRequest)
                 .when().put(URL_PASSENGERS_ID_TEMPLATE, id);
     }
 
@@ -156,7 +155,7 @@ public class PassengerServiceComponentSteps {
 
         deletePassengerResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().delete(URL_PASSENGERS_ID_TEMPLATE, JOHN_DOE_ID_STRING);
+                .when().delete(URL_PASSENGERS_ID_TEMPLATE, deletePassengerId);
     }
 
     @Then("response should have 204 status, minus one passenger in database")
