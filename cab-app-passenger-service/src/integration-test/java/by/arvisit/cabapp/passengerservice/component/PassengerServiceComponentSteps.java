@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -26,13 +24,14 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
-import by.arvisit.cabapp.passengerservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
 import by.arvisit.cabapp.passengerservice.util.PassengerITData;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -45,7 +44,6 @@ import io.restassured.response.Response;
 @CucumberContextConfiguration
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ExtendWith(PostgreSQLTestContainerExtension.class)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
@@ -72,8 +70,13 @@ public class PassengerServiceComponentSteps {
     Response getPassengersWithNoRequestParamsResponse;
     Response getPassengersWithNameEmailParamsResponse;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    public static void setUpDB() {
+        System.setProperty("spring.datasource.url", "jdbc:tc:postgresql:15-alpine:///");
+    }
+
+    @Before
+    public void setUpPort() {
         RestAssured.port = serverPort;
     }
 
