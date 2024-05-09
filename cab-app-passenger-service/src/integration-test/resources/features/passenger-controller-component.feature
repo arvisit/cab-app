@@ -1,4 +1,4 @@
-Feature: Passenger Service Component
+Feature: Passenger Controller Component
 
   @component
   Scenario: Saving a new passenger

@@ -46,7 +46,7 @@ import io.restassured.response.Response;
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-public class PassengerServiceComponentSteps {
+public class PassengerControllerSteps {
 
     private static final String ID_FIELD = "id";
 
