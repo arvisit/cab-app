@@ -12,7 +12,7 @@ import io.cucumber.core.options.Constants;
 @SelectClasspathResource("by/arvisit/cabapp/passengerservice/component")
 @ConfigurationParameter(key = Constants.FEATURES_PROPERTY_NAME, value = "classpath:features")
 @ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "@component")
-@ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty")
+@ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-ct-reports")
 public class CucumberRunnerCT {
 
 }
