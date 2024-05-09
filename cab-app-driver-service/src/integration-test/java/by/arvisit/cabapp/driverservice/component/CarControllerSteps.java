@@ -1,0 +1,102 @@
+package by.arvisit.cabapp.driverservice.component;
+
+import static by.arvisit.cabapp.driverservice.util.DriverITData.DEFAULT_PAGEABLE_SIZE;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.UNSORTED;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.getJaneDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.getJannyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnnyDoeCar;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
+import by.arvisit.cabapp.driverservice.util.DriverITData;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+public class CarControllerSteps {
+
+    private Response getCarsWithNoRequestParamsResponse;
+    private String idToGetCarBy;
+    private Response getCarByIdResponse;
+
+    @Given("User wants to get details about existing cars")
+    public void prepareInfoForRetrievingCars() {
+    }
+
+    @When("he performs request for cars with no request parameters")
+    public void sendGetCarsWithNoRequestParamsRequest() {
+        getCarsWithNoRequestParamsResponse = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when().get(URL_CARS);
+    }
+
+    @Then("response should have 200 status, json content type, contain info about {int} cars")
+    public void checkGetCarsWithNoRequestParams(int carsCount) {
+        getCarsWithNoRequestParamsResponse.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
+        ListContainerResponseDto<CarResponseDto> actual = getCarsWithNoRequestParamsResponse
+                .as(new TypeRef<ListContainerResponseDto<CarResponseDto>>() {
+                });
+
+        ListContainerResponseDto<CarResponseDto> expected = DriverITData
+                .getListContainerForResponse(CarResponseDto.class)
+                .withValues(List.of(getJaneDoeCar().build(), getJannyDoeCar().build(), getJohnnyDoeCar().build(),
+                        getJohnDoeCar().build()))
+                .withLastPage(0)
+                .build();
+
+        assertThat(actual.currentPage())
+                .isZero();
+        assertThat(actual.lastPage())
+                .isZero();
+        assertThat(actual.size())
+                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
+        assertThat(actual.sort())
+                .isEqualTo(UNSORTED);
+
+        assertThat(actual.values())
+                .containsExactlyInAnyOrderElementsOf(expected.values());
+        assertThat(actual.values())
+                .hasSize(carsCount);
+    }
+
+    @Given("User wants to get details about an existing car with id {string}")
+    public void prepareInfoForRetrievingCarById(String id) {
+        idToGetCarBy = id;
+    }
+
+    @When("he performs search car by id via request")
+    public void sendGetCarByIdRequest() {
+        getCarByIdResponse = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when().get(URL_CARS_ID_TEMPLATE, idToGetCarBy);
+    }
+
+    @Then("response should have 200 status, json content type, contain car with requested id")
+    public void checkGetCarByIdResponse() {
+        getCarByIdResponse.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
+        CarResponseDto actual = getCarByIdResponse.as(CarResponseDto.class);
+        CarResponseDto expected = getJohnDoeCar().build();
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+    }
+}
