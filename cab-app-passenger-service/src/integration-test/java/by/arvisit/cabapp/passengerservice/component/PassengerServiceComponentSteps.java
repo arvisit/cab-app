@@ -241,6 +241,10 @@ public class PassengerServiceComponentSteps {
 
     @Then("response should have 200 status, json content type, contain info about these passengers:")
     public void checkGetPassengersWithNoRequestParams(DataTable table) {
+        getPassengersWithNoRequestParamsResponse.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
         ListContainerResponseDto<PassengerResponseDto> actual = getPassengersWithNoRequestParamsResponse
                 .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
                 });
@@ -272,6 +276,10 @@ public class PassengerServiceComponentSteps {
 
     @Then("response should have 200 status, json content type, contain info about these passengers found by name and email:")
     public void checkGetPassengersWithNameEmailRequestParams(DataTable table) {
+        getPassengersWithNameEmailParamsResponse.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
         ListContainerResponseDto<PassengerResponseDto> actual = getPassengersWithNameEmailParamsResponse
                 .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
                 });
