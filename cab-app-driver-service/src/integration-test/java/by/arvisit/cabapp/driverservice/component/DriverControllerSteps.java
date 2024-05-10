@@ -60,6 +60,7 @@ public class DriverControllerSteps {
     private String emailToGetDriverBy;
     private Response getDriverByEmailResponse;
     private Response getDriversWithNoRequestParamsResponse;
+    private Response getAvailableDriversWithNoRequestParamsResponse;
     private Response getDriversWithNameEmailParamsResponse;
 
     @Given("User wants to save a new driver with name {string}, email {string}, card number {string} and car details: color id {int}, manufacturer id {int}, registration number {string}")
@@ -312,18 +313,18 @@ public class DriverControllerSteps {
 
     @When("he performs request with no request parameters to available drivers url")
     public void sendGetAvailableDriversWithNoRequestParamsRequest() {
-        getDriversWithNoRequestParamsResponse = RestAssured.given()
+        getAvailableDriversWithNoRequestParamsResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_AVAILABLE_DRIVERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} available drivers")
     public void checkGetAvailableDriversWithNoRequestParams(int driversCount) {
-        getDriversWithNoRequestParamsResponse.then()
+        getAvailableDriversWithNoRequestParamsResponse.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<DriverResponseDto> actual = getDriversWithNoRequestParamsResponse
+        ListContainerResponseDto<DriverResponseDto> actual = getAvailableDriversWithNoRequestParamsResponse
                 .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
                 });
 
