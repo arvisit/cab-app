@@ -65,7 +65,7 @@ public class PromoCodeControllerSteps {
                 .build();
     }
 
-    @When("he performs saving via request")
+    @When("he performs saving of a new promo code via request")
     public void sendSaveNewPromoCodeRequest() {
         saveNewPromoCodeResponse = RestAssured.given()
                 .contentType(ContentType.JSON)

@@ -3,7 +3,7 @@ Feature: Promo Code Controller Component
   @component
   Scenario: Saving a new promo code
     Given User wants to save a new promo code with keyword 'PROMO' and discount percent 20
-    When he performs saving via request
+    When he performs saving of a new promo code via request
     Then response should have 201 status, json content type, contain promo code with expected parameters and id
 
   @component
