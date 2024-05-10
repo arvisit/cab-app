@@ -9,8 +9,10 @@ import org.springframework.test.context.jdbc.SqlGroup;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -25,13 +27,15 @@ import io.restassured.RestAssured;
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
-@WireMockTest(httpPort = 8480)
 public class CucumberCTConfiguration {
+
+    private static final int WIRE_MOCK_SERVER_PORT = 8480;
 
     static KafkaContainer kafkaContainer;
 
     @LocalServerPort
     private Integer serverPort;
+    private WireMockServer wireMockServer;
 
     @BeforeAll
     public static void setUpDB() {
@@ -50,4 +54,15 @@ public class CucumberCTConfiguration {
         RestAssured.port = serverPort;
     }
 
+    @Before
+    public void setUpWireMockServer() {
+        wireMockServer = new WireMockServer(WIRE_MOCK_SERVER_PORT);
+        wireMockServer.start();
+        WireMock.configureFor("localhost", WIRE_MOCK_SERVER_PORT);
+    }
+
+    @After
+    public void tearDown() {
+        wireMockServer.stop();
+    }
 }
