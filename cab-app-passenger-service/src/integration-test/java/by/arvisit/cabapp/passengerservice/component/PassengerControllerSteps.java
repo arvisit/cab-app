@@ -14,13 +14,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
@@ -29,55 +23,22 @@ import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
 import by.arvisit.cabapp.passengerservice.util.PassengerITData;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-@CucumberContextConfiguration
-@ActiveProfiles("itest")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@SqlGroup({
-        @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 public class PassengerControllerSteps {
 
     private static final String ID_FIELD = "id";
 
-    @LocalServerPort
-    private int serverPort;
     @Autowired
     private PassengerRepository passengerRepository;
 
     private PassengerRequestDto saveNewPassengerRequest;
-    private Response saveNewPassengerResponse;
-    private PassengerRequestDto updatePassengerRequest;
-    private Response updatePassengerResponse;
-    private String deletePassengerId;
-    private List<Passenger> passengersBeforeDelete;
-    private Response deletePassengerResponse;
-    private String idToGetPassengerBy;
-    private Response getPassengerByIdResponse;
-    private String emailToGetPassengerBy;
-    private Response getPassengerByEmailResponse;
-    private Response getPassengersWithNoRequestParamsResponse;
-    private Response getPassengersWithNameEmailParamsResponse;
-
-    @BeforeAll
-    public static void setUpDB() {
-        System.setProperty("spring.datasource.url", "jdbc:tc:postgresql:15-alpine:///");
-    }
-
-    @Before
-    public void setUpPort() {
-        RestAssured.port = serverPort;
-    }
 
     @Given("User wants to save a new passenger with name {string}, email {string} and card number {string}")
     public void prepareNewPassengerToSave(String name, String email, String cardNumber) {
@@ -87,6 +48,8 @@ public class PassengerControllerSteps {
                 .withCardNumber(cardNumber)
                 .build();
     }
+
+    private Response saveNewPassengerResponse;
 
     @When("he performs saving via request")
     public void sendSaveNewPassengerRequest() {
@@ -113,6 +76,8 @@ public class PassengerControllerSteps {
                 .isNotNull();
     }
 
+    private PassengerRequestDto updatePassengerRequest;
+
     @Given("User wants to update an existing passenger with new name {string}, email {string} and card number {string} values")
     public void prepareUpdateRequest(String name, String email, String cardNumber) {
         updatePassengerRequest = PassengerITData.getSavePassengerRequest()
@@ -121,6 +86,8 @@ public class PassengerControllerSteps {
                 .withCardNumber(cardNumber)
                 .build();
     }
+
+    private Response updatePassengerResponse;
 
     @When("he performs update of existing passenger with id {string} via request")
     public void sendUpdatePassengerRequest(String id) {
@@ -144,14 +111,19 @@ public class PassengerControllerSteps {
                 .isEqualTo(expected);
     }
 
+    private String deletePassengerId;
+    private List<Passenger> passengersBeforeDelete;
+
     @Given("User wants to delete an existing passenger with id {string}")
     public void prepareInfoForPassengerDelete(String id) {
         deletePassengerId = id;
+        passengersBeforeDelete = passengerRepository.findAll();
     }
+
+    private Response deletePassengerResponse;
 
     @When("he performs delete of existing passenger via request")
     public void sendDeletePassengerRequest() {
-        passengersBeforeDelete = passengerRepository.findAll();
 
         deletePassengerResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -176,10 +148,14 @@ public class PassengerControllerSteps {
                 .noneMatch(matchById);
     }
 
+    private String idToGetPassengerBy;
+
     @Given("User wants to get details about an existing passenger with id {string}")
     public void prepareInfoForRetrievingPassengerById(String id) {
         idToGetPassengerBy = id;
     }
+
+    private Response getPassengerByIdResponse;
 
     @When("he performs search passenger by id via request")
     public void sendGetPassengerByIdRequest() {
@@ -202,10 +178,14 @@ public class PassengerControllerSteps {
                 .isEqualTo(expected);
     }
 
+    private String emailToGetPassengerBy;
+
     @Given("User wants to get details about an existing passenger with email {string}")
     public void prepareInfoForRetrievingPassengerByEmail(String email) {
         emailToGetPassengerBy = email;
     }
+
+    private Response getPassengerByEmailResponse;
 
     @When("he performs search passenger by email via request")
     public void sendGetPassengerByEmailRequest() {
@@ -231,6 +211,8 @@ public class PassengerControllerSteps {
     @Given("User wants to get details about existing passengers")
     public void prepareInfoForRetrievingPassengers() {
     }
+
+    private Response getPassengersWithNoRequestParamsResponse;
 
     @When("he performs request with no request parameters")
     public void sendGetPassengersWithNoRequestParamsRequest() {
@@ -263,6 +245,8 @@ public class PassengerControllerSteps {
         assertThat(actual.values())
                 .containsExactlyInAnyOrderElementsOf(expectedPassengers);
     }
+
+    private Response getPassengersWithNameEmailParamsResponse;
 
     @When("he performs request with parameters: {string}={string} and {string}={string}")
     public void sendGetPassengersWithNameEmailRequestParamsRequest(String nameParam, String nameValue,
