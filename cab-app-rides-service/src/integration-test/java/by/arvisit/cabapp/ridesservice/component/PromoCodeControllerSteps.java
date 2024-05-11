@@ -45,17 +45,6 @@ public class PromoCodeControllerSteps {
     private PromoCodeRepository promoCodeRepository;
 
     private PromoCodeRequestDto saveNewPromoCodeRequest;
-    private Response saveNewPromoCodeResponse;
-    private PromoCodeRequestDto updatePromoCodeRequest;
-    private Response updatePromoCodeResponse;
-    private Response deactivatePromoCodeResponse;
-    private Integer deletePromoCodeId;
-    private List<PromoCode> promoCodesBeforeDelete;
-    private Response deletePromoCodeResponse;
-    private Integer idToGetPromoCodeBy;
-    private Response getPromoCodeByIdResponse;
-    private Response getPromoCodesWithNoRequestParamsResponse;
-    private Response getActivePromoCodesWithNoRequestParamsResponse;
 
     @Given("User wants to save a new promo code with keyword {string} and discount percent {int}")
     public void prepareNewPromoCodeToSave(String keyword, int discountPercent) {
@@ -64,6 +53,8 @@ public class PromoCodeControllerSteps {
                 .withDiscountPercent(discountPercent)
                 .build();
     }
+
+    private Response saveNewPromoCodeResponse;
 
     @When("he performs saving of a new promo code via request")
     public void sendSaveNewPromoCodeRequest() {
@@ -90,6 +81,8 @@ public class PromoCodeControllerSteps {
                 .isNotNull();
     }
 
+    private PromoCodeRequestDto updatePromoCodeRequest;
+
     @Given("User wants to update an existing promo code with keyword {string} and discount percent {int}")
     public void prepareUpdateRequest(String keyword, int discountPercent) {
         updatePromoCodeRequest = getNewPromoCodeRequestDto()
@@ -97,6 +90,8 @@ public class PromoCodeControllerSteps {
                 .withDiscountPercent(discountPercent)
                 .build();
     }
+
+    private Response updatePromoCodeResponse;
 
     @When("he performs update of existing promo code with id {int} via request")
     public void sendUpdatePromoCodeRequest(int id) {
@@ -127,6 +122,8 @@ public class PromoCodeControllerSteps {
     public void prepareDeactivateRequest() {
     }
 
+    private Response deactivatePromoCodeResponse;
+
     @When("he performs deactivation of existing promo code with id {int} via request")
     public void sendDeactivatePromoCodeRequest(int id) {
         deactivatePromoCodeResponse = RestAssured.given()
@@ -150,15 +147,19 @@ public class PromoCodeControllerSteps {
                 .isEqualTo(expected);
     }
 
+    private Integer deletePromoCodeId;
+    private List<PromoCode> promoCodesBeforeDelete;
+
     @Given("User wants to delete an existing promo code with id {int}")
     public void prepareInfoForPromoCodeDelete(int id) {
         deletePromoCodeId = id;
+        promoCodesBeforeDelete = promoCodeRepository.findAll();
     }
+
+    private Response deletePromoCodeResponse;
 
     @When("he performs delete of existing promo code via request")
     public void sendDeletePromoCodeRequest() {
-        promoCodesBeforeDelete = promoCodeRepository.findAll();
-
         deletePromoCodeResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().delete(URL_PROMO_CODES_ID_TEMPLATE, deletePromoCodeId);
@@ -182,10 +183,14 @@ public class PromoCodeControllerSteps {
                 .noneMatch(matchById);
     }
 
+    private Integer idToGetPromoCodeBy;
+
     @Given("User wants to get details about an existing promo code with id {int}")
     public void prepareInfoForRetrievingPromoCodeById(int id) {
         idToGetPromoCodeBy = id;
     }
+
+    private Response getPromoCodeByIdResponse;
 
     @When("he performs search promo code by id via request")
     public void sendGetPromoCodeByIdRequest() {
@@ -211,6 +216,8 @@ public class PromoCodeControllerSteps {
     @Given("User wants to get details about existing promo codes")
     public void prepareInfoForRetrievingPromoCodes() {
     }
+
+    private Response getPromoCodesWithNoRequestParamsResponse;
 
     @When("he performs request with no request parameters")
     public void sendGetPromoCodesWithNoRequestParamsRequest() {
@@ -255,6 +262,8 @@ public class PromoCodeControllerSteps {
     @Given("User wants to get details about active promo codes")
     public void prepareInfoForRetrievingAvailablePromoCodes() {
     }
+
+    private Response getActivePromoCodesWithNoRequestParamsResponse;
 
     @When("he performs request with no request parameters to active promo codes url")
     public void sendGetAvailablePromoCodesWithNoRequestParamsRequest() {
