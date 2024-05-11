@@ -27,13 +27,11 @@ import io.restassured.response.Response;
 
 public class CarControllerSteps {
 
-    private Response getCarsWithNoRequestParamsResponse;
-    private String idToGetCarBy;
-    private Response getCarByIdResponse;
-
     @Given("User wants to get details about existing cars")
     public void prepareInfoForRetrievingCars() {
     }
+
+    private Response getCarsWithNoRequestParamsResponse;
 
     @When("he performs request for cars with no request parameters")
     public void sendGetCarsWithNoRequestParamsRequest() {
@@ -74,10 +72,14 @@ public class CarControllerSteps {
                 .hasSize(carsCount);
     }
 
+    private String idToGetCarBy;
+
     @Given("User wants to get details about an existing car with id {string}")
     public void prepareInfoForRetrievingCarById(String id) {
         idToGetCarBy = id;
     }
+
+    private Response getCarByIdResponse;
 
     @When("he performs search car by id via request")
     public void sendGetCarByIdRequest() {

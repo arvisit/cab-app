@@ -21,12 +21,11 @@ import io.restassured.response.Response;
 
 public class CarManufacturerControllerSteps {
 
-    private Response getCarManufacturersWithNoRequestParamsResponse;
-    private Response getCarManufacturersWithPageRequestParamResponse;
-
     @Given("User wants to get details about existing car manufacturers")
     public void prepareInfoForRetrievingCarManufacturers() {
     }
+
+    private Response getCarManufacturersWithNoRequestParamsResponse;
 
     @When("he performs request for car manufacturers with no request parameters")
     public void sendGetCarManufacturersWithNoRequestParamsRequest() {
@@ -59,6 +58,8 @@ public class CarManufacturerControllerSteps {
         assertThat(actual.values())
                 .containsExactlyInAnyOrderElementsOf(expectedCarManufacturers);
     }
+
+    private Response getCarManufacturersWithPageRequestParamResponse;
 
     @When("he performs request for car manufacturers with request parameters: {string}={int}")
     public void sendGetCarManufacturersWithPageRequestParamRequest(String pageParam, int pageValue) {

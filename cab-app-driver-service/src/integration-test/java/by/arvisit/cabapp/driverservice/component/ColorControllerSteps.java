@@ -23,12 +23,11 @@ import io.restassured.response.Response;
 
 public class ColorControllerSteps {
 
-    private Response getColorsWithNoRequestParamsResponse;
-    private Response getColorsWithPageRequestParamResponse;
-
     @Given("User wants to get details about existing colors")
     public void prepareInfoForRetrievingColors() {
     }
+
+    private Response getColorsWithNoRequestParamsResponse;
 
     @When("he performs request for colors with no request parameters")
     public void sendGetColorsWithNoRequestParamsRequest() {
@@ -61,6 +60,8 @@ public class ColorControllerSteps {
         assertThat(actual.values())
                 .containsExactlyInAnyOrderElementsOf(expectedColors);
     }
+
+    private Response getColorsWithPageRequestParamResponse;
 
     @When("he performs request for colors with request parameters: {string}={int}")
     public void sendGetColorsWithPageRequestParamRequest(String pageParam, int pageValue) {

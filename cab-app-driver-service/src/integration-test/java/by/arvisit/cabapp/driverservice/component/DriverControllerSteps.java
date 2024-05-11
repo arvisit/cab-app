@@ -49,19 +49,6 @@ public class DriverControllerSteps {
     private DriverRepository driverRepository;
 
     private DriverRequestDto saveNewDriverRequest;
-    private Response saveNewDriverResponse;
-    private DriverRequestDto updateDriverRequest;
-    private Response updateDriverResponse;
-    private String deleteDriverId;
-    private List<Driver> driversBeforeDelete;
-    private Response deleteDriverResponse;
-    private String idToGetDriverBy;
-    private Response getDriverByIdResponse;
-    private String emailToGetDriverBy;
-    private Response getDriverByEmailResponse;
-    private Response getDriversWithNoRequestParamsResponse;
-    private Response getAvailableDriversWithNoRequestParamsResponse;
-    private Response getDriversWithNameEmailParamsResponse;
 
     @Given("User wants to save a new driver with name {string}, email {string}, card number {string} and car details: color id {int}, manufacturer id {int}, registration number {string}")
     public void prepareNewDriverToSave(String name, String email, String cardNumber, int colorId, int manufacturerId,
@@ -78,6 +65,8 @@ public class DriverControllerSteps {
                 .withCar(car)
                 .build();
     }
+
+    private Response saveNewDriverResponse;
 
     @When("he performs saving via request")
     public void sendSaveNewDriverRequest() {
@@ -104,6 +93,8 @@ public class DriverControllerSteps {
                 .isNotNull();
     }
 
+    private DriverRequestDto updateDriverRequest;
+
     @Given("User wants to update an existing driver with new values for name {string}, email {string}, card number {string} and car details: color id {int}, manufacturer id {int}, registration number {string}")
     public void prepareUpdateRequest(String name, String email, String cardNumber, int colorId, int manufacturerId,
             String registrationNumber) {
@@ -119,6 +110,8 @@ public class DriverControllerSteps {
                 .withCar(car)
                 .build();
     }
+
+    private Response updateDriverResponse;
 
     @When("he performs update of existing driver with id {string} via request")
     public void sendUpdateDriverRequest(String id) {
@@ -143,15 +136,19 @@ public class DriverControllerSteps {
                 .isEqualTo(expected);
     }
 
+    private String deleteDriverId;
+    private List<Driver> driversBeforeDelete;
+
     @Given("User wants to delete an existing driver with id {string}")
     public void prepareInfoForDriverDelete(String id) {
         deleteDriverId = id;
+        driversBeforeDelete = driverRepository.findAll();
     }
+
+    private Response deleteDriverResponse;
 
     @When("he performs delete of existing driver via request")
     public void sendDeleteDriverRequest() {
-        driversBeforeDelete = driverRepository.findAll();
-
         deleteDriverResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().delete(URL_DRIVERS_ID_TEMPLATE, deleteDriverId);
@@ -175,10 +172,14 @@ public class DriverControllerSteps {
                 .noneMatch(matchById);
     }
 
+    private String idToGetDriverBy;
+
     @Given("User wants to get details about an existing driver with id {string}")
     public void prepareInfoForRetrievingDriverById(String id) {
         idToGetDriverBy = id;
     }
+
+    private Response getDriverByIdResponse;
 
     @When("he performs search driver by id via request")
     public void sendGetDriverByIdRequest() {
@@ -201,10 +202,14 @@ public class DriverControllerSteps {
                 .isEqualTo(expected);
     }
 
+    private String emailToGetDriverBy;
+
     @Given("User wants to get details about an existing driver with email {string}")
     public void prepareInfoForRetrievingDriverByEmail(String email) {
         emailToGetDriverBy = email;
     }
+
+    private Response getDriverByEmailResponse;
 
     @When("he performs search driver by email via request")
     public void sendGetDriverByEmailRequest() {
@@ -230,6 +235,8 @@ public class DriverControllerSteps {
     @Given("User wants to get details about existing drivers")
     public void prepareInfoForRetrievingDrivers() {
     }
+
+    private Response getDriversWithNoRequestParamsResponse;
 
     @When("he performs request with no request parameters")
     public void sendGetDriversWithNoRequestParamsRequest() {
@@ -267,6 +274,8 @@ public class DriverControllerSteps {
         assertThat(actual.values())
                 .hasSize(driversCount);
     }
+
+    private Response getDriversWithNameEmailParamsResponse;
 
     @When("he performs request with parameters: {string}={string} and {string}={string}")
     public void sendGetDriversWithNameEmailRequestParamsRequest(String nameParam, String nameValue,
@@ -310,6 +319,8 @@ public class DriverControllerSteps {
     @Given("User wants to get details about available drivers")
     public void prepareInfoForRetrievingAvailableDrivers() {
     }
+
+    private Response getAvailableDriversWithNoRequestParamsResponse;
 
     @When("he performs request with no request parameters to available drivers url")
     public void sendGetAvailableDriversWithNoRequestParamsRequest() {
