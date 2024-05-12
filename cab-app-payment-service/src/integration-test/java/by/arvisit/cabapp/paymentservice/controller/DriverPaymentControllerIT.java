@@ -222,7 +222,7 @@ class DriverPaymentControllerIT {
     }
 
     @Test
-    void shouldReturn200AndExpectedResponse_whenGetPaymentsWithCashPaymentMethodRequestParam() {
+    void shouldReturn200AndExpectedResponse_whenGetPaymentsWithDriverIdAndOperationTypeRequestParam() {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
