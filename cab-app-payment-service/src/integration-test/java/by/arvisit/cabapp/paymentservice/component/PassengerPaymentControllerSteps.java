@@ -101,7 +101,7 @@ public class PassengerPaymentControllerSteps {
     }
 
     @Then("response should have 200 status, json content type, contain passenger payment with requested id")
-    void shouldReturn200AndExpectedResponse_whenGetPaymentByIdWithExistingId() {
+    public void shouldReturn200AndExpectedResponse_whenGetPaymentByIdWithExistingId() {
         response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
@@ -134,7 +134,7 @@ public class PassengerPaymentControllerSteps {
     }
 
     @Then("response should have 200 status, json content type, contain {int} passenger payments")
-    void shouldReturn200AndExpectedResponse_whenGetPaymentsWithNoRequestParams(int paymentsCount) {
+    public void shouldReturn200AndExpectedResponse_whenGetPaymentsWithNoRequestParams(int paymentsCount) {
         response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
