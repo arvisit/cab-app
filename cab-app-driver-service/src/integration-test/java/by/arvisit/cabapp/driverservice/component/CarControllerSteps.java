@@ -31,22 +31,23 @@ public class CarControllerSteps {
     public void prepareInfoForRetrievingCars() {
     }
 
-    private Response getCarsWithNoRequestParamsResponse;
+    private Response response;
+    private String idToGetCarBy;
 
     @When("he performs request for cars with no request parameters")
     public void sendGetCarsWithNoRequestParamsRequest() {
-        getCarsWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_CARS);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} cars")
     public void checkGetCarsWithNoRequestParams(int carsCount) {
-        getCarsWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<CarResponseDto> actual = getCarsWithNoRequestParamsResponse
+        ListContainerResponseDto<CarResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<CarResponseDto>>() {
                 });
 
@@ -72,29 +73,25 @@ public class CarControllerSteps {
                 .hasSize(carsCount);
     }
 
-    private String idToGetCarBy;
-
     @Given("User wants to get details about an existing car with id {string}")
     public void prepareInfoForRetrievingCarById(String id) {
         idToGetCarBy = id;
     }
 
-    private Response getCarByIdResponse;
-
     @When("he performs search car by id via request")
     public void sendGetCarByIdRequest() {
-        getCarByIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_CARS_ID_TEMPLATE, idToGetCarBy);
     }
 
     @Then("response should have 200 status, json content type, contain car with requested id")
     public void checkGetCarByIdResponse() {
-        getCarByIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        CarResponseDto actual = getCarByIdResponse.as(CarResponseDto.class);
+        CarResponseDto actual = response.as(CarResponseDto.class);
         CarResponseDto expected = getJohnDoeCar().build();
 
         assertThat(actual)

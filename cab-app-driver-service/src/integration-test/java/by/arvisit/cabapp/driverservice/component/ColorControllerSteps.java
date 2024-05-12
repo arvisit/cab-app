@@ -23,26 +23,26 @@ import io.restassured.response.Response;
 
 public class ColorControllerSteps {
 
+    private Response response;
+
     @Given("User wants to get details about existing colors")
     public void prepareInfoForRetrievingColors() {
     }
 
-    private Response getColorsWithNoRequestParamsResponse;
-
     @When("he performs request for colors with no request parameters")
     public void sendGetColorsWithNoRequestParamsRequest() {
-        getColorsWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_COLORS);
     }
 
     @Then("response should have 200 status, json content type, contain info about these colors from page 0:")
     public void checkGetColorsWithNoRequestParams(DataTable table) {
-        getColorsWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<ColorResponseDto> actual = getColorsWithNoRequestParamsResponse
+        ListContainerResponseDto<ColorResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<ColorResponseDto>>() {
                 });
 
@@ -61,11 +61,9 @@ public class ColorControllerSteps {
                 .containsExactlyInAnyOrderElementsOf(expectedColors);
     }
 
-    private Response getColorsWithPageRequestParamResponse;
-
     @When("he performs request for colors with request parameters: {string}={int}")
     public void sendGetColorsWithPageRequestParamRequest(String pageParam, int pageValue) {
-        getColorsWithPageRequestParamResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(pageParam, pageValue)
                 .when().get(URL_COLORS);
@@ -73,11 +71,11 @@ public class ColorControllerSteps {
 
     @Then("response should have 200 status, json content type, contain info about these colors from page 1:")
     public void checkGetColorsWithPageRequestParam(DataTable table) {
-        getColorsWithPageRequestParamResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<ColorResponseDto> actual = getColorsWithPageRequestParamResponse
+        ListContainerResponseDto<ColorResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<ColorResponseDto>>() {
                 });
 

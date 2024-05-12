@@ -21,26 +21,26 @@ import io.restassured.response.Response;
 
 public class CarManufacturerControllerSteps {
 
+    private Response response;
+
     @Given("User wants to get details about existing car manufacturers")
     public void prepareInfoForRetrievingCarManufacturers() {
     }
 
-    private Response getCarManufacturersWithNoRequestParamsResponse;
-
     @When("he performs request for car manufacturers with no request parameters")
     public void sendGetCarManufacturersWithNoRequestParamsRequest() {
-        getCarManufacturersWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(DriverITData.URL_CAR_MANUFACTURERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about these car manufacturers from page 0:")
     public void checkGetCarManufacturersWithNoRequestParams(DataTable table) {
-        getCarManufacturersWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<CarManufacturerResponseDto> actual = getCarManufacturersWithNoRequestParamsResponse
+        ListContainerResponseDto<CarManufacturerResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<CarManufacturerResponseDto>>() {
                 });
 
@@ -59,11 +59,9 @@ public class CarManufacturerControllerSteps {
                 .containsExactlyInAnyOrderElementsOf(expectedCarManufacturers);
     }
 
-    private Response getCarManufacturersWithPageRequestParamResponse;
-
     @When("he performs request for car manufacturers with request parameters: {string}={int}")
     public void sendGetCarManufacturersWithPageRequestParamRequest(String pageParam, int pageValue) {
-        getCarManufacturersWithPageRequestParamResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(pageParam, pageValue)
                 .when().get(DriverITData.URL_CAR_MANUFACTURERS);
@@ -71,11 +69,11 @@ public class CarManufacturerControllerSteps {
 
     @Then("response should have 200 status, json content type, contain info about these car manufacturers from page 1:")
     public void checkGetCarManufacturersWithPageRequestParam(DataTable table) {
-        getCarManufacturersWithPageRequestParamResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<CarManufacturerResponseDto> actual = getCarManufacturersWithPageRequestParamResponse
+        ListContainerResponseDto<CarManufacturerResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<CarManufacturerResponseDto>>() {
                 });
 

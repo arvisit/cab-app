@@ -48,7 +48,11 @@ public class DriverControllerSteps {
     @Autowired
     private DriverRepository driverRepository;
 
-    private DriverRequestDto saveNewDriverRequest;
+    private DriverRequestDto driverRequest;
+    private Response response;
+    private String driverId;
+    private List<Driver> driversBeforeDelete;
+    private String emailToGetDriverBy;
 
     @Given("User wants to save a new driver with name {string}, email {string}, card number {string} and car details: color id {int}, manufacturer id {int}, registration number {string}")
     public void prepareNewDriverToSave(String name, String email, String cardNumber, int colorId, int manufacturerId,
@@ -58,7 +62,7 @@ public class DriverControllerSteps {
                 .withManufacturerId(manufacturerId)
                 .withRegistrationNumber(registrationNumber)
                 .build();
-        saveNewDriverRequest = getSaveDriverRequest()
+        driverRequest = getSaveDriverRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
@@ -66,23 +70,21 @@ public class DriverControllerSteps {
                 .build();
     }
 
-    private Response saveNewDriverResponse;
-
     @When("he performs saving via request")
     public void sendSaveNewDriverRequest() {
-        saveNewDriverResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(saveNewDriverRequest)
+                .body(driverRequest)
                 .when().post(URL_DRIVERS);
     }
 
     @Then("response should have 201 status, json content type, contain driver with expected parameters and id")
     public void checkSaveNewDriverResponse() {
-        saveNewDriverResponse.then()
+        response.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON);
 
-        DriverResponseDto actual = saveNewDriverResponse.as(DriverResponseDto.class);
+        DriverResponseDto actual = response.as(DriverResponseDto.class);
         DriverResponseDto expected = getAddedDriverResponse().build();
 
         assertThat(actual)
@@ -93,8 +95,6 @@ public class DriverControllerSteps {
                 .isNotNull();
     }
 
-    private DriverRequestDto updateDriverRequest;
-
     @Given("User wants to update an existing driver with new values for name {string}, email {string}, card number {string} and car details: color id {int}, manufacturer id {int}, registration number {string}")
     public void prepareUpdateRequest(String name, String email, String cardNumber, int colorId, int manufacturerId,
             String registrationNumber) {
@@ -103,7 +103,7 @@ public class DriverControllerSteps {
                 .withManufacturerId(manufacturerId)
                 .withRegistrationNumber(registrationNumber)
                 .build();
-        updateDriverRequest = getUpdateDriverRequest()
+        driverRequest = getUpdateDriverRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
@@ -111,23 +111,21 @@ public class DriverControllerSteps {
                 .build();
     }
 
-    private Response updateDriverResponse;
-
     @When("he performs update of existing driver with id {string} via request")
     public void sendUpdateDriverRequest(String id) {
-        updateDriverResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(updateDriverRequest)
+                .body(driverRequest)
                 .when().put(URL_DRIVERS_ID_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain driver with updated parameters")
     public void checkUpdateDriverResponse() {
-        updateDriverResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        DriverResponseDto actual = updateDriverResponse.as(DriverResponseDto.class);
+        DriverResponseDto actual = response.as(DriverResponseDto.class);
         DriverResponseDto expected = getUpdatedDriverResponse().build();
 
         assertThat(actual)
@@ -136,27 +134,22 @@ public class DriverControllerSteps {
                 .isEqualTo(expected);
     }
 
-    private String deleteDriverId;
-    private List<Driver> driversBeforeDelete;
-
     @Given("User wants to delete an existing driver with id {string}")
     public void prepareInfoForDriverDelete(String id) {
-        deleteDriverId = id;
+        driverId = id;
         driversBeforeDelete = driverRepository.findAll();
     }
 
-    private Response deleteDriverResponse;
-
     @When("he performs delete of existing driver via request")
     public void sendDeleteDriverRequest() {
-        deleteDriverResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().delete(URL_DRIVERS_ID_TEMPLATE, deleteDriverId);
+                .when().delete(URL_DRIVERS_ID_TEMPLATE, driverId);
     }
 
     @Then("response should have 204 status, minus one driver in database")
     public void checkDeleteDriverResponse() {
-        deleteDriverResponse.then()
+        response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         List<Driver> driversAfterDelete = driverRepository.findAll();
@@ -172,29 +165,25 @@ public class DriverControllerSteps {
                 .noneMatch(matchById);
     }
 
-    private String idToGetDriverBy;
-
     @Given("User wants to get details about an existing driver with id {string}")
     public void prepareInfoForRetrievingDriverById(String id) {
-        idToGetDriverBy = id;
+        driverId = id;
     }
-
-    private Response getDriverByIdResponse;
 
     @When("he performs search driver by id via request")
     public void sendGetDriverByIdRequest() {
-        getDriverByIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().get(URL_DRIVERS_ID_TEMPLATE, idToGetDriverBy);
+                .when().get(URL_DRIVERS_ID_TEMPLATE, driverId);
     }
 
     @Then("response should have 200 status, json content type, contain driver with requested id")
     public void checkGetDriverByIdResponse() {
-        getDriverByIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        DriverResponseDto actual = getDriverByIdResponse.as(DriverResponseDto.class);
+        DriverResponseDto actual = response.as(DriverResponseDto.class);
         DriverResponseDto expected = getJohnDoe().build();
 
         assertThat(actual)
@@ -202,29 +191,25 @@ public class DriverControllerSteps {
                 .isEqualTo(expected);
     }
 
-    private String emailToGetDriverBy;
-
     @Given("User wants to get details about an existing driver with email {string}")
     public void prepareInfoForRetrievingDriverByEmail(String email) {
         emailToGetDriverBy = email;
     }
 
-    private Response getDriverByEmailResponse;
-
     @When("he performs search driver by email via request")
     public void sendGetDriverByEmailRequest() {
-        getDriverByEmailResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS_EMAIL_TEMPLATE, emailToGetDriverBy);
     }
 
     @Then("response should have 200 status, json content type, contain driver with requested email")
     public void checkGetDriverByEmailResponse() {
-        getDriverByEmailResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        DriverResponseDto actual = getDriverByEmailResponse.as(DriverResponseDto.class);
+        DriverResponseDto actual = response.as(DriverResponseDto.class);
         DriverResponseDto expected = getJohnDoe().build();
 
         assertThat(actual)
@@ -236,22 +221,20 @@ public class DriverControllerSteps {
     public void prepareInfoForRetrievingDrivers() {
     }
 
-    private Response getDriversWithNoRequestParamsResponse;
-
     @When("he performs request with no request parameters")
     public void sendGetDriversWithNoRequestParamsRequest() {
-        getDriversWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} drivers")
     public void checkGetDriversWithNoRequestParams(int driversCount) {
-        getDriversWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<DriverResponseDto> actual = getDriversWithNoRequestParamsResponse
+        ListContainerResponseDto<DriverResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
                 });
 
@@ -275,12 +258,10 @@ public class DriverControllerSteps {
                 .hasSize(driversCount);
     }
 
-    private Response getDriversWithNameEmailParamsResponse;
-
     @When("he performs request with parameters: {string}={string} and {string}={string}")
     public void sendGetDriversWithNameEmailRequestParamsRequest(String nameParam, String nameValue,
             String emailParam, String emailValue) {
-        getDriversWithNameEmailParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(nameParam, nameValue)
                 .queryParam(emailParam, emailValue)
@@ -289,11 +270,11 @@ public class DriverControllerSteps {
 
     @Then("response should have 200 status, json content type, contain info about {int} drivers found by name and email")
     public void checkGetDriversWithNameEmailRequestParams(int driversCount) {
-        getDriversWithNameEmailParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<DriverResponseDto> actual = getDriversWithNameEmailParamsResponse
+        ListContainerResponseDto<DriverResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
                 });
 
@@ -320,22 +301,20 @@ public class DriverControllerSteps {
     public void prepareInfoForRetrievingAvailableDrivers() {
     }
 
-    private Response getAvailableDriversWithNoRequestParamsResponse;
-
     @When("he performs request with no request parameters to available drivers url")
     public void sendGetAvailableDriversWithNoRequestParamsRequest() {
-        getAvailableDriversWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_AVAILABLE_DRIVERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} available drivers")
     public void checkGetAvailableDriversWithNoRequestParams(int driversCount) {
-        getAvailableDriversWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<DriverResponseDto> actual = getAvailableDriversWithNoRequestParamsResponse
+        ListContainerResponseDto<DriverResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
                 });
 
