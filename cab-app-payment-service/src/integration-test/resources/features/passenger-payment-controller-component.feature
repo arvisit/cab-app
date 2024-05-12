@@ -6,19 +6,19 @@ Feature: Passenger Payment Controller Component
     When he performs request to save a new passenger payment
     Then response should have 201 status, json content type, contain passenger payment with expected parameters and id
 
-  @component:
+  @component
   Scenario: Retrieving an existing passenger payment by id
     Given User wants to get details about existing passenger payment
     When he performs request to search passenger payment with id 'cce748fb-1a3a-468e-a49e-08a26fe2a418'
     Then response should have 200 status, json content type, contain passenger payment with requested id
 
-  @component:
+  @component
   Scenario: Retrieving existing passenger payments by default
     Given User wants to get details about existing passenger payments
     When he performs request to get passenger payments with no request parameters
     Then response should have 200 status, json content type, contain 4 passenger payments
 
-  @component:
+  @component
   Scenario: Retrieving existing passenger payments filtered by cash payment method
     Given User wants to get details about existing passenger payments filtered by cash payment method
     When he performs request to get passenger payments with request parameter 'paymentMethod'='CASH'
