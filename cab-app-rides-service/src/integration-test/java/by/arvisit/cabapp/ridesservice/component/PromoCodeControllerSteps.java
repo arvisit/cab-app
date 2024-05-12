@@ -44,33 +44,34 @@ public class PromoCodeControllerSteps {
     @Autowired
     private PromoCodeRepository promoCodeRepository;
 
-    private PromoCodeRequestDto saveNewPromoCodeRequest;
+    private PromoCodeRequestDto promoCodeRequest;
+    private Response response;
+    private Integer promoCodeId;
+    private List<PromoCode> promoCodesBeforeDelete;
 
     @Given("User wants to save a new promo code with keyword {string} and discount percent {int}")
     public void prepareNewPromoCodeToSave(String keyword, int discountPercent) {
-        saveNewPromoCodeRequest = getNewPromoCodeRequestDto()
+        promoCodeRequest = getNewPromoCodeRequestDto()
                 .withKeyword(keyword)
                 .withDiscountPercent(discountPercent)
                 .build();
     }
 
-    private Response saveNewPromoCodeResponse;
-
     @When("he performs saving of a new promo code via request")
     public void sendSaveNewPromoCodeRequest() {
-        saveNewPromoCodeResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(saveNewPromoCodeRequest)
+                .body(promoCodeRequest)
                 .when().post(URL_PROMO_CODES);
     }
 
     @Then("response should have 201 status, json content type, contain promo code with expected parameters and id")
     public void checkSaveNewPromoCodeResponse() {
-        saveNewPromoCodeResponse.then()
+        response.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON);
 
-        PromoCodeResponseDto actual = saveNewPromoCodeResponse.as(PromoCodeResponseDto.class);
+        PromoCodeResponseDto actual = response.as(PromoCodeResponseDto.class);
         PromoCodeResponseDto expected = getAddedPromoCodeResponseDto().build();
 
         assertThat(actual)
@@ -81,33 +82,29 @@ public class PromoCodeControllerSteps {
                 .isNotNull();
     }
 
-    private PromoCodeRequestDto updatePromoCodeRequest;
-
     @Given("User wants to update an existing promo code with keyword {string} and discount percent {int}")
     public void prepareUpdateRequest(String keyword, int discountPercent) {
-        updatePromoCodeRequest = getNewPromoCodeRequestDto()
+        promoCodeRequest = getNewPromoCodeRequestDto()
                 .withKeyword(keyword)
                 .withDiscountPercent(discountPercent)
                 .build();
     }
 
-    private Response updatePromoCodeResponse;
-
     @When("he performs update of existing promo code with id {int} via request")
     public void sendUpdatePromoCodeRequest(int id) {
-        updatePromoCodeResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(updatePromoCodeRequest)
+                .body(promoCodeRequest)
                 .when().put(URL_PROMO_CODES_ID_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain promo code with updated parameters")
     public void checkUpdatePromoCodeResponse() {
-        updatePromoCodeResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PromoCodeResponseDto actual = updatePromoCodeResponse.as(PromoCodeResponseDto.class);
+        PromoCodeResponseDto actual = response.as(PromoCodeResponseDto.class);
         PromoCodeResponseDto expected = getBRILLIANT10ActivePromoCodeResponseDto()
                 .withKeyword(NEW_PROMO_CODE_KEYWORD)
                 .withDiscountPercent(NEW_PROMO_CODE_DISCOUNT_PERCENT)
@@ -122,22 +119,20 @@ public class PromoCodeControllerSteps {
     public void prepareDeactivateRequest() {
     }
 
-    private Response deactivatePromoCodeResponse;
-
     @When("he performs deactivation of existing promo code with id {int} via request")
     public void sendDeactivatePromoCodeRequest(int id) {
-        deactivatePromoCodeResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain deactivated promo code")
     public void checkDeactivatePromoCodeResponse() {
-        deactivatePromoCodeResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PromoCodeResponseDto actual = deactivatePromoCodeResponse.as(PromoCodeResponseDto.class);
+        PromoCodeResponseDto actual = response.as(PromoCodeResponseDto.class);
         PromoCodeResponseDto expected = getBRILLIANT10ActivePromoCodeResponseDto()
                 .withIsActive(false)
                 .build();
@@ -147,27 +142,22 @@ public class PromoCodeControllerSteps {
                 .isEqualTo(expected);
     }
 
-    private Integer deletePromoCodeId;
-    private List<PromoCode> promoCodesBeforeDelete;
-
     @Given("User wants to delete an existing promo code with id {int}")
     public void prepareInfoForPromoCodeDelete(int id) {
-        deletePromoCodeId = id;
+        promoCodeId = id;
         promoCodesBeforeDelete = promoCodeRepository.findAll();
     }
 
-    private Response deletePromoCodeResponse;
-
     @When("he performs delete of existing promo code via request")
     public void sendDeletePromoCodeRequest() {
-        deletePromoCodeResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().delete(URL_PROMO_CODES_ID_TEMPLATE, deletePromoCodeId);
+                .when().delete(URL_PROMO_CODES_ID_TEMPLATE, promoCodeId);
     }
 
     @Then("response should have 204 status, minus one promo code in database")
     public void checkDeletePromoCodeResponse() {
-        deletePromoCodeResponse.then()
+        response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         List<PromoCode> promoCodesAfterDelete = promoCodeRepository.findAll();
@@ -183,29 +173,25 @@ public class PromoCodeControllerSteps {
                 .noneMatch(matchById);
     }
 
-    private Integer idToGetPromoCodeBy;
-
     @Given("User wants to get details about an existing promo code with id {int}")
     public void prepareInfoForRetrievingPromoCodeById(int id) {
-        idToGetPromoCodeBy = id;
+        promoCodeId = id;
     }
-
-    private Response getPromoCodeByIdResponse;
 
     @When("he performs search promo code by id via request")
     public void sendGetPromoCodeByIdRequest() {
-        getPromoCodeByIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().get(URL_PROMO_CODES_ID_TEMPLATE, idToGetPromoCodeBy);
+                .when().get(URL_PROMO_CODES_ID_TEMPLATE, promoCodeId);
     }
 
     @Then("response should have 200 status, json content type, contain promo code with requested id")
     public void checkGetPromoCodeByIdResponse() {
-        getPromoCodeByIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PromoCodeResponseDto actual = getPromoCodeByIdResponse.as(PromoCodeResponseDto.class);
+        PromoCodeResponseDto actual = response.as(PromoCodeResponseDto.class);
         PromoCodeResponseDto expected = getBRILLIANT10ActivePromoCodeResponseDto().build();
 
         assertThat(actual)
@@ -217,22 +203,20 @@ public class PromoCodeControllerSteps {
     public void prepareInfoForRetrievingPromoCodes() {
     }
 
-    private Response getPromoCodesWithNoRequestParamsResponse;
-
     @When("he performs request with no request parameters")
     public void sendGetPromoCodesWithNoRequestParamsRequest() {
-        getPromoCodesWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PROMO_CODES);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} promo codes")
     public void checkGetPromoCodesWithNoRequestParams(int promoCodesCount) {
-        getPromoCodesWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<PromoCodeResponseDto> actual = getPromoCodesWithNoRequestParamsResponse
+        ListContainerResponseDto<PromoCodeResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<PromoCodeResponseDto>>() {
                 });
 
@@ -263,22 +247,20 @@ public class PromoCodeControllerSteps {
     public void prepareInfoForRetrievingAvailablePromoCodes() {
     }
 
-    private Response getActivePromoCodesWithNoRequestParamsResponse;
-
     @When("he performs request with no request parameters to active promo codes url")
     public void sendGetAvailablePromoCodesWithNoRequestParamsRequest() {
-        getActivePromoCodesWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PROMO_CODES_ACTIVE);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} active promo codes")
     public void checkGetAvailablePromoCodesWithNoRequestParams(int promoCodesCount) {
-        getActivePromoCodesWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<PromoCodeResponseDto> actual = getActivePromoCodesWithNoRequestParamsResponse
+        ListContainerResponseDto<PromoCodeResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<PromoCodeResponseDto>>() {
                 });
 

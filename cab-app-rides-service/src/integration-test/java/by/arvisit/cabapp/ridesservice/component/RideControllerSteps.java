@@ -90,7 +90,9 @@ public class RideControllerSteps {
     @Autowired
     private RideRepository rideRepository;
 
-    private RideRequestDto saveNewRideRequest;
+    private RideRequestDto rideRequest;
+    private Response response;
+    private List<Ride> ridesBeforeDelete;
 
     @Given("User wants to save a new ride with passenger id {string}, payment method {string}, start address {string} and destination address {string}")
     public void prepareNewRideToSave(String passengerId, String paymentMethod, String startAddress,
@@ -98,7 +100,7 @@ public class RideControllerSteps {
         PassengerResponseDto passenger = getPassengerResponseDto().build();
         wireMockService.mockResponseForPassengerClientGetPassengerById(passenger);
 
-        saveNewRideRequest = getNewRideRequestDto()
+        rideRequest = getNewRideRequestDto()
                 .withPassengerId(passengerId)
                 .withPaymentMethod(paymentMethod)
                 .withStartAddress(startAddress)
@@ -106,23 +108,21 @@ public class RideControllerSteps {
                 .build();
     }
 
-    private Response saveNewRideResponse;
-
     @When("he performs saving of a new ride via request")
     public void sendSaveNewRideRequest() {
-        saveNewRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(saveNewRideRequest)
+                .body(rideRequest)
                 .when().post(URL_RIDES);
     }
 
     @Then("response should have 201 status, json content type, contain ride with expected parameters and id")
     public void checkSaveNewRideResponse() {
-        saveNewRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = saveNewRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getAddedRideResponseDto().build();
 
         assertThat(actual)
@@ -143,22 +143,20 @@ public class RideControllerSteps {
     public void prepareCancelRequest() {
     }
 
-    private Response cancelRideResponse;
-
     @When("he performs a request to cancel ride with id {string}")
     public void sendCancelRideRequest(String id) {
-        cancelRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_CANCEL_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain canceled ride")
     public void checkCancelRideResponse() {
-        cancelRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = cancelRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBookedRideResponseDto()
                 .withStatus(RideStatusEnum.CANCELED.toString())
                 .build();
@@ -186,13 +184,11 @@ public class RideControllerSteps {
         wireMockService.mockResponseForDriverClientUpdateAvailability(driverAfterAccept);
     }
 
-    private Response acceptRideResponse;
-
     @When("he performs a request to accept ride with id {string} by available driver with id {string}")
     public void sendAcceptRideRequest(String rideId, String driverId) {
         Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, driverId);
 
-        acceptRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_ACCEPT_TEMPLATE, BOOKED_RIDE_ID);
@@ -200,11 +196,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain accepted ride")
     public void checkAcceptRideResponse() {
-        acceptRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = acceptRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBookedRideResponseDto()
                 .withStatus(RideStatusEnum.ACCEPTED.toString())
                 .withDriverId(DRIVER_1_ID)
@@ -227,22 +223,20 @@ public class RideControllerSteps {
     public void prepareToBeginRide() {
     }
 
-    private Response beginRideResponse;
-
     @When("he performs a request to begin ride with id {string}")
     public void sendBeginRideRequest(String id) {
-        beginRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_BEGIN_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain began ride")
     public void checkBeginRideResponse() {
-        beginRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = beginRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getAcceptedRideResponseDto()
                 .withStatus(RideStatusEnum.BEGIN_RIDE.toString())
                 .build();
@@ -268,22 +262,20 @@ public class RideControllerSteps {
         wireMockService.mockResponseForPassengerClientGetPassengerById(passenger);
     }
 
-    private Response endRideResponse;
-
     @When("he performs a request to end ride with id {string}")
     public void sendEndRideRequest(String id) {
-        endRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain ended ride with bank card payment method")
     public void checkEndRideWithBankCardPaymentMethodResponse() throws Exception {
-        endRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = endRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBeganBankCardRideResponseDto()
                 .withStatus(RideStatusEnum.END_RIDE.toString())
                 .build();
@@ -307,11 +299,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain ended ride with cash payment method")
     public void checkEndRideWithCashPaymentMethodResponse() {
-        endRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = endRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBeganCashRideResponseDto()
                 .withStatus(RideStatusEnum.END_RIDE.toString())
                 .build();
@@ -333,22 +325,20 @@ public class RideControllerSteps {
     public void prepareFinishRideRequest() {
     }
 
-    private Response finishRideResponse;
-
     @When("he performs a request to finish ride with id {string}")
     public void sendFinishRideRequest(String id) {
-        finishRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_FINISH_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain finished ride")
     public void checkFinishRideResponse() {
-        finishRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = finishRideResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getEndedBankCardPaidRideResponseDto()
                 .withStatus(RideStatusEnum.FINISHED.toString())
                 .build();
@@ -372,22 +362,20 @@ public class RideControllerSteps {
         wireMockService.mockResponseForPaymentClientSave(payment);
     }
 
-    private Response confirmPaymentResponse;
-
     @When("he performs a request to confirm payment for the ride with id {string}")
     public void sendConfirmPaymentRequest(String id) {
-        confirmPaymentResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain finished ride with cash payment method")
     public void checkConfirmPaymentCashResponse() throws Exception {
-        confirmPaymentResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = confirmPaymentResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getEndedCashNotPaidRideResponseDto()
                 .withStatus(RideStatusEnum.FINISHED.toString())
                 .withIsPaid(true)
@@ -414,11 +402,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain finished ride with bank card payment method")
     public void checkConfirmPaymentBankCardResponse() {
-        confirmPaymentResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = confirmPaymentResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getEndedBankCardNotPaidRideResponseDto()
                 .withStatus(RideStatusEnum.FINISHED.toString())
                 .withIsPaid(true)
@@ -443,13 +431,11 @@ public class RideControllerSteps {
     public void prepareApplyPromoCodeRequest() {
     }
 
-    private Response applyPromoCodeResponse;
-
     @When("he performs a request to apply promo code {string} to the ride with id {string}")
     public void sendApplyPromoCodeRequest(String promoCodeKeyword, String rideId) {
         Map<String, String> requestDto = Map.of(PROMO_CODE_KEYWORD_KEY, promoCodeKeyword);
 
-        applyPromoCodeResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_APPLY_PROMO_TEMPLATE, BOOKED_RIDE_ID);
@@ -457,11 +443,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain ride with applied promo code")
     public void checkApplyPromoCodeResponse() {
-        applyPromoCodeResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = applyPromoCodeResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBookedRideResponseDto()
                 .withPromoCode(BRILLIANT10_KEYWORD)
                 .withFinalCost(RIDE_FINAL_COST_WITH_BRILLIANT10_PROMO_CODE)
@@ -482,14 +468,12 @@ public class RideControllerSteps {
     public void prepareChangePaymentMethodRequest() {
     }
 
-    private Response changePaymentMethodResponse;
-
     @When("he performs a request to change payment method for the ride with id {string}")
     public void sendChangePaymentMethodRequest(String id) {
         String paymentMethod = PaymentMethodEnum.CASH.toString();
         Map<String, String> requestDto = Map.of(PAYMENT_METHOD_KEY, paymentMethod);
 
-        changePaymentMethodResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_CHANGE_PAYMENT_METHOD_TEMPLATE, id);
@@ -497,11 +481,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain ride with changed payment method")
     public void checkChangePaymentMethodResponse() {
-        changePaymentMethodResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = changePaymentMethodResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getBookedRideResponseDto()
                 .withPaymentMethod(PaymentMethodEnum.CASH.toString())
                 .build();
@@ -521,13 +505,11 @@ public class RideControllerSteps {
     public void prepareScoreDriverRequest() {
     }
 
-    private Response scoreDriverResponse;
-
     @When("he performs a request to score a driver with {int} for the ride with id {string}")
     public void sendScoreDriverRequest(int score, String rideId) {
         Map<String, Integer> requestDto = Map.of(DRIVER_SCORE_KEY, score);
 
-        scoreDriverResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_DRIVER_TEMPLATE, rideId);
@@ -535,11 +517,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain ride with driver score")
     public void checkScoreDriverResponse() {
-        scoreDriverResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = scoreDriverResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getFinishedNoScoresRideResponseDto()
                 .withDriverScore(DEFAULT_SCORE)
                 .build();
@@ -559,13 +541,11 @@ public class RideControllerSteps {
     public void prepareScorePassengerRequest() {
     }
 
-    private Response scorePassengerResponse;
-
     @When("he performs a request to score a passenger with {int} for the ride with id {string}")
     public void sendScorePassengerRequest(int score, String rideId) {
         Map<String, Integer> requestDto = Map.of(PASSENGER_SCORE_KEY, score);
 
-        scorePassengerResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_PASSENGER_TEMPLATE, rideId);
@@ -574,11 +554,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain ride with passenger score")
     public void checkScorePassengerResponse() {
-        scorePassengerResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = scorePassengerResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getFinishedNoScoresRideResponseDto()
                 .withPassengerScore(DEFAULT_SCORE)
                 .build();
@@ -594,25 +574,21 @@ public class RideControllerSteps {
                 .isEqualByComparingTo(expected.finalCost());
     }
 
-    private List<Ride> ridesBeforeDelete;
-
     @Given("User wants to delete an existing ride")
     public void prepareDeleteRideRequest() {
         ridesBeforeDelete = rideRepository.findAll();
     }
 
-    private Response deleteRideResponse;
-
     @When("he performs a request to delete a ride with id {string}")
     public void sendDeleteRideRequest(String id) {
-        deleteRideResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().delete(URL_RIDES_ID_TEMPLATE, id);
     }
 
     @Then("response should have 204 status, minus ride with id {string} in the database")
     public void checkDeleteRideResponse(String id) {
-        deleteRideResponse.then()
+        response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         List<Ride> ridesAfterDelete = rideRepository.findAll();
@@ -632,22 +608,20 @@ public class RideControllerSteps {
     public void prepareGetRideByIdRequest() {
     }
 
-    private Response getRideByIdResponse;
-
     @When("he performs a request to get details about ride with id {string}")
     public void sendGetRideByIdRequest(String id) {
-        getRideByIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_ID_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain ride with requested id")
     public void checkGetRideByIdResponse() {
-        getRideByIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RideResponseDto actual = getRideByIdResponse.as(RideResponseDto.class);
+        RideResponseDto actual = response.as(RideResponseDto.class);
         RideResponseDto expected = getFinishedNoScoresRideResponseDto().build();
 
         assertThat(actual)
@@ -665,22 +639,20 @@ public class RideControllerSteps {
     public void prepareGeRidesWithNoRequestParamsRequest() {
     }
 
-    private Response getRidesWithNoRequestParamsResponse;
-
     @When("he performs a request with no request parameters to get all rides")
     public void sendGetRidesWithNoRequestParamsRequest() {
-        getRidesWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} rides")
     public void checkGetRidesWithNoRequestParamsResponse(int ridesCount) {
-        getRidesWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<RideResponseDto> actual = getRidesWithNoRequestParamsResponse
+        ListContainerResponseDto<RideResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
                 });
         ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
@@ -711,11 +683,9 @@ public class RideControllerSteps {
     public void prepareGetRidesByPassengerIdRequest() {
     }
 
-    private Response getRidesByPassengerIdResponse;
-
     @When("he performs a request with request parameter {string}={string} to get all rides for this passenger")
     public void sendGetRidesByPassengerIdAsRequestParamRequest(String passengerIdParam, String passengerId) {
-        getRidesByPassengerIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(PASSENGER_ID_REQUEST_PARAM, PASSENGER_4_ID)
                 .when().get(URL_RIDES);
@@ -723,11 +693,11 @@ public class RideControllerSteps {
 
     @Then("response should have 200 status, json content type, contain info about {int} rides for this passenger")
     public void checkGetRidesByPassengerIdResponse(int ridesCount) {
-        getRidesByPassengerIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<RideResponseDto> actual = getRidesByPassengerIdResponse
+        ListContainerResponseDto<RideResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
                 });
         ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
@@ -750,7 +720,7 @@ public class RideControllerSteps {
 
     @When("he performs a request with passenger id {string} to get all rides for this passenger")
     public void sendGetRidesByPassengerIdAsPathParamRequest(String passengerId) {
-        getRidesByPassengerIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_PASSENGER_ID_TEMPLATE, passengerId);
     }
@@ -759,22 +729,20 @@ public class RideControllerSteps {
     public void prepareGetRidesByDriverIdAsPathParam() {
     }
 
-    private Response getRidesByDriverIdResponse;
-
     @When("he performs a request with driver id {string} to get all rides for this driver")
     public void sendGetRidesByDriverIdAsPathParamRequest(String driverId) {
-        getRidesByDriverIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_DRIVER_ID_TEMPLATE, driverId);
     }
 
     @Then("response should have 200 status, json content type, contain info about {int} rides for this driver")
     public void checkGetRidesByDriverIdResponse(int ridesCount) {
-        getRidesByDriverIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<RideResponseDto> actual = getRidesByDriverIdResponse
+        ListContainerResponseDto<RideResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
                 });
         ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
@@ -793,29 +761,26 @@ public class RideControllerSteps {
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields(FIELDS_FOR_LIST_TO_IGNORE)
                 .containsExactlyInAnyOrderElementsOf(expected.values())
                 .hasSize(ridesCount);
-
     }
 
     @Given("User wants to get rating for an existing passenger")
     public void prepareGetPassengerRatingRequest() {
     }
 
-    private Response getPassengerRatingResponse;
-
     @When("he performs a request with passenger id {string} to get his rating")
     public void sendGetPassengerRatingRequest(String id) {
-        getPassengerRatingResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_PASSENGER_ID_RATING_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain rating for the passenger")
     public void checkGetPassengerRatingResponse() {
-        getPassengerRatingResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RatingResponseDto actual = getPassengerRatingResponse.as(RatingResponseDto.class);
+        RatingResponseDto actual = response.as(RatingResponseDto.class);
         RatingResponseDto expected = getPassengerRating().build();
 
         assertThat(actual)
@@ -827,22 +792,20 @@ public class RideControllerSteps {
     public void prepareGetDriverRatingRequest() {
     }
 
-    private Response getDriverRatingResponse;
-
     @When("he performs a request with driver id {string} to get his rating")
     public void sendGetDriverRatingRequest(String id) {
-        getDriverRatingResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_DRIVER_ID_RATING_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain rating for the driver")
     public void checkGetDriverRatingResponse() {
-        getDriverRatingResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        RatingResponseDto actual = getDriverRatingResponse.as(RatingResponseDto.class);
+        RatingResponseDto actual = response.as(RatingResponseDto.class);
         RatingResponseDto expected = getDriverRating().build();
 
         assertThat(actual)
