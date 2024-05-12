@@ -38,34 +38,36 @@ public class PassengerControllerSteps {
     @Autowired
     private PassengerRepository passengerRepository;
 
-    private PassengerRequestDto saveNewPassengerRequest;
+    private PassengerRequestDto passengerRequest;
+    private Response response;
+    private String passengerId;
+    private List<Passenger> passengersBeforeDelete;
+    private String emailToGetPassengerBy;
 
     @Given("User wants to save a new passenger with name {string}, email {string} and card number {string}")
     public void prepareNewPassengerToSave(String name, String email, String cardNumber) {
-        saveNewPassengerRequest = PassengerITData.getSavePassengerRequest()
+        passengerRequest = PassengerITData.getSavePassengerRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
                 .build();
     }
 
-    private Response saveNewPassengerResponse;
-
     @When("he performs saving via request")
     public void sendSaveNewPassengerRequest() {
-        saveNewPassengerResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(saveNewPassengerRequest)
+                .body(passengerRequest)
                 .when().post(URL_PASSENGERS);
     }
 
     @Then("response should have 201 status, json content type, contain passenger with expected parameters and id")
     public void checkSaveNewPassengerResponse() {
-        saveNewPassengerResponse.then()
+        response.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON);
 
-        PassengerResponseDto actual = saveNewPassengerResponse.as(PassengerResponseDto.class);
+        PassengerResponseDto actual = response.as(PassengerResponseDto.class);
         PassengerResponseDto expected = getAddedPassengerResponse().build();
 
         assertThat(actual)
@@ -76,34 +78,30 @@ public class PassengerControllerSteps {
                 .isNotNull();
     }
 
-    private PassengerRequestDto updatePassengerRequest;
-
     @Given("User wants to update an existing passenger with new name {string}, email {string} and card number {string} values")
     public void prepareUpdateRequest(String name, String email, String cardNumber) {
-        updatePassengerRequest = PassengerITData.getSavePassengerRequest()
+        passengerRequest = PassengerITData.getSavePassengerRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
                 .build();
     }
 
-    private Response updatePassengerResponse;
-
     @When("he performs update of existing passenger with id {string} via request")
     public void sendUpdatePassengerRequest(String id) {
-        updatePassengerResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(updatePassengerRequest)
+                .body(passengerRequest)
                 .when().put(URL_PASSENGERS_ID_TEMPLATE, id);
     }
 
     @Then("response should have 200 status, json content type, contain passenger with updated parameters")
     public void checkUpdatePassengerResponse() {
-        updatePassengerResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PassengerResponseDto actual = updatePassengerResponse.as(PassengerResponseDto.class);
+        PassengerResponseDto actual = response.as(PassengerResponseDto.class);
         PassengerResponseDto expected = getUpdatedPassengerResponse().build();
 
         assertThat(actual)
@@ -111,28 +109,23 @@ public class PassengerControllerSteps {
                 .isEqualTo(expected);
     }
 
-    private String deletePassengerId;
-    private List<Passenger> passengersBeforeDelete;
-
     @Given("User wants to delete an existing passenger with id {string}")
     public void prepareInfoForPassengerDelete(String id) {
-        deletePassengerId = id;
+        passengerId = id;
         passengersBeforeDelete = passengerRepository.findAll();
     }
-
-    private Response deletePassengerResponse;
 
     @When("he performs delete of existing passenger via request")
     public void sendDeletePassengerRequest() {
 
-        deletePassengerResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().delete(URL_PASSENGERS_ID_TEMPLATE, deletePassengerId);
+                .when().delete(URL_PASSENGERS_ID_TEMPLATE, passengerId);
     }
 
     @Then("response should have 204 status, minus one passenger in database")
     public void checkDeletePassengerResponse() {
-        deletePassengerResponse.then()
+        response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         List<Passenger> passengersAfterDelete = passengerRepository.findAll();
@@ -148,29 +141,25 @@ public class PassengerControllerSteps {
                 .noneMatch(matchById);
     }
 
-    private String idToGetPassengerBy;
-
     @Given("User wants to get details about an existing passenger with id {string}")
     public void prepareInfoForRetrievingPassengerById(String id) {
-        idToGetPassengerBy = id;
+        passengerId = id;
     }
-
-    private Response getPassengerByIdResponse;
 
     @When("he performs search passenger by id via request")
     public void sendGetPassengerByIdRequest() {
-        getPassengerByIdResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().get(URL_PASSENGERS_ID_TEMPLATE, idToGetPassengerBy);
+                .when().get(URL_PASSENGERS_ID_TEMPLATE, passengerId);
     }
 
     @Then("response should have 200 status, json content type, contain passenger with requested id")
     public void checkGetPassengerByIdResponse() {
-        getPassengerByIdResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PassengerResponseDto actual = getPassengerByIdResponse.as(PassengerResponseDto.class);
+        PassengerResponseDto actual = response.as(PassengerResponseDto.class);
         PassengerResponseDto expected = PassengerITData.getJohnDoe().build();
 
         assertThat(actual)
@@ -178,29 +167,25 @@ public class PassengerControllerSteps {
                 .isEqualTo(expected);
     }
 
-    private String emailToGetPassengerBy;
-
     @Given("User wants to get details about an existing passenger with email {string}")
     public void prepareInfoForRetrievingPassengerByEmail(String email) {
         emailToGetPassengerBy = email;
     }
 
-    private Response getPassengerByEmailResponse;
-
     @When("he performs search passenger by email via request")
     public void sendGetPassengerByEmailRequest() {
-        getPassengerByEmailResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGERS_EMAIL_TEMPLATE, emailToGetPassengerBy);
     }
 
     @Then("response should have 200 status, json content type, contain passenger with requested email")
     public void checkGetPassengerByEmailResponse() {
-        getPassengerByEmailResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        PassengerResponseDto actual = getPassengerByEmailResponse.as(PassengerResponseDto.class);
+        PassengerResponseDto actual = response.as(PassengerResponseDto.class);
         PassengerResponseDto expected = PassengerITData.getJohnDoe().build();
 
         assertThat(actual)
@@ -212,22 +197,20 @@ public class PassengerControllerSteps {
     public void prepareInfoForRetrievingPassengers() {
     }
 
-    private Response getPassengersWithNoRequestParamsResponse;
-
     @When("he performs request with no request parameters")
     public void sendGetPassengersWithNoRequestParamsRequest() {
-        getPassengersWithNoRequestParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about these passengers:")
     public void checkGetPassengersWithNoRequestParams(DataTable table) {
-        getPassengersWithNoRequestParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<PassengerResponseDto> actual = getPassengersWithNoRequestParamsResponse
+        ListContainerResponseDto<PassengerResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
                 });
 
@@ -246,12 +229,10 @@ public class PassengerControllerSteps {
                 .containsExactlyInAnyOrderElementsOf(expectedPassengers);
     }
 
-    private Response getPassengersWithNameEmailParamsResponse;
-
     @When("he performs request with parameters: {string}={string} and {string}={string}")
     public void sendGetPassengersWithNameEmailRequestParamsRequest(String nameParam, String nameValue,
             String emailParam, String emailValue) {
-        getPassengersWithNameEmailParamsResponse = RestAssured.given()
+        response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(nameParam, nameValue)
                 .queryParam(emailParam, emailValue)
@@ -260,11 +241,11 @@ public class PassengerControllerSteps {
 
     @Then("response should have 200 status, json content type, contain info about these passengers found by name and email:")
     public void checkGetPassengersWithNameEmailRequestParams(DataTable table) {
-        getPassengersWithNameEmailParamsResponse.then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON);
 
-        ListContainerResponseDto<PassengerResponseDto> actual = getPassengersWithNameEmailParamsResponse
+        ListContainerResponseDto<PassengerResponseDto> actual = response
                 .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
                 });
 
