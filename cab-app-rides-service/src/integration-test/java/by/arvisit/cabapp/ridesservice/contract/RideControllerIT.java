@@ -1,12 +1,19 @@
 package by.arvisit.cabapp.ridesservice.contract;
 
 import static by.arvisit.cabapp.ridesservice.util.RideITData.BEGAN_BANK_CARD_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.BOOKED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_ID_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_ACCEPT_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_END_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedRideResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getBeganBankCardRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.getBookedRideResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewRideRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +36,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-@ActiveProfiles("itest")
+@ActiveProfiles("contract")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @ExtendWith(KafkaTestContainerExtension.class)
@@ -39,7 +46,8 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 @AutoConfigureStubRunner(stubsMode = StubsMode.LOCAL,
-        ids = { "by.arvisit:cab-app-passenger-service:0.0.1-SNAPSHOT:stubs:8480" })
+        ids = { "by.arvisit:cab-app-passenger-service:0.0.1-SNAPSHOT:stubs:8480",
+                "by.arvisit:cab-app-driver-service:0.0.1-SNAPSHOT:stubs:8481", })
 class RideControllerIT {
 
     private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
@@ -59,7 +67,7 @@ class RideControllerIT {
     }
 
     @Test
-    void shouldReturn201AndExpectedResponse_whenSaveRide() throws Exception {
+    void shouldReturn201AndExpectedResponse_whenSaveRide() {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -88,7 +96,7 @@ class RideControllerIT {
     }
 
     @Test
-    void shouldReturn200AndExpectedResponse_whenEndRidePaidWithBankCard() throws Exception {
+    void shouldReturn200AndExpectedResponse_whenEndRidePaidWithBankCard() {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -109,6 +117,40 @@ class RideControllerIT {
                 .ignoringFields(TIMESTAMP_FIELDS)
                 .isEqualTo(expected);
         assertThat(result.endRide())
+                .isNotNull();
+        assertThat(result.initialCost())
+                .isEqualByComparingTo(expected.initialCost());
+        assertThat(result.finalCost())
+                .isEqualByComparingTo(expected.finalCost());
+    }
+
+    @Test
+    void shouldReturn200AndExpectedResponse_whenAcceptRide() {
+
+        String driverId = DRIVER_1_ID;
+        Map<String, String> requestDto = Map.of(DRIVER_ID_KEY, driverId);
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(requestDto)
+                .when().patch(URL_RIDES_ID_ACCEPT_TEMPLATE, BOOKED_RIDE_ID);
+
+        response.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
+        RideResponseDto result = response.as(RideResponseDto.class);
+        RideResponseDto expected = getBookedRideResponseDto()
+                .withStatus(RideStatusEnum.ACCEPTED.toString())
+                .withDriverId(driverId)
+                .build();
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields(BIG_DECIMAL_FIELDS)
+                .ignoringFields(TIMESTAMP_FIELDS)
+                .isEqualTo(expected);
+        assertThat(result.acceptRide())
                 .isNotNull();
         assertThat(result.initialCost())
                 .isEqualByComparingTo(expected.initialCost());
