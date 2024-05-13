@@ -29,6 +29,15 @@ public final class PassengerIntegrationTestData {
     public static final int DEFAULT_PAGEABLE_SIZE = 10;
     public static final String UNSORTED = "UNSORTED";
 
+    public static final String PASSENGER_PAYMENT_CARD_NUMBER = "5538411806914853";
+    public static final String PASSENGER_5_RIDES_CARD_NUMBER = "7853471929691513";
+    public static final String PASSENGER_3_RIDES_CARD_NUMBER = "7853471929691513";
+    public static final String CONTRACT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
+    public static final String CONTRACT_PASSENGER_NAME = "Vivienne Gutierrez";
+    public static final String CONTRACT_PASSENGER_PAYMENT_ID = "072f635e-0ee7-461e-aa7e-1901ae3d0c5e";
+    public static final String CONTRACT_PASSENGER_5_RIDES_ID = "3abcc6a1-94da-4185-aaa1-8a11c1b8efd2";
+    public static final String CONTRACT_PASSENGER_3_RIDES_ID = "2b6716c3-0c8d-4a3d-90f5-49ebcc2b77d8";
+
     public static PassengerRequestDto.PassengerRequestDtoBuilder getSavePassengerRequest() {
         return PassengerRequestDto.builder()
                 .withName(NEW_PASSENGER_NAME)
@@ -89,6 +98,30 @@ public final class PassengerIntegrationTestData {
                 .withName("Jane Doe")
                 .withEmail("jane.doe@yahoo.com.ar")
                 .withCardNumber("7853471929691513");
+    }
+    
+    public static PassengerResponseDto.PassengerResponseDtoBuilder getPassenger3ForRidesService() {
+        return PassengerResponseDto.builder()
+                .withId(CONTRACT_PASSENGER_3_RIDES_ID)
+                .withName(CONTRACT_PASSENGER_NAME)
+                .withEmail(CONTRACT_PASSENGER_EMAIL)
+                .withCardNumber(PASSENGER_3_RIDES_CARD_NUMBER);
+    }
+    
+    public static PassengerResponseDto.PassengerResponseDtoBuilder getPassenger5ForRidesService() {
+        return PassengerResponseDto.builder()
+                .withId(CONTRACT_PASSENGER_5_RIDES_ID)
+                .withName(CONTRACT_PASSENGER_NAME)
+                .withEmail(CONTRACT_PASSENGER_EMAIL)
+                .withCardNumber(PASSENGER_5_RIDES_CARD_NUMBER);
+    }
+    
+    public static PassengerResponseDto.PassengerResponseDtoBuilder getPassengerForPaymentService() {
+        return PassengerResponseDto.builder()
+                .withId(CONTRACT_PASSENGER_PAYMENT_ID)
+                .withName(CONTRACT_PASSENGER_NAME)
+                .withEmail(CONTRACT_PASSENGER_EMAIL)
+                .withCardNumber(PASSENGER_PAYMENT_CARD_NUMBER);
     }
 
     public static ListContainerResponseDto.ListContainerResponseDtoBuilder<PassengerResponseDto> getListContainerForPassengers() {
