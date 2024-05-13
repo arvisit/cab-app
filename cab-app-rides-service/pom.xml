@@ -28,9 +28,6 @@
         <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <wiremock.version>3.5.4</wiremock.version>
-        <jetty.version>11.0.18</jetty.version>
-        <jetty-bom.version>12.0.3</jetty-bom.version>
         <cucumber.version>7.17.0</cucumber.version>
     </properties>
 
@@ -40,13 +37,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty.ee10</groupId>
-                <artifactId>jetty-ee10-bom</artifactId>
-                <version>${jetty-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -165,11 +155,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>${wiremock.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
         </dependency>
@@ -190,6 +175,14 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-stub-runner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
         </dependency>
     </dependencies>
 
