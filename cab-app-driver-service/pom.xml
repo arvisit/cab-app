@@ -29,6 +29,7 @@
         <component-test-pattern>**/*ComponentTest.java</component-test-pattern>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <cucumber.version>7.17.0</cucumber.version>
+        <spring-cloud-contract-maven-plugin.version>4.1.2</spring-cloud-contract-maven-plugin.version>
     </properties>
     
     <dependencyManagement>
@@ -171,6 +172,10 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -283,6 +288,16 @@
                         <exclude>${integration-test-pattern}</exclude>
                         <exclude>${component-test-pattern}</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>${spring-cloud-contract-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <baseClassForTests>by.arvisit.cabapp.driverservice.contract.BaseTestClass</baseClassForTests>
+                    <contractsDirectory>${project.basedir}/src/integration-test/resources/contracts</contractsDirectory>
                 </configuration>
             </plugin>
         </plugins>

@@ -51,6 +51,13 @@ public final class DriverIntegrationTestData {
     public static final String UNSORTED = "UNSORTED";
     public static final int SHIFT = 1;
 
+    public static final String CONTRACT_DRIVER_PAYMENT_CARD_NUMBER = "8972821332297027";
+    public static final String CONTRACT_DRIVER_RIDES_CARD_NUMBER = "1522613953683617";
+    public static final String CONTRACT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
+    public static final String CONTRACT_DRIVER_NAME = "Jeremias Olsen";
+    public static final String CONTRACT_DRIVER_PAYMENT_ID = "d9343856-ad27-4256-9534-4c59fa5e6422";
+    public static final String CONTRACT_DRIVER_RIDES_ID = "4c2b3a93-1d97-4ccf-a7b8-824daea08671";
+
     public static DriverRequestDto.DriverRequestDtoBuilder getSaveDriverRequest() {
         return DriverRequestDto.builder()
                 .withName(NEW_DRIVER_NAME)
@@ -172,6 +179,26 @@ public final class DriverIntegrationTestData {
                 .withManufacturer(CAR_MANUFACTURERS.get(3 - SHIFT))
                 .withColor(COLORS.get(2 - SHIFT))
                 .withRegistrationNumber("E391MP-4");
+    }
+
+    public static DriverResponseDto.DriverResponseDtoBuilder getDriverForRidesService() {
+        return DriverResponseDto.builder()
+                .withId(CONTRACT_DRIVER_RIDES_ID)
+                .withName(CONTRACT_DRIVER_NAME)
+                .withEmail(CONTRACT_DRIVER_EMAIL)
+                .withCardNumber(CONTRACT_DRIVER_RIDES_CARD_NUMBER)
+                .withCar(null)
+                .withIsAvailable(true);
+    }
+
+    public static DriverResponseDto.DriverResponseDtoBuilder getDriverForPaymentService() {
+        return DriverResponseDto.builder()
+                .withId(CONTRACT_DRIVER_PAYMENT_ID)
+                .withName(CONTRACT_DRIVER_NAME)
+                .withEmail(CONTRACT_DRIVER_EMAIL)
+                .withCardNumber(CONTRACT_DRIVER_PAYMENT_CARD_NUMBER)
+                .withCar(null)
+                .withIsAvailable(true);
     }
 
     public static <T> ListContainerResponseDto.ListContainerResponseDtoBuilder<T> getListContainerForResponse(
