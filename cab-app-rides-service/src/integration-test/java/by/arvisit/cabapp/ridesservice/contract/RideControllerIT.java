@@ -4,12 +4,15 @@ import static by.arvisit.cabapp.ridesservice.util.RideITData.BEGAN_BANK_CARD_RID
 import static by.arvisit.cabapp.ridesservice.util.RideITData.BOOKED_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_1_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_ID_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.ENDED_CASH_NOT_PAID_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_ACCEPT_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_END_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedRideResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getBeganBankCardRideResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getBookedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideITData.getEndedCashNotPaidRideResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewRideRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,16 +50,13 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 @AutoConfigureStubRunner(stubsMode = StubsMode.LOCAL,
         ids = { "by.arvisit:cab-app-passenger-service:+:stubs:8480",
-                "by.arvisit:cab-app-driver-service:+:stubs:8481", })
+                "by.arvisit:cab-app-driver-service:+:stubs:8481",
+                "by.arvisit:cab-app-payment-service:+:stubs:8482" })
 class RideControllerIT {
 
-    private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
             "finishRide" };
     private static final String[] BIG_DECIMAL_FIELDS = { "initialCost", "finalCost" };
-    private static final String[] FIELDS_FOR_LIST_TO_IGNORE = { "initialCost", "finalCost", "bookRide", "cancelRide",
-            "acceptRide", "beginRide", "endRide", "finishRide" };
-    private static final String VALUES_FIELD = "values";
 
     @LocalServerPort
     private int serverPort;
@@ -152,6 +152,38 @@ class RideControllerIT {
                 .isEqualTo(expected);
         assertThat(result.acceptRide())
                 .isNotNull();
+        assertThat(result.initialCost())
+                .isEqualByComparingTo(expected.initialCost());
+        assertThat(result.finalCost())
+                .isEqualByComparingTo(expected.finalCost());
+    }
+
+    @Test
+    void shouldReturn200AndExpectedResponse_whenConfirmPaymentCash() throws Exception {
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, ENDED_CASH_NOT_PAID_RIDE_ID);
+
+        response.then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON);
+
+        RideResponseDto result = response.as(RideResponseDto.class);
+        RideResponseDto expected = getEndedCashNotPaidRideResponseDto()
+                .withStatus(RideStatusEnum.FINISHED.toString())
+                .withIsPaid(true)
+                .build();
+
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields(BIG_DECIMAL_FIELDS)
+                .ignoringFields(TIMESTAMP_FIELDS)
+                .isEqualTo(expected);
+        assertThat(result.finishRide())
+                .isNotNull();
+        assertThat(result.isPaid())
+                .isTrue();
         assertThat(result.initialCost())
                 .isEqualByComparingTo(expected.initialCost());
         assertThat(result.finalCost())
