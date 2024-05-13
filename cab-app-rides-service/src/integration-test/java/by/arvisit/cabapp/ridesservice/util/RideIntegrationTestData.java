@@ -204,13 +204,13 @@ public final class RideIntegrationTestData {
     public static PassengerPaymentResponseDto.PassengerPaymentResponseDtoBuilder getPassengerPaymentResponseDto() {
         return PassengerPaymentResponseDto.builder()
                 .withId(PASSENGER_PAYMENT_DEFAULT_ID)
-                .withRideId(BEGAN_BANK_CARD_RIDE_ID)
-                .withPassengerId(PASSENGER_3_ID)
-                .withDriverId(DRIVER_2_ID)
+                .withRideId(ENDED_CASH_NOT_PAID_RIDE_ID)
+                .withPassengerId(PASSENGER_4_ID)
+                .withDriverId(DRIVER_3_ID)
                 .withAmount(RIDE_DEFAULT_FINAL_COST)
                 .withFeeAmount(FEE_FOR_RIDE_DEFAULT_FINAL_COST)
-                .withPaymentMethod(RIDE_DEFAULT_PAYMENT_METHOD_STRING)
-                .withCardNumber(DEFAULT_PASSENGER_CARD_NUMBER)
+                .withPaymentMethod(PaymentMethodEnum.CASH.toString())
+                .withCardNumber(null)
                 .withStatus(PAYMENT_DEFAULT_STATUS)
                 .withTimestamp(PASSENGER_PAYMENT_DEFAULT_TIMESTAMP);
     }
