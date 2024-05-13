@@ -46,8 +46,8 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 @AutoConfigureStubRunner(stubsMode = StubsMode.LOCAL,
-        ids = { "by.arvisit:cab-app-passenger-service:0.0.1-SNAPSHOT:stubs:8480",
-                "by.arvisit:cab-app-driver-service:0.0.1-SNAPSHOT:stubs:8481", })
+        ids = { "by.arvisit:cab-app-passenger-service:+:stubs:8480",
+                "by.arvisit:cab-app-driver-service:+:stubs:8481", })
 class RideControllerIT {
 
     private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
