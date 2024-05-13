@@ -138,6 +138,20 @@ public final class RideIntegrationTestData {
     public static final ZonedDateTime PASSENGER_PAYMENT_DEFAULT_TIMESTAMP = ZonedDateTime.of(2024, 4, 4, 12, 6, 0, 0,
             EUROPE_MINSK_TIMEZONE);
 
+    public static final String CONTRACT_RIDE_PAYMENT_ID = "69b509c6-20fe-4b70-a07e-31e52ea05a54";
+    public static final String CONTRACT_RIDE_PAYMENT_PASSENGER_ID = "072f635e-0ee7-461e-aa7e-1901ae3d0c5e";
+    public static final String CONTRACT_RIDE_PAYMENT_DRIVER_ID = "d9343856-ad27-4256-9534-4c59fa5e6422";
+    public static final String CONTRACT_RIDE_PAYMENT_START_ADDRESS = "Bramcote Grove, 42";
+    public static final String CONTRACT_RIDE_PAYMENT_DESTINATION_ADDRESS = "Llewellyn Street, 35";
+    public static final BigDecimal CONTRACT_RIDE_PAYMENT_FINAL_COST = BigDecimal.valueOf(100);
+    public static final BigDecimal CONTRACT_RIDE_PAYMENT_INITIAL_COST = BigDecimal.valueOf(100);
+    public static final String CONTRACT_RIDE_PAYMENT_STATUS = "END_RIDE";
+    public static final ZonedDateTime CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP = ZonedDateTime.of(2024, 4, 4, 12, 2, 0,
+            0, EUROPE_MINSK_TIMEZONE);
+
+    private RideITData() {
+    }
+
     public static PromoCodeRequestDto.PromoCodeRequestDtoBuilder getNewPromoCodeRequestDto() {
         return PromoCodeRequestDto.builder()
                 .withKeyword(NEW_PROMO_CODE_KEYWORD)
@@ -214,7 +228,7 @@ public final class RideIntegrationTestData {
                 .withStatus(PAYMENT_DEFAULT_STATUS)
                 .withTimestamp(PASSENGER_PAYMENT_DEFAULT_TIMESTAMP);
     }
-    
+
     public static RatingResponseDto.RatingResponseDtoBuilder getPassengerRating() {
         return RatingResponseDto.builder()
                 .withUserType(UserTypeEnum.PASSENGER)
@@ -465,6 +479,29 @@ public final class RideIntegrationTestData {
                 .withBeginRide(RIDE_DEFAULT_BEGIN_RIDE)
                 .withEndRide(RIDE_DEFAULT_END_RIDE)
                 .withFinishRide(RIDE_DEFAULT_FINISH_RIDE);
+    }
+
+    public static RideResponseDto.RideResponseDtoBuilder getRideForPayment() {
+        return RideResponseDto.builder()
+                .withId(CONTRACT_RIDE_PAYMENT_ID)
+                .withPassengerId(CONTRACT_RIDE_PAYMENT_PASSENGER_ID)
+                .withDriverId(CONTRACT_RIDE_PAYMENT_DRIVER_ID)
+                .withPaymentMethod(PaymentMethodEnum.BANK_CARD.toString())
+                .withStartAddress(CONTRACT_RIDE_PAYMENT_START_ADDRESS)
+                .withDestinationAddress(CONTRACT_RIDE_PAYMENT_DESTINATION_ADDRESS)
+                .withInitialCost(CONTRACT_RIDE_PAYMENT_INITIAL_COST)
+                .withFinalCost(CONTRACT_RIDE_PAYMENT_FINAL_COST)
+                .withIsPaid(false)
+                .withStatus(CONTRACT_RIDE_PAYMENT_STATUS)
+                .withPromoCode(null)
+                .withPassengerScore(null)
+                .withDriverScore(null)
+                .withBookRide(CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP)
+                .withCancelRide(null)
+                .withAcceptRide(CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP)
+                .withBeginRide(CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP)
+                .withEndRide(CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP)
+                .withFinishRide(null);
     }
 
     public static <T> ListContainerResponseDto.ListContainerResponseDtoBuilder<T> getListContainerForResponse(
