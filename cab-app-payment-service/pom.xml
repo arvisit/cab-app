@@ -307,6 +307,7 @@
                 <configuration>
                     <baseClassForTests>by.arvisit.cabapp.paymentservice.contract.BaseTestClass</baseClassForTests>
                     <contractsDirectory>${project.basedir}/src/integration-test/resources/contracts</contractsDirectory>
+                    <nameSuffixForTests>IT</nameSuffixForTests>
                 </configuration>
             </plugin>
         </plugins>
