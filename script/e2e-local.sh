@@ -68,18 +68,18 @@ mvn clean spring-boot:run \
         --server.port=$passengerPort" \
     --file cab-app-passenger-service/pom.xml &
 pids+=($!)
-echo "Start passenger service on port: $passengerPort"
-#mvn clean spring-boot:run \
-#    -Dspring-boot.run.arguments="
-#        --DB_URL=$dbUrlBase/driver_service_db
-#        --DB_PASSWORD=$dbPassword
-#        --DB_USERNAME=$dbUsername
-#        --spring.profiles.active=$activeProfile
-#        --RIDES_SERVICE_PORT=$ridesPort
-#        --server.port=$driverPort" \
-#    --file cab-app-driver-service/pom.xml &
-#pids+=($!)
-#echo "Start driver service on port: $driverPort"
+echo -e "\033[0;35mStart passenger service on port:\033[0m $passengerPort"
+mvn clean spring-boot:run \
+    -Dspring-boot.run.arguments="
+        --DB_URL=$dbUrlBase/driver_service_db
+        --DB_PASSWORD=$dbPassword
+        --DB_USERNAME=$dbUsername
+        --spring.profiles.active=$activeProfile
+        --RIDES_SERVICE_PORT=$ridesPort
+        --server.port=$driverPort" \
+    --file cab-app-driver-service/pom.xml &
+pids+=($!)
+echo -e "\033[0;35mStart driver service on port:\033[0m $driverPort"
 #mvn clean spring-boot:run \
 #    -Dspring-boot.run.arguments="
 #        --DB_URL=$dbUrlBase/rides_service_db
@@ -92,7 +92,7 @@ echo "Start passenger service on port: $passengerPort"
 #        --server.port=$ridesPort" \
 #    --file cab-app-rides-service/pom.xml &
 #pids+=($!)
-#echo "Start rides service on port: $ridesPort"
+#echo -e "\033[0;35mStart rides service on port:\033[0m $ridesPort"
 #mvn clean spring-boot:run \
 #    -Dspring-boot.run.arguments="
 #        --DB_URL=$dbUrlBase/payment_service_db
@@ -105,13 +105,16 @@ echo "Start passenger service on port: $passengerPort"
 #        --server.port=$paymentPort" \
 #    --file cab-app-rides-service/pom.xml &
 #pids+=($!)
-#echo "Start payment service on port: $paymentPort"
+#echo -e "\033[0;35mStart payment service on port:\033[0m $paymentPort"
 
-sleep 10
+sleep 30
 
 docker exec -i $postgresContainer psql -U $dbUsername -f /home/e2e_sql/fill_dbs.sql
 
-for service in *passenger-service/; do
+testedServices=()
+testResults=()
+
+for service in *r-service/; do
     case $(echo "$service" | cut -d'-' -f3) in
         passenger) serverPort=$passengerPort
             ;;
@@ -125,6 +128,8 @@ for service in *passenger-service/; do
     mvn test -Dtest=CucumberRunnerE2E \
         -DserverPort=$serverPort \
         --file "$service"pom.xml
+    testResults+=($?)
+    testedServices+=("${service::-1}")
 done
 
 for pid in "${pids[@]}"; do
@@ -134,3 +139,17 @@ done
 docker stop $zookeeperContainer $kafkaContainer $postgresContainer
 docker rm $zookeeperContainer $kafkaContainer $postgresContainer
 docker network rm $networkName
+
+echo "-----------------------------------"
+echo "REPORT:"
+for ((i = 0; i < ${#testedServices[@]}; i++)); do
+    if [ "${testResults[i]}" -eq 0 ]; then
+        #green
+        result="\033[0;32mSUCCESS\033[0m"
+    else
+        #red
+        result="\033[0;31mFAILURE\033[0m"
+    fi
+    echo -e "${testedServices[i]}: $result"
+done
+echo "-----------------------------------"
