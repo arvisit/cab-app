@@ -34,9 +34,9 @@ jobs:
                 github.base_ref != 'main') }}
       run: |
         flag=0
-        for i in $INNER_DEPENDENCIES; do
-            if [[ $(git diff --quiet HEAD origin/dev -- "$i") -ne 0 ]]; then
-                echo "Changes in inner dependency: $i while working in non-protected branch"
+        for dep in $INNER_DEPENDENCIES; do
+            if [[ $(git diff --quiet HEAD origin/dev -- "$dep") -ne 0 ]]; then
+                echo "Changes in inner dependency: $dep while working in non-protected branch"
                 flag=1
                 break
             fi
@@ -44,12 +44,12 @@ jobs:
         if [[ "$flag" -eq 1 ]]; then
             mvn test
         else
-            for i in $INNER_DEPENDENCIES; do
-                mvn install --file "$i"pom.xml
+            for dep in $INNER_DEPENDENCIES; do
+                mvn install --file "$dep"pom.xml
             done
-            for i in *service/; do
-                git diff --quiet HEAD origin/dev -- "$i" || { echo "Changes in $i while working in non-protected branch";
-                    mvn test --file "$i"pom.xml; }
+            for service in *service/; do
+                git diff --quiet HEAD origin/dev -- "$service" || { echo "Changes in $service while working in non-protected branch";
+                    mvn test --file "$service"pom.xml; }
             done
         fi
     - name: Push or pull-request to dev branch
@@ -57,22 +57,39 @@ jobs:
               (github.event_name == 'pull_request' && github.base_ref == 'dev') }}
       run: |
         flag=0
-        for i in $INNER_DEPENDENCIES; do
-            if [[ $(git diff --quiet HEAD origin/dev -- "$i") -ne 0 ]]; then
-                echo "Changes in inner dependency: $i while applying to dev"
+        for dep in $INNER_DEPENDENCIES; do
+            if [[ $(git diff --quiet HEAD origin/dev -- "$dep") -ne 0 ]]; then
+                echo "Changes in inner dependency: $dep while applying to dev"
                 flag=1
                 break
             fi
         done
+        for service in *service/; do
+            artifactId=${service::-1}
+            stubsJarFullPath=$(ls "$service"target/*-stubs.jar)
+            stubsJar=${stubsJarFullPath//$service/}
+
+            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
+            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
+
+            mvn install:install-file \
+                -Dfile="$stubsJar" \
+                -DgroupId=by.arvisit \
+                -DartifactId="$artifactId" \
+                -Dversion=0.0.1-SNAPSHOT \
+                -Dpackaging=jar \
+                -Dclassifier=stubs \
+                --file "$service"pom.xml
+        done
         if [[ "$flag" -eq 1 ]]; then
             mvn verify
         else
-            for i in $INNER_DEPENDENCIES; do
-                mvn install --file "$i"pom.xml
+            for dep in $INNER_DEPENDENCIES; do
+                mvn install --file "$dep"pom.xml
             done
-            for i in *service/; do
-                git diff --quiet HEAD origin/dev -- "$i" || { echo "Changes in $i while applying to dev";
-                    mvn verify --file "$i"pom.xml; }
+            for service in *service/; do
+                git diff --quiet HEAD origin/dev -- "$service" || { echo "Changes in $service while applying to dev";
+                    mvn verify --file "$service"pom.xml; }
             done
         fi
     - name: Push or pull-request to main branch
@@ -80,21 +97,38 @@ jobs:
               (github.event_name == 'pull_request' && github.base_ref == 'main') }}
       run: |
         flag=0
-        for i in $INNER_DEPENDENCIES; do
-            if [[ $(git diff --quiet HEAD origin/main -- "$i") -ne 0 ]]; then
-                echo "Changes in inner dependency: $i while applying to main"
+        for dep in $INNER_DEPENDENCIES; do
+            if [[ $(git diff --quiet HEAD origin/main -- "$dep") -ne 0 ]]; then
+                echo "Changes in inner dependency: $dep while applying to main"
                 flag=1
                 break
             fi
         done
+        for service in *service/; do
+            artifactId=${service::-1}
+            stubsJarFullPath=$(ls "$service"target/*-stubs.jar)
+            stubsJar=${stubsJarFullPath//$service/}
+
+            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
+            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
+
+            mvn install:install-file \
+                -Dfile="$stubsJar" \
+                -DgroupId=by.arvisit \
+                -DartifactId="$artifactId" \
+                -Dversion=0.0.1-SNAPSHOT \
+                -Dpackaging=jar \
+                -Dclassifier=stubs \
+                --file "$service"pom.xml
+        done
         if [[ "$flag" -eq 1 ]]; then
             mvn verify
         else
-            for i in $INNER_DEPENDENCIES; do
-                mvn install --file "$i"pom.xml
+            for dep in $INNER_DEPENDENCIES; do
+                mvn install --file "$dep"pom.xml
             done
-            for i in *service/; do
-                git diff --quiet HEAD origin/main -- "$i" || { echo "Changes in $i while applying to main";
-                    mvn verify --file "$i"pom.xml; }
+            for service in *service/; do
+                git diff --quiet HEAD origin/main -- "$service" || { echo "Changes in $service while applying to main";
+                    mvn verify --file "$service"pom.xml; }
             done
         fi
