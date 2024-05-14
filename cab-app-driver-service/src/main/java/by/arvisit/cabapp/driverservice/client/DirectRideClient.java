@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 
-@Profile({ "dev", "itest" })
+@Profile({ "dev", "itest", "e2e" })
 @FeignClient(name = "cab-app-rides-service", url = "${spring.settings.cab-app-rides-service.uri}",
         configuration = CabAppFeignClientConfiguration.class)
 public interface DirectRideClient extends RideClient {
