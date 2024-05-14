@@ -16,6 +16,22 @@ spring:
       pageable:
         max-page-size: 50
 
+  cloud:
+    function:
+      definition: confirmCardPayment
+    stream:
+      bindings:
+        outCreateCardPayment:
+          destination: passengerPayCardTopic
+          content-type: application/json
+        confirmCardPayment-in-0:
+          destination: cardPaymentCreatedTopic
+          content-type: application/json
+          group: cardPaymentConfirming
+      kafka:
+        binder:
+          brokers: localhost:29092
+
 logging:
   level:
     root: info

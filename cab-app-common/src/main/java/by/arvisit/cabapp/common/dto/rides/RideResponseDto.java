@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.ridesservice.dto;
+package by.arvisit.cabapp.common.dto.rides;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

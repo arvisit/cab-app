@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
@@ -32,4 +33,13 @@ public interface RideMapper {
     @Mapping(target = "promoCode",
             expression = "java(entity.getPromoCode() != null ? entity.getPromoCode().getKeyword() : null)")
     RideResponseDto fromEntityToResponseDto(Ride entity);
+
+    @Mapping(target = "rideId", source = "id")
+    @Mapping(target = "amount", source = "finalCost")
+    @Mapping(target = "cardNumber", ignore = true)
+    PassengerPaymentRequestDto fromRideToPassengerPaymentRequestDto(Ride entity);
+
+    @Mapping(target = "rideId", source = "entity.id")
+    @Mapping(target = "amount", source = "entity.finalCost")
+    PassengerPaymentRequestDto fromRideToPassengerPaymentRequestDto(Ride entity, String cardNumber);
 }
