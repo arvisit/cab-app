@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      '[hibernate.format_sql]': true
+  settings:
+    cab-app-rides-service:
+      uri: http://localhost:${RIDES_SERVICE_PORT}/api/v1/rides
+
+logging:
+  config: classpath:logback-dev.xml
+  level:
+    '[by.arvisit.cabapp]': debug
+    '[org.springframework.security]': debug
+    '[org.springframework.web]': debug
