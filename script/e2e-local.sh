@@ -122,10 +122,8 @@ for service in *passenger-service/; do
         payment) serverPort=$paymentPort
             ;;
     esac
-    logFilename=./${service::-1}.log
     mvn test -Dtest=CucumberRunnerE2E \
         -DserverPort=$serverPort \
-        --log-file "$logFilename" \
         --file "$service"pom.xml
 done
 
