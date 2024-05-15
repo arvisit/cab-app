@@ -9,7 +9,7 @@ import io.cucumber.core.options.Constants;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("by/arvisit/cabapp/driverservice/component")
+@SelectClasspathResource("by/arvisit/cabapp/driverservice/e2e")
 @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "by.arvisit.cabapp.driverservice.e2e")
 @ConfigurationParameter(key = Constants.FEATURES_PROPERTY_NAME, value = "classpath:features")
 @ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "@e2e")
