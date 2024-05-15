@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 
-@Profile({ "dev", "itest", "contract" })
+@Profile({ "dev", "itest", "contract", "e2e" })
 @FeignClient(name = "cab-app-driver-service", url = "${spring.settings.cab-app-driver-service.uri}",
         configuration = CabAppFeignClientConfiguration.class)
 public interface DirectDriverClient extends DriverClient {
