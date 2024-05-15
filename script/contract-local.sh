@@ -26,8 +26,13 @@ for service in *service/; do
         --file "$service"pom.xml
 done
 
+testedServices=()
+testResults=()
+
 for service in *service/; do
     mvn clean verify --file "$service"pom.xml
+    testResults+=($?)
+    testedServices+=("${service::-1}")
 done
 
 duration=$(( SECONDS - start))
@@ -50,6 +55,27 @@ secondsToHMS() {
     fi
 }
 
+echo "-----------------------------------------------------"
+echo "REPORT:"
+for ((i = 0; i < ${#testedServices[@]}; i++)); do
+    if [ "${testResults[i]}" -eq 0 ]; then
+        #green
+        result="\033[0;32mSUCCESS\033[0m"
+    else
+        #red
+        result="\033[0;31mFAILURE\033[0m"
+    fi
+    echo -e "${testedServices[i]}: $result"
+done
+echo "-----------------------------------------------------"
 echo -e "Script was started at \033[0;36m$startDate\033[0m"
 echo -e "Script was finished at \033[0;36m$finishDate\033[0m"
 echo -e "Total time: \033[0;32m$(secondsToHMS duration)\033[0m"
+echo "-----------------------------------------------------"
+
+
+for result in "${testResults[@]}"; do
+    if [ "$result" -ne 0 ]; then
+        exit 1
+    fi
+done
