@@ -103,32 +103,32 @@ mvn clean spring-boot:run \
     --file cab-app-driver-service/pom.xml &
 pids+=($!)
 echo -e "\033[0;35mStart driver service on port:\033[0m $driverPort"
-#mvn clean spring-boot:run \
-#    -Dspring-boot.run.arguments="
-#        --DB_URL=$dbUrlBase/rides_service_db
-#        --DB_PASSWORD=$dbPassword
-#        --DB_USERNAME=$dbUsername
-#        --spring.profiles.active=$activeProfile
-#        --PASSENGER_SERVICE_PORT=$passengerPort
-#        --DRIVER_SERVICE_PORT=$driverPort
-#        --PAYMENT_SERVICE_PORT=$paymentPort
-#        --server.port=$ridesPort" \
-#    --file cab-app-rides-service/pom.xml &
-#pids+=($!)
-#echo -e "\033[0;35mStart rides service on port:\033[0m $ridesPort"
-#mvn clean spring-boot:run \
-#    -Dspring-boot.run.arguments="
-#        --DB_URL=$dbUrlBase/payment_service_db
-#        --DB_PASSWORD=$dbPassword
-#        --DB_USERNAME=$dbUsername
-#        --spring.profiles.active=$activeProfile
-#        --PASSENGER_SERVICE_PORT=$passengerPort
-#        --DRIVER_SERVICE_PORT=$driverPort
-#        --RIDES_SERVICE_PORT=$ridesPort
-#        --server.port=$paymentPort" \
-#    --file cab-app-rides-service/pom.xml &
-#pids+=($!)
-#echo -e "\033[0;35mStart payment service on port:\033[0m $paymentPort"
+mvn clean spring-boot:run \
+    -Dspring-boot.run.arguments="
+        --DB_URL=$dbUrlBase/rides_service_db
+        --DB_PASSWORD=$dbPassword
+        --DB_USERNAME=$dbUsername
+        --spring.profiles.active=$activeProfile
+        --PASSENGER_SERVICE_PORT=$passengerPort
+        --DRIVER_SERVICE_PORT=$driverPort
+        --PAYMENT_SERVICE_PORT=$paymentPort
+        --server.port=$ridesPort" \
+    --file cab-app-rides-service/pom.xml &
+pids+=($!)
+echo -e "\033[0;35mStart rides service on port:\033[0m $ridesPort"
+mvn clean spring-boot:run \
+    -Dspring-boot.run.arguments="
+        --DB_URL=$dbUrlBase/payment_service_db
+        --DB_PASSWORD=$dbPassword
+        --DB_USERNAME=$dbUsername
+        --spring.profiles.active=$activeProfile
+        --PASSENGER_SERVICE_PORT=$passengerPort
+        --DRIVER_SERVICE_PORT=$driverPort
+        --RIDES_SERVICE_PORT=$ridesPort
+        --server.port=$paymentPort" \
+    --file cab-app-payment-service/pom.xml &
+pids+=($!)
+echo -e "\033[0;35mStart payment service on port:\033[0m $paymentPort"
 
 sleep 30
 
@@ -138,18 +138,11 @@ testedServices=()
 testResults=()
 
 for service in *"$selectedService"-service/; do
-    case $(echo "$service" | cut -d'-' -f3) in
-        passenger) serverPort=$passengerPort
-            ;;
-        driver) serverPort=$driverPort
-            ;;
-        rides) serverPort=$ridesPort
-            ;;
-        payment) serverPort=$paymentPort
-            ;;
-    esac
     mvn test -Dtest=CucumberRunnerE2E \
-        -DserverPort=$serverPort \
+        -DpassengerServerPort=$passengerPort \
+        -DdriverServerPort=$driverPort \
+        -DridesServerPort=$ridesPort \
+        -DpaymentServerPort=$paymentPort \
         --file "$service"pom.xml
     testResults+=($?)
     testedServices+=("${service::-1}")

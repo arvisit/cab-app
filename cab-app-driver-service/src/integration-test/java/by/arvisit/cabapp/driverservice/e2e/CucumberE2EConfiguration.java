@@ -9,7 +9,7 @@ public class CucumberE2EConfiguration {
 
     @Before
     public void setUpPort() {
-        String serverPort = System.getProperty("serverPort");
+        String serverPort = System.getProperty("driverServerPort");
         RestAssured.port = Integer.parseInt(serverPort);
     }
 }
