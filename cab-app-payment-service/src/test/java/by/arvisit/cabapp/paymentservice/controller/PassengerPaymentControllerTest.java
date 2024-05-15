@@ -65,7 +65,7 @@ class PassengerPaymentControllerTest {
     private static final String UNPARSEABLE_DATE_MESSAGE = "Unparseable date values detected";
     private static final String UNPARSEABLE_UUID_MESSAGE = "Unparseable UUID values detected";
     private static final String REQUEST_PARAMS_VALUE_BLANK_MESSAGE = "must not be blank";
-    private static final String REQUEST_PARAMS_NOT_ALLOWED_MESSAGE = "Only specified request parameters are allowed: [page, size, sort, status, paymentMethod, passengerId, driverId, timestamp]";
+    private static final String REQUEST_PARAMS_NOT_ALLOWED_MESSAGE = "Only specified request parameters are allowed: [page, size, sort, status, paymentMethod, passengerId, driverId, rideId, timestamp]";
     private static final String PAYMENT_METHOD_NOT_VALID_MESSAGE = "Payment method should be BANK_CARD or CASH";
     private static final String PAYMENT_METHOD_BLANK_MESSAGE = "Payment method should not be blank";
     private static final String CARD_NUMBER_NOT_MATCH_PATTERN = "Card number should consist of 16 digits";
