@@ -176,3 +176,9 @@ for ((i = 0; i < ${#testedServices[@]}; i++)); do
     echo -e "${testedServices[i]}: $result"
 done
 echo "-----------------------------------"
+
+for result in "${testResults[@]}"; do
+    if [ "$result" -ne 0 ]; then
+        exit 1
+    fi
+done
