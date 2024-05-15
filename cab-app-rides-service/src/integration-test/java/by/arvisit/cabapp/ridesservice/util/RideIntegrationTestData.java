@@ -67,6 +67,9 @@ public final class RideIntegrationTestData {
     public static final String BRILLIANT10_KEYWORD = "BRILLIANT10";
     public static final boolean BRILLIANT10_IS_ACTIVE = true;
     public static final long BRILLIANT10_ID = 3L;
+    public static final String DIAMOND10_KEYWORD = "DIAMOND10";
+    public static final boolean DIAMOND10_IS_ACTIVE = true;
+    public static final long DIAMON10_ID = 5L;
 
     public static final String ENDED_BANK_CARD_NOT_PAID_RIDE_ID = "942d8839-7a16-4dfa-9443-179220135b3a";
     public static final String PAYMENT_DEFAULT_STATUS = "SUCCESS";
@@ -109,6 +112,7 @@ public final class RideIntegrationTestData {
     public static final BigDecimal RIDE_FINAL_COST_WITH_BRILLIANT10_PROMO_CODE = RIDE_DEFAULT_FINAL_COST
             .subtract(RIDE_DEFAULT_FINAL_COST.multiply(BigDecimal.valueOf(BRILLIANT10_DISCOUNT_PERCENT))
                     .divide(BIG_DECIMAL_HUNDRED));
+    public static final BigDecimal RIDE_FINAL_COST_WITH_DIAMOND10_PROMO_CODE = RIDE_FINAL_COST_WITH_BRILLIANT10_PROMO_CODE;
     public static final BigDecimal FEE_FOR_RIDE_DEFAULT_FINAL_COST = RIDE_DEFAULT_FINAL_COST
             .multiply(AGGREGATOR_FEE_PERCENT)
             .divide(BIG_DECIMAL_HUNDRED);
