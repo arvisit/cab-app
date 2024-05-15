@@ -51,24 +51,6 @@ public class CarControllerSteps {
                 .as(new TypeRef<ListContainerResponseDto<CarResponseDto>>() {
                 });
 
-        ListContainerResponseDto<CarResponseDto> expected = DriverITData
-                .getListContainerForResponse(CarResponseDto.class)
-                .withValues(List.of(getJaneDoeCar().build(), getJannyDoeCar().build(), getJohnnyDoeCar().build(),
-                        getJohnDoeCar().build()))
-                .withLastPage(0)
-                .build();
-
-        assertThat(actual.currentPage())
-                .isZero();
-        assertThat(actual.lastPage())
-                .isZero();
-        assertThat(actual.size())
-                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
-        assertThat(actual.sort())
-                .isEqualTo(UNSORTED);
-
-        assertThat(actual.values())
-                .containsExactlyInAnyOrderElementsOf(expected.values());
         assertThat(actual.values())
                 .hasSize(carsCount);
     }

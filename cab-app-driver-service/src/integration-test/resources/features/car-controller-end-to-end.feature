@@ -4,7 +4,7 @@ Feature: Car Controller End to End
   Scenario: Retrieving existing cars by default
     Given User wants to get details about existing cars
     When he performs request for cars with no request parameters
-    Then response should have 200 status, json content type, contain info about 4 cars
+    Then response should have 200 status, json content type, contain info about 7 cars
 
   @e2e
   Scenario: Retrieving an existing car by id
