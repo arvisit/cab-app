@@ -16,7 +16,7 @@ import jakarta.persistence.criteria.Predicate;
 public class PassengerPaymentSpecs {
 
     private static final Set<String> VALID_EQUAL_STRING_PARAM_NAMES = Set.of("status", "paymentMethod");
-    private static final Set<String> VALID_EQUAL_UUID_PARAM_NAMES = Set.of("passengerId", "driverId");
+    private static final Set<String> VALID_EQUAL_UUID_PARAM_NAMES = Set.of("passengerId", "driverId", "rideId");
     private static final Set<String> VALID_DATE_PARAM_NAMES = Set.of("timestamp");
 
     public Specification<PassengerPayment> getAllByFilter(Map<String, String> filterParams) {

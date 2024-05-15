@@ -60,11 +60,11 @@ public class PassengerPaymentController {
             @PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
             @MapContainsAllowedKeys(
-                    keys = { "page", "size", "sort", "status", "paymentMethod", "passengerId", "driverId",
+                    keys = { "page", "size", "sort", "status", "paymentMethod", "passengerId", "driverId", "rideId",
                             "timestamp" },
                     message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
             @MapContainsParseableUUIDValues(
-                    keys = { "passengerId", "driverId" })
+                    keys = { "passengerId", "driverId", "rideId" })
             @MapContainsParseableDateValues(
                     keys = { "timestamp" }) Map<String, @NotBlank String> requestParams) {
 
