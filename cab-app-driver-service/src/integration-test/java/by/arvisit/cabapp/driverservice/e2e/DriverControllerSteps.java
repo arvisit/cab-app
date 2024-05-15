@@ -15,6 +15,7 @@ import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdateDriverR
 import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdatedDriverResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -36,6 +37,7 @@ import io.restassured.response.Response;
 
 public class DriverControllerSteps {
 
+    private static final String PAGE_REQUEST_PARAM = "page";
     private static final String ID_FIELD = "id";
     private static final String CAR_ID_FIELD = "car.id";
 
@@ -139,13 +141,7 @@ public class DriverControllerSteps {
     @Given("User wants to delete an existing driver with id {string}")
     public void prepareInfoForDriverDelete(String id) {
         driverId = id;
-        Response tmpResponse = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .when().get(URL_DRIVERS);
-        driversBeforeDelete = tmpResponse
-                .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
-                })
-                .values();
+        driversBeforeDelete = extractAllItems();
     }
 
     @When("he performs delete of existing driver via request")
@@ -160,13 +156,7 @@ public class DriverControllerSteps {
         response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Response tmpResponse = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .when().get(URL_DRIVERS);
-        List<DriverResponseDto> driversAfterDelete = tmpResponse
-                .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
-                })
-                .values();
+        List<DriverResponseDto> driversAfterDelete = extractAllItems();
 
         assertThat(driversAfterDelete).size()
                 .isEqualTo(driversBeforeDelete.size() - 1);
@@ -350,4 +340,26 @@ public class DriverControllerSteps {
 //        assertThat(actual.values())
 //                .hasSize(driversCount);
 //    }
+
+    private List<DriverResponseDto> extractAllItems() {
+        List<DriverResponseDto> items = new ArrayList<>();
+
+        int nextPage = 0;
+        int lastPage = 0;
+
+        do {
+            Response tmpResponse = RestAssured.given()
+                    .contentType(ContentType.JSON)
+                    .queryParam(PAGE_REQUEST_PARAM, nextPage)
+                    .when().get(URL_DRIVERS);
+            ListContainerResponseDto<DriverResponseDto> itemsContainer = tmpResponse
+                    .as(new TypeRef<ListContainerResponseDto<DriverResponseDto>>() {
+                    });
+            items.addAll(itemsContainer.values());
+            lastPage = itemsContainer.lastPage();
+            nextPage++;
+        } while (nextPage <= lastPage);
+
+        return items;
+    }
 }

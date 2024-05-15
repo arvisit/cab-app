@@ -8,6 +8,7 @@ import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getAddedPa
 import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatedPassengerResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,6 +27,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 public class PassengerControllerSteps {
+
+    private static final String PAGE_REQUEST_PARAM = "page";
 
     private static final String ID_FIELD = "id";
 
@@ -107,14 +110,7 @@ public class PassengerControllerSteps {
     @Given("User wants to delete an existing passenger with id {string}")
     public void prepareInfoForPassengerDelete(String id) {
         passengerId = id;
-
-        Response tmpResponse = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .when().get(URL_PASSENGERS);
-        passengersBeforeDelete = tmpResponse
-                .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
-                })
-                .values();
+        passengersBeforeDelete = extractAllItems();
     }
 
     @When("he performs delete of existing passenger via request")
@@ -130,13 +126,7 @@ public class PassengerControllerSteps {
         response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Response tmpResponse = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .when().get(URL_PASSENGERS);
-        List<PassengerResponseDto> passengersAfterDelete = tmpResponse
-                .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
-                })
-                .values();
+        List<PassengerResponseDto> passengersAfterDelete = extractAllItems();
 
         assertThat(passengersAfterDelete).size()
                 .isEqualTo(passengersBeforeDelete.size() - 1);
@@ -289,4 +279,26 @@ public class PassengerControllerSteps {
 //        }
 //        return passengers;
 //    }
+
+    private List<PassengerResponseDto> extractAllItems() {
+        List<PassengerResponseDto> items = new ArrayList<>();
+
+        int nextPage = 0;
+        int lastPage = 0;
+
+        do {
+            Response tmpResponse = RestAssured.given()
+                    .contentType(ContentType.JSON)
+                    .queryParam(PAGE_REQUEST_PARAM, nextPage)
+                    .when().get(URL_PASSENGERS);
+            ListContainerResponseDto<PassengerResponseDto> itemsContainer = tmpResponse
+                    .as(new TypeRef<ListContainerResponseDto<PassengerResponseDto>>() {
+                    });
+            items.addAll(itemsContainer.values());
+            lastPage = itemsContainer.lastPage();
+            nextPage++;
+        } while (nextPage <= lastPage);
+
+        return items;
+    }
 }
