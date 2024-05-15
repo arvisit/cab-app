@@ -1,5 +1,28 @@
 #!/bin/bash
 
+availableServices=("passenger" "driver" "rides" "payment")
+
+if [ "$#" -gt 1 ]; then
+    echo "Zero or one parameter is allowed"
+    exit 1
+elif [ "$#" -eq 0 ]; then
+    selectedService=""
+else
+    found=false
+    for value in "${availableServices[@]}"; do
+        if [ "$1" == "$value" ]; then
+            found=true
+            break
+        fi
+    done
+    if $found; then
+        selectedService=$1
+    else
+        echo "Parameters list should be blank or contain only one of the following values: " "${availableServices[@]}"
+        exit 1
+    fi
+fi
+
 networkName=cab_app_net_e2e
 zookeeperContainer=zookeeper-e2e
 kafkaContainer=kafkaserver-e2e
@@ -114,7 +137,7 @@ docker exec -i $postgresContainer psql -U $dbUsername -f /home/e2e_sql/fill_dbs.
 testedServices=()
 testResults=()
 
-for service in *r-service/; do
+for service in *"$selectedService"-service/; do
     case $(echo "$service" | cut -d'-' -f3) in
         passenger) serverPort=$passengerPort
             ;;
