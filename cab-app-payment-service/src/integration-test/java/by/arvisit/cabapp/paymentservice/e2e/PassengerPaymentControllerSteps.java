@@ -2,29 +2,17 @@ package by.arvisit.cabapp.paymentservice.e2e;
 
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS_ID_TEMPLATE;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedPassengerPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getListContainerForResponse;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentRequestDto;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto1;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto2;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto3;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto4;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getRideResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
-import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
-import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
-import by.arvisit.cabapp.paymentservice.mock.WireMockService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -36,10 +24,7 @@ import io.restassured.response.Response;
 public class PassengerPaymentControllerSteps {
 
     private static final String[] BIG_DECIMAL_FIELDS = { "amount", "feeAmount" };
-    private static final String ID_FIELD = "id";
     private static final String TIMESTAMP_FIELD = "timestamp";
-    private static final String[] FIELDS_FOR_LIST_TO_IGNORE = { "amount", "feeAmount", "timestamp" };
-    private static final String VALUES_FIELD = "values";
 
     private PassengerPaymentRequestDto passengerPaymentRequest;
     private Response response;

@@ -1,21 +1,13 @@
 package by.arvisit.cabapp.ridesservice.e2e;
 
 import static by.arvisit.cabapp.ridesservice.util.RideITData.BRILLIANT10_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DEFAULT_PAGEABLE_SIZE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.NEW_PROMO_CODE_DISCOUNT_PERCENT;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.NEW_PROMO_CODE_KEYWORD;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.UNSORTED;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ACTIVE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedPromoCodeResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getBRILLIANT10ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getListContainerForResponse;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewPromoCodeRequestDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getPAIN49ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPAIN49NotActivePromoCodeResponseDto;
 import static by.arvisit.cabapp.ridesservice.util.RideITData.getRICE23NotActivePromoCodeResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,15 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
-import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
-import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
-import by.arvisit.cabapp.ridesservice.persistence.repository.PromoCodeRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -200,92 +188,6 @@ public class PromoCodeControllerSteps {
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
     }
-
-//    @Given("User wants to get details about existing promo codes")
-//    public void prepareInfoForRetrievingPromoCodes() {
-//    }
-//
-//    @When("he performs request with no request parameters")
-//    public void sendGetPromoCodesWithNoRequestParamsRequest() {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().get(URL_PROMO_CODES);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain info about {int} promo codes")
-//    public void checkGetPromoCodesWithNoRequestParams(int promoCodesCount) {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        ListContainerResponseDto<PromoCodeResponseDto> actual = response
-//                .as(new TypeRef<ListContainerResponseDto<PromoCodeResponseDto>>() {
-//                });
-//
-//        ListContainerResponseDto<PromoCodeResponseDto> expected = getListContainerForResponse(
-//                PromoCodeResponseDto.class)
-//                .withValues(List.of(getBRILLIANT10ActivePromoCodeResponseDto().build(),
-//                        getPAIN49ActivePromoCodeResponseDto().build(),
-//                        getPAIN49NotActivePromoCodeResponseDto().build(),
-//                        getRICE23NotActivePromoCodeResponseDto().build()))
-//                .build();
-//
-//        assertThat(actual.currentPage())
-//                .isZero();
-//        assertThat(actual.lastPage())
-//                .isZero();
-//        assertThat(actual.size())
-//                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
-//        assertThat(actual.sort())
-//                .isEqualTo(UNSORTED);
-//
-//        assertThat(actual.values())
-//                .containsExactlyInAnyOrderElementsOf(expected.values());
-//        assertThat(actual.values())
-//                .hasSize(promoCodesCount);
-//    }
-//
-//    @Given("User wants to get details about active promo codes")
-//    public void prepareInfoForRetrievingAvailablePromoCodes() {
-//    }
-//
-//    @When("he performs request with no request parameters to active promo codes url")
-//    public void sendGetAvailablePromoCodesWithNoRequestParamsRequest() {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().get(URL_PROMO_CODES_ACTIVE);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain info about {int} active promo codes")
-//    public void checkGetAvailablePromoCodesWithNoRequestParams(int promoCodesCount) {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        ListContainerResponseDto<PromoCodeResponseDto> actual = response
-//                .as(new TypeRef<ListContainerResponseDto<PromoCodeResponseDto>>() {
-//                });
-//
-//        ListContainerResponseDto<PromoCodeResponseDto> expected = getListContainerForResponse(
-//                PromoCodeResponseDto.class)
-//                .withValues(List.of(getBRILLIANT10ActivePromoCodeResponseDto().build(),
-//                        getPAIN49ActivePromoCodeResponseDto().build()))
-//                .build();
-//
-//        assertThat(actual.currentPage())
-//                .isZero();
-//        assertThat(actual.lastPage())
-//                .isZero();
-//        assertThat(actual.size())
-//                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
-//        assertThat(actual.sort())
-//                .isEqualTo(UNSORTED);
-//
-//        assertThat(actual.values())
-//                .containsExactlyInAnyOrderElementsOf(expected.values());
-//        assertThat(actual.values())
-//                .hasSize(promoCodesCount);
-//    }
 
     private List<PromoCodeResponseDto> extractAllItems() {
         List<PromoCodeResponseDto> items = new ArrayList<>();

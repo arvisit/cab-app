@@ -29,15 +29,3 @@ Feature: Promo Code Controller End to End
     Given User wants to get details about an existing promo code with id 4
     When he performs search promo code by id via request
     Then response should have 200 status, json content type, contain promo code with requested id
-
-#  @e2e
-#  Scenario: Retrieving existing promo codes by default
-#    Given User wants to get details about existing promo codes
-#    When he performs request with no request parameters
-#    Then response should have 200 status, json content type, contain info about 4 promo codes
-#
-#  @e2e
-#  Scenario: Retrieving active promo codes by default
-#    Given User wants to get details about active promo codes
-#    When he performs request with no request parameters to active promo codes url
-#    Then response should have 200 status, json content type, contain info about 2 active promo codes

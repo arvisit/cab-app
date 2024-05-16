@@ -86,30 +86,6 @@ Feature: Ride Controller End to End
     When he performs a request to get details about ride with id 'aba3e655-a8b1-4dca-a4b5-6566dd74a47e'
     Then response should have 200 status, json content type, contain ride with requested id
 
-#  @e2e
-#  Scenario: Retrieving existing rides by default
-#    Given User wants to get details about existing rides
-#    When he performs a request with no request parameters to get all rides
-#    Then response should have 200 status, json content type, contain info about 9 rides
-#
-#  @e2e
-#  Scenario: Retrieving existing rides by passenger id as request parameter
-#    Given User wants to get details about existing rides for specific passenger
-#    When he performs a request with request parameter 'passengerId'='deecaeef-454b-487d-987c-54df212385b3' to get all rides for this passenger
-#    Then response should have 200 status, json content type, contain info about 3 rides for this passenger
-#
-#  @e2e
-#  Scenario: Retrieving existing rides by passenger id as path variable
-#    Given User wants to get details about existing rides for specific passenger
-#    When he performs a request with passenger id 'deecaeef-454b-487d-987c-54df212385b3' to get all rides for this passenger
-#    Then response should have 200 status, json content type, contain info about 3 rides for this passenger
-#
-#  @e2e
-#  Scenario: Retrieving existing rides by driver id as path variable
-#    Given User wants to get details about existing rides for specific driver
-#    When he performs a request with driver id 'd9343856-ad27-4256-9534-4c59fa5e6422' to get all rides for this driver
-#    Then response should have 200 status, json content type, contain info about 3 rides for this driver
-
   @e2e
   Scenario: Retrieving passenger rating
     Given User wants to get rating for an existing passenger

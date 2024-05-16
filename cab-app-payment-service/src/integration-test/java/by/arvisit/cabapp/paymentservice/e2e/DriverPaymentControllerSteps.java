@@ -5,30 +5,19 @@ import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAY
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS_DRIVERS_ID_BALANCE_TEMPLATE;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS_ID_TEMPLATE;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedDriverPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverAccountBalanceResponseDto;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverPaymentRequestDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverRepayment10PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverResponseDto;
 import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverWithdrawal100PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverWithdrawal50PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
-import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
-import by.arvisit.cabapp.paymentservice.mock.WireMockService;
 import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
-import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -39,12 +28,9 @@ import io.restassured.response.Response;
 
 public class DriverPaymentControllerSteps {
 
-    private static final String BALANCE_FIELD = "balance";
     private static final String AMOUNT_FIELD = "amount";
     private static final String ID_FIELD = "id";
     private static final String TIMESTAMP_FIELD = "timestamp";
-    private static final String[] FIELDS_FOR_LIST_TO_IGNORE = { "amount", "timestamp" };
-    private static final String VALUES_FIELD = "values";
 
     private DriverPaymentRequestDto driverPaymentRequest;
     private Response response;

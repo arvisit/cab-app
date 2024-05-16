@@ -65,13 +65,9 @@ public class RideControllerSteps {
     private static final String URL_PASSENGER_PAYMENTS = "/api/v1/passenger-payments";
     private static final int DRIVER_SERVICE_PORT = Integer.parseInt(System.getProperty("driverServerPort"));
     private static final int PAYMENT_SERVICE_PORT = Integer.parseInt(System.getProperty("paymentServerPort"));
-    private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
             "finishRide" };
     private static final String[] BIG_DECIMAL_FIELDS = { "initialCost", "finalCost" };
-    private static final String[] FIELDS_FOR_LIST_TO_IGNORE = { "initialCost", "finalCost", "bookRide", "cancelRide",
-            "acceptRide", "beginRide", "endRide", "finishRide" };
-    private static final String VALUES_FIELD = "values";
 
     private RideRequestDto rideRequest;
     private Response response;
@@ -373,41 +369,6 @@ public class RideControllerSteps {
                 .isEqualTo(RideStatusEnum.END_RIDE.toString());
     }
 
-//    @Given("User wants to finish an ended ride")
-//    public void prepareFinishRideRequest() {
-//    }
-//
-//    @When("he performs a request to finish ride with id {string}")
-//    public void sendFinishRideRequest(String id) {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().patch(URL_RIDES_ID_FINISH_TEMPLATE, id);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain finished ride")
-//    public void checkFinishRideResponse() {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        RideResponseDto actual = response.as(RideResponseDto.class);
-//        RideResponseDto expected = getEndedBankCardPaidRideResponseDto()
-//                .withStatus(RideStatusEnum.FINISHED.toString())
-//                .build();
-//
-//        assertThat(actual)
-//                .usingRecursiveComparison()
-//                .ignoringFields(BIG_DECIMAL_FIELDS)
-//                .ignoringFields(TIMESTAMP_FIELDS)
-//                .isEqualTo(expected);
-//        assertThat(actual.finishRide())
-//                .isNotNull();
-//        assertThat(actual.initialCost())
-//                .isEqualByComparingTo(expected.initialCost());
-//        assertThat(actual.finalCost())
-//                .isEqualByComparingTo(expected.finalCost());
-//    }
-//
     @Given("User wants to confirm payment with cash for an existing ride")
     public void prepareConfirmPaymentCashRequest() throws Exception {
     }
@@ -446,38 +407,6 @@ public class RideControllerSteps {
                 .isEqualByComparingTo(expected.finalCost());
     }
 
-//
-//    @Given("User wants to confirm payment with bank card for an existing ride")
-//    public void prepareConfirmPaymentBankCardRequest() {
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain finished ride with bank card payment method")
-//    public void checkConfirmPaymentBankCardResponse() {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        RideResponseDto actual = response.as(RideResponseDto.class);
-//        RideResponseDto expected = getEndedBankCardNotPaidRideResponseDto()
-//                .withStatus(RideStatusEnum.FINISHED.toString())
-//                .withIsPaid(true)
-//                .build();
-//
-//        assertThat(actual)
-//                .usingRecursiveComparison()
-//                .ignoringFields(BIG_DECIMAL_FIELDS)
-//                .ignoringFields(TIMESTAMP_FIELDS)
-//                .isEqualTo(expected);
-//        assertThat(actual.finishRide())
-//                .isNotNull();
-//        assertThat(actual.isPaid())
-//                .isTrue();
-//        assertThat(actual.initialCost())
-//                .isEqualByComparingTo(expected.initialCost());
-//        assertThat(actual.finalCost())
-//                .isEqualByComparingTo(expected.finalCost());
-//    }
-//
     @Given("User wants to apply promo code to an existing ride")
     public void prepareApplyPromoCodeRequest() {
     }
@@ -647,135 +576,6 @@ public class RideControllerSteps {
                 .isEqualByComparingTo(expected.finalCost());
     }
 
-//
-//    @Given("User wants to get details about existing rides")
-//    public void prepareGeRidesWithNoRequestParamsRequest() {
-//    }
-//
-//    @When("he performs a request with no request parameters to get all rides")
-//    public void sendGetRidesWithNoRequestParamsRequest() {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().get(URL_RIDES);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain info about {int} rides")
-//    public void checkGetRidesWithNoRequestParamsResponse(int ridesCount) {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        ListContainerResponseDto<RideResponseDto> actual = response
-//                .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
-//                });
-//        ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
-//                .withValues(List.of(
-//                        getBookedRideResponseDto().build(),
-//                        getAcceptedRideResponseDto().build(),
-//                        getBeganBankCardRideResponseDto().build(),
-//                        getBeganCashRideResponseDto().build(),
-//                        getEndedCashNotPaidRideResponseDto().build(),
-//                        getEndedBankCardNotPaidRideResponseDto().build(),
-//                        getEndedBankCardPaidRideResponseDto().build(),
-//                        getFinishedNoScoresRideResponseDto().build(),
-//                        getFinishedWithScoresRideResponseDto().build()))
-//                .build();
-//
-//        assertThat(actual)
-//                .usingRecursiveComparison()
-//                .ignoringFields(VALUES_FIELD)
-//                .isEqualTo(expected);
-//
-//        assertThat(actual.values())
-//                .usingRecursiveFieldByFieldElementComparatorIgnoringFields(FIELDS_FOR_LIST_TO_IGNORE)
-//                .containsExactlyInAnyOrderElementsOf(expected.values())
-//                .hasSize(ridesCount);
-//    }
-//
-//    @Given("User wants to get details about existing rides for specific passenger")
-//    public void prepareGetRidesByPassengerIdRequest() {
-//    }
-//
-//    @When("he performs a request with request parameter {string}={string} to get all rides for this passenger")
-//    public void sendGetRidesByPassengerIdAsRequestParamRequest(String passengerIdParam, String passengerId) {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .queryParam(PASSENGER_ID_REQUEST_PARAM, PASSENGER_4_ID)
-//                .when().get(URL_RIDES);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain info about {int} rides for this passenger")
-//    public void checkGetRidesByPassengerIdResponse(int ridesCount) {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        ListContainerResponseDto<RideResponseDto> actual = response
-//                .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
-//                });
-//        ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
-//                .withValues(List.of(
-//                        getEndedCashNotPaidRideResponseDto().build(),
-//                        getEndedBankCardNotPaidRideResponseDto().build(),
-//                        getEndedBankCardPaidRideResponseDto().build()))
-//                .build();
-//
-//        assertThat(actual)
-//                .usingRecursiveComparison()
-//                .ignoringFields(VALUES_FIELD)
-//                .isEqualTo(expected);
-//
-//        assertThat(actual.values())
-//                .usingRecursiveFieldByFieldElementComparatorIgnoringFields(FIELDS_FOR_LIST_TO_IGNORE)
-//                .containsExactlyInAnyOrderElementsOf(expected.values())
-//                .hasSize(ridesCount);
-//    }
-//
-//    @When("he performs a request with passenger id {string} to get all rides for this passenger")
-//    public void sendGetRidesByPassengerIdAsPathParamRequest(String passengerId) {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().get(URL_RIDES_PASSENGER_ID_TEMPLATE, passengerId);
-//    }
-//
-//    @Given("User wants to get details about existing rides for specific driver")
-//    public void prepareGetRidesByDriverIdAsPathParam() {
-//    }
-//
-//    @When("he performs a request with driver id {string} to get all rides for this driver")
-//    public void sendGetRidesByDriverIdAsPathParamRequest(String driverId) {
-//        response = RestAssured.given()
-//                .contentType(ContentType.JSON)
-//                .when().get(URL_RIDES_DRIVER_ID_TEMPLATE, driverId);
-//    }
-//
-//    @Then("response should have 200 status, json content type, contain info about {int} rides for this driver")
-//    public void checkGetRidesByDriverIdResponse(int ridesCount) {
-//        response.then()
-//                .statusCode(HttpStatus.OK.value())
-//                .contentType(ContentType.JSON);
-//
-//        ListContainerResponseDto<RideResponseDto> actual = response
-//                .as(new TypeRef<ListContainerResponseDto<RideResponseDto>>() {
-//                });
-//        ListContainerResponseDto<RideResponseDto> expected = getListContainerForResponse(RideResponseDto.class)
-//                .withValues(List.of(
-//                        getEndedCashNotPaidRideResponseDto().build(),
-//                        getEndedBankCardNotPaidRideResponseDto().build(),
-//                        getEndedBankCardPaidRideResponseDto().build()))
-//                .build();
-//
-//        assertThat(actual)
-//                .usingRecursiveComparison()
-//                .ignoringFields(VALUES_FIELD)
-//                .isEqualTo(expected);
-//
-//        assertThat(actual.values())
-//                .usingRecursiveFieldByFieldElementComparatorIgnoringFields(FIELDS_FOR_LIST_TO_IGNORE)
-//                .containsExactlyInAnyOrderElementsOf(expected.values())
-//                .hasSize(ridesCount);
-//    }
-//
     @Given("User wants to get rating for an existing passenger")
     public void prepareGetPassengerRatingRequest() {
     }

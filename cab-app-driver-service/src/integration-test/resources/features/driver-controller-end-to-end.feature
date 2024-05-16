@@ -29,21 +29,3 @@ Feature: Driver Controller End to End
     Given User wants to get details about an existing driver with email 'johnny.doe@yahoo.de'
     When he performs search driver by email via request
     Then response should have 200 status, json content type, contain driver with requested email
-
-#  @e2e
-#  Scenario: Retrieving existing drivers by default
-#    Given User wants to get details about existing drivers
-#    When he performs request with no request parameters
-#    Then response should have 200 status, json content type, contain info about 4 drivers
-#
-#  @e2e
-#  Scenario: Retrieving existing drivers filtered by name and email
-#    Given User wants to get details about existing drivers
-#    When he performs request with parameters: 'name'='Doe' and 'email'='com'
-#    Then response should have 200 status, json content type, contain info about 3 drivers found by name and email
-#
-#  @e2e
-#  Scenario: Retrieving available drivers by default
-#    Given User wants to get details about available drivers
-#    When he performs request with no request parameters to available drivers url
-#    Then response should have 200 status, json content type, contain info about 2 available drivers
