@@ -38,7 +38,7 @@ spring:
           group: drivers
       kafka:
         binder:
-          brokers: localhost:29092
+          brokers: "${KAFKA_HOST}:${KAFKA_PORT}"
 
 logging:
   level:
