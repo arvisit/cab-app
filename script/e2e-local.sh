@@ -81,7 +81,7 @@ initializeEnvironment() {
     driverPort=8082
     ridesPort=8083
     paymentPort=8084
-    activeProfile=e2e
+    activeProfile=dev
     dbUrlBase=jdbc:postgresql://localhost:5432
 
     pids=()
