@@ -1,6 +1,218 @@
+x-kafka-variables: &kafka-variables
+  KAFKA_HOST: kafkaserver
+  KAFKA_PORT: 9092
+
 services:
+
+  passenger-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-passenger-service/Dockerfile
+    image: cab-app-passenger-service
+    container_name: passenger-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8081
+      DB_URL: jdbc:postgresql://db-passenger:5432/passenger_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      <<: [*kafka-variables]
+    ports: 
+      - 8081:8081
+    expose:
+      - 8081
+    networks:
+      - cab_app_net
+    depends_on:
+      db-passenger:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+
+  db-passenger:
+    image: postgres:15-alpine
+    container_name: db-passenger
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d passenger_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: passenger_service_db
+    ports:
+      - 5433:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-passenger.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  driver-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-driver-service/Dockerfile
+    image: cab-app-driver-service
+    container_name: driver-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8082
+      DB_URL: jdbc:postgresql://db-driver:5432/driver_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      RIDES_SERVICE_HOST: rides-service
+      RIDES_SERVICE_PORT: 8083
+      <<: [*kafka-variables]
+    ports: 
+      - 8082:8082
+    expose:
+      - 8082
+    networks:
+      - cab_app_net
+    depends_on:
+      db-driver:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+
+  db-driver:
+    image: postgres:15-alpine
+    container_name: db-driver
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d driver_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: driver_service_db
+    ports:
+      - 5434:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-driver.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  rides-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-rides-service/Dockerfile
+    image: cab-app-rides-service
+    container_name: rides-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8083
+      DB_URL: jdbc:postgresql://db-rides:5432/rides_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      PASSENGER_SERVICE_HOST: passenger-service
+      PASSENGER_SERVICE_PORT: 8081
+      DRIVER_SERVICE_HOST: driver-service
+      DRIVER_SERVICE_PORT: 8082
+      PAYMENT_SERVICE_HOST: payment-service
+      PAYMENT_SERVICE_PORT: 8084
+      <<: [*kafka-variables]
+    ports: 
+      - 8083:8083
+    expose:
+      - 8083
+    networks:
+      - cab_app_net
+    depends_on:
+      db-rides:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+
+  db-rides:
+    image: postgres:15-alpine
+    container_name: db-rides
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d rides_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: rides_service_db
+    ports:
+      - 5435:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-rides.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  payment-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-payment-service/Dockerfile
+    image: cab-app-payment-service
+    container_name: payment-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8084
+      DB_URL: jdbc:postgresql://db-payment:5432/payment_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      PASSENGER_SERVICE_HOST: passenger-service
+      PASSENGER_SERVICE_PORT: 8081
+      DRIVER_SERVICE_HOST: driver-service
+      DRIVER_SERVICE_PORT: 8082
+      RIDES_SERVICE_HOST: rides-service
+      RIDES_SERVICE_PORT: 8083
+      <<: [*kafka-variables]
+    ports: 
+      - 8084:8084
+    expose:
+      - 8084
+    networks:
+      - cab_app_net
+    depends_on:
+      db-payment:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+
+  db-payment:
+    image: postgres:15-alpine
+    container_name: db-payment
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d payment_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: payment_service_db
+    ports:
+      - 5436:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-payment.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
+    container_name: zookeeper
     ports:
       - 22181:2181
     environment:
@@ -17,6 +229,7 @@ services:
 
   kafkaserver:
     image: confluentinc/cp-kafka:7.4.4
+    container_name: kafkaserver
     ports:
       - 29092:29092
     environment:
@@ -26,11 +239,19 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafkaserver:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     depends_on:
       zookeeper:
         condition: service_healthy
     networks:
       - cab_app_net
-      
+
+volumes:
+  pgdata:
+
 networks:
   cab_app_net:
