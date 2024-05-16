@@ -32,6 +32,9 @@ cd ..
 
 originalVolumes=$(docker volume ls --quiet)
 
+mvn clean install --file cab-app-common/pom.xml
+mvn clean install --file cab-app-exception-handling-starter/pom.xml
+
 initializeEnvironment() {
 
     docker network create $networkName
