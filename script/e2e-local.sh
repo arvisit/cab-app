@@ -32,8 +32,9 @@ cd ..
 
 originalVolumes=$(docker volume ls --quiet)
 
-mvn clean install --file cab-app-common/pom.xml
-mvn clean install --file cab-app-exception-handling-starter/pom.xml
+mvn clean --file pom.xml
+mvn install --file cab-app-common/pom.xml
+mvn install --file cab-app-exception-handling-starter/pom.xml
 
 initializeEnvironment() {
 
@@ -84,12 +85,16 @@ initializeEnvironment() {
     driverPort=8082
     ridesPort=8083
     paymentPort=8084
+    passengerHost=localhost
+    driverHost=localhost
+    ridesHost=localhost
+    paymentHost=localhost
     activeProfile=dev
     dbUrlBase=jdbc:postgresql://localhost:5432
 
     pids=()
 
-    mvn clean spring-boot:run \
+    mvn spring-boot:run \
         -DskipContracts=true \
         -Dspring-boot.run.arguments="
             --DB_URL=$dbUrlBase/passenger_service_db
@@ -100,7 +105,7 @@ initializeEnvironment() {
         --file cab-app-passenger-service/pom.xml &
     pids+=($!)
     echo -e "\033[0;35mStart passenger service on port:\033[0m $passengerPort"
-    mvn clean spring-boot:run \
+    mvn spring-boot:run \
         -DskipContracts=true \
         -Dspring-boot.run.arguments="
             --DB_URL=$dbUrlBase/driver_service_db
@@ -108,11 +113,12 @@ initializeEnvironment() {
             --DB_USERNAME=$dbUsername
             --spring.profiles.active=$activeProfile
             --RIDES_SERVICE_PORT=$ridesPort
+            --RIDES_SERVICE_HOST=$ridesHost
             --server.port=$driverPort" \
         --file cab-app-driver-service/pom.xml &
     pids+=($!)
     echo -e "\033[0;35mStart driver service on port:\033[0m $driverPort"
-    mvn clean spring-boot:run \
+    mvn spring-boot:run \
         -DskipContracts=true \
         -Dspring-boot.run.arguments="
             --DB_URL=$dbUrlBase/rides_service_db
@@ -122,11 +128,14 @@ initializeEnvironment() {
             --PASSENGER_SERVICE_PORT=$passengerPort
             --DRIVER_SERVICE_PORT=$driverPort
             --PAYMENT_SERVICE_PORT=$paymentPort
+            --PASSENGER_SERVICE_HOST=$passengerHost
+            --DRIVER_SERVICE_HOST=$driverHost
+            --PAYMENT_SERVICE_HOST=$paymentHost
             --server.port=$ridesPort" \
         --file cab-app-rides-service/pom.xml &
     pids+=($!)
     echo -e "\033[0;35mStart rides service on port:\033[0m $ridesPort"
-    mvn clean spring-boot:run \
+    mvn spring-boot:run \
         -DskipContracts=true \
         -Dspring-boot.run.arguments="
             --DB_URL=$dbUrlBase/payment_service_db
@@ -136,6 +145,9 @@ initializeEnvironment() {
             --PASSENGER_SERVICE_PORT=$passengerPort
             --DRIVER_SERVICE_PORT=$driverPort
             --RIDES_SERVICE_PORT=$ridesPort
+            --PASSENGER_SERVICE_HOST=$passengerHost
+            --DRIVER_SERVICE_HOST=$driverHost
+            --RIDES_SERVICE_HOST=$ridesHost
             --server.port=$paymentPort" \
         --file cab-app-payment-service/pom.xml &
     pids+=($!)
