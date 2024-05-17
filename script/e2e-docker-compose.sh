@@ -35,7 +35,7 @@ mvn clean --file pom.xml
 initializeEnvironment() {
     docker compose up --build &
 
-    sleep 60
+    sleep 90
 
     dbUsername=postgres
 
@@ -56,7 +56,7 @@ initializeEnvironment() {
 }
 
 killEnvironment() {
-    docker compose down --volume
+    docker compose down --volumes
 }
 
 testedServices=()
