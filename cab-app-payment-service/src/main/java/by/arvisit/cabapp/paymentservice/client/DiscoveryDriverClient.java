@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 
-@Profile({ "itest", "contract" })
-@FeignClient(name = "cab-app-driver-service", url = "${spring.settings.cab-app-driver-service.uri}",
-        configuration = CabAppFeignClientConfiguration.class)
-public interface DirectDriverClient extends DriverClient {
+@Profile({ "dev" })
+@FeignClient(name = "cab-app-driver-service", configuration = CabAppFeignClientConfiguration.class)
+public interface DiscoveryDriverClient extends DriverClient {
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/drivers/{id}")
     DriverResponseDto getDriverById(@PathVariable String id);
 
 }

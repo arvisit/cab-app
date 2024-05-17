@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 
-@Profile({ "itest", "contract" })
-@FeignClient(value = "cab-app-passenger-service", url = "${spring.settings.cab-app-passenger-service.uri}",
-        configuration = CabAppFeignClientConfiguration.class)
-public interface DirectPassengerClient extends PassengerClient {
+@Profile({ "dev" })
+@FeignClient(value = "cab-app-passenger-service", configuration = CabAppFeignClientConfiguration.class)
+public interface DiscoveryPassengerClient extends PassengerClient {
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/passengers/{id}")
     PassengerResponseDto getPassengerById(@PathVariable String id);
 }

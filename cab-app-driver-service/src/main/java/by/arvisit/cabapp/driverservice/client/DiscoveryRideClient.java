@@ -11,16 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 
-@Profile({ "itest" })
-@FeignClient(name = "cab-app-rides-service", url = "${spring.settings.cab-app-rides-service.uri}",
-        configuration = CabAppFeignClientConfiguration.class)
-public interface DirectRideClient extends RideClient {
+@Profile({ "dev" })
+@FeignClient(name = "cab-app-rides-service", configuration = CabAppFeignClientConfiguration.class)
+public interface DiscoveryRideClient extends RideClient {
 
     @Override
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/rides/{id}")
     RideResponseDto getRideById(@PathVariable String id);
 
     @Override
-    @PatchMapping("/{id}/accept")
+    @PatchMapping("/api/v1/rides/{id}/accept")
     RideResponseDto acceptRide(@PathVariable String id, @RequestBody Map<String, String> patch);
 }

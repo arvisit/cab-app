@@ -3,9 +3,6 @@ spring:
     show-sql: true
     properties:
       '[hibernate.format_sql]': true
-  settings:
-    cab-app-rides-service:
-      uri: http://${RIDES_SERVICE_HOST}:${RIDES_SERVICE_PORT}/api/v1/rides
 
 logging:
   config: classpath:logback-dev.xml

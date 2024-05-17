@@ -47,6 +47,12 @@ spring:
         binder:
           brokers: "${KAFKA_HOST}:${KAFKA_PORT}"
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
 logging:
   level:
     root: info

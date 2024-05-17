@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: cab-app-rides-service
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 600
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone:
+        http://${EUREKA_HOST}:${EUREKA_PORT}/eureka/
