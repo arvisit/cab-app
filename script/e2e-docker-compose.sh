@@ -1,5 +1,8 @@
 #!/bin/bash
 
+start=$SECONDS
+startDate=$(date --rfc-3339=seconds)
+
 availableServices=("passenger" "driver" "rides" "payment")
 
 if [ "$#" -gt 1 ]; then
@@ -33,9 +36,15 @@ cd ..
 mvn clean --file pom.xml
 
 initializeEnvironment() {
-    docker compose up --build &
+    tmpLog=/tmp/e2e-docker-compose-up.log
 
-    sleep 90
+    docker compose up --build | tee $tmpLog &
+
+    for service in *-service/; do
+        while [[ "$(grep -E "${service::-1}.+freshExecutor.+eureka/apps/$" $tmpLog)" == "" ]]; do
+            sleep 5
+        done
+    done
 
     dbUsername=postgres
 
@@ -83,7 +92,27 @@ for service in *"$selectedService"-service/; do
     killEnvironment
 done
 
-echo "-----------------------------------"
+duration=$(( SECONDS - start))
+finishDate=$(date --rfc-3339=seconds)
+
+secondsToHMS() {
+    local sec="$1"
+    local hours=$(( sec / 3600 ))
+    local minutes=$(( (sec % 3600) / 60 ))
+    local seconds=$(( sec % 60 ))
+    
+    if [ "$hours" -eq 0 ]; then
+        if [ "$minutes" -eq 0 ]; then
+            printf "%d s" $seconds
+        else
+            printf "%02d:%02d min" $minutes $seconds
+        fi
+    else
+        printf "%02d:%02d:%02d h" $hours $minutes $seconds
+    fi
+}
+
+echo "-----------------------------------------------------"
 echo "REPORT:"
 for ((i = 0; i < ${#testedServices[@]}; i++)); do
     if [ "${testResults[i]}" -eq 0 ]; then
@@ -95,7 +124,11 @@ for ((i = 0; i < ${#testedServices[@]}; i++)); do
     fi
     echo -e "${testedServices[i]}: $result"
 done
-echo "-----------------------------------"
+echo "-----------------------------------------------------"
+echo -e "Script was started at \033[0;36m$startDate\033[0m"
+echo -e "Script was finished at \033[0;36m$finishDate\033[0m"
+echo -e "Total time: \033[0;32m$(secondsToHMS duration)\033[0m"
+echo "-----------------------------------------------------"
 
 for result in "${testResults[@]}"; do
     if [ "$result" -ne 0 ]; then
