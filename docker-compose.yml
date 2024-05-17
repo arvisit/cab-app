@@ -2,6 +2,10 @@ x-kafka-variables: &kafka-variables
   KAFKA_HOST: kafkaserver
   KAFKA_PORT: 9092
 
+x-eureka-variables: &eureka-variables
+  EUREKA_HOST: discovery-server
+  EUREKA_PORT: 8070
+
 services:
 
   passenger-service:
@@ -16,7 +20,7 @@ services:
       DB_URL: jdbc:postgresql://db-passenger:5432/passenger_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
-      <<: [*kafka-variables]
+      <<: [*kafka-variables, *eureka-variables]
     ports: 
       - 8081:8081
     expose:
@@ -27,6 +31,8 @@ services:
       db-passenger:
         condition: service_healthy
       kafkaserver:
+        condition: service_healthy
+      discovery-server:
         condition: service_healthy
 
   db-passenger:
@@ -64,9 +70,7 @@ services:
       DB_URL: jdbc:postgresql://db-driver:5432/driver_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
-      RIDES_SERVICE_HOST: rides-service
-      RIDES_SERVICE_PORT: 8083
-      <<: [*kafka-variables]
+      <<: [*kafka-variables, *eureka-variables]
     ports: 
       - 8082:8082
     expose:
@@ -77,6 +81,8 @@ services:
       db-driver:
         condition: service_healthy
       kafkaserver:
+        condition: service_healthy
+      discovery-server:
         condition: service_healthy
 
   db-driver:
@@ -114,13 +120,7 @@ services:
       DB_URL: jdbc:postgresql://db-rides:5432/rides_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
-      PASSENGER_SERVICE_HOST: passenger-service
-      PASSENGER_SERVICE_PORT: 8081
-      DRIVER_SERVICE_HOST: driver-service
-      DRIVER_SERVICE_PORT: 8082
-      PAYMENT_SERVICE_HOST: payment-service
-      PAYMENT_SERVICE_PORT: 8084
-      <<: [*kafka-variables]
+      <<: [*kafka-variables, *eureka-variables]
     ports: 
       - 8083:8083
     expose:
@@ -131,6 +131,8 @@ services:
       db-rides:
         condition: service_healthy
       kafkaserver:
+        condition: service_healthy
+      discovery-server:
         condition: service_healthy
 
   db-rides:
@@ -168,13 +170,7 @@ services:
       DB_URL: jdbc:postgresql://db-payment:5432/payment_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
-      PASSENGER_SERVICE_HOST: passenger-service
-      PASSENGER_SERVICE_PORT: 8081
-      DRIVER_SERVICE_HOST: driver-service
-      DRIVER_SERVICE_PORT: 8082
-      RIDES_SERVICE_HOST: rides-service
-      RIDES_SERVICE_PORT: 8083
-      <<: [*kafka-variables]
+      <<: [*kafka-variables, *eureka-variables]
     ports: 
       - 8084:8084
     expose:
@@ -185,6 +181,8 @@ services:
       db-payment:
         condition: service_healthy
       kafkaserver:
+        condition: service_healthy
+      discovery-server:
         condition: service_healthy
 
   db-payment:
@@ -207,6 +205,25 @@ services:
     volumes:
       - ./db-init/db-payment.sql:/docker-entrypoint-initdb.d/init.sql
       - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  discovery-server:
+    image: cab-app-discovery-server
+    build: cab-app-discovery-server
+    container_name: discovery-server
+    restart: always
+    environment:
+        SERVER_PORT: 8070
+    healthcheck:
+      test: wget -qO- http://localhost:8070/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 8070:8070
+    expose:
+      - 8070
     networks:
       - cab_app_net
 
