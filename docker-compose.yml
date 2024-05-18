@@ -21,8 +21,6 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: root
       <<: [*kafka-variables, *eureka-variables]
-    ports: 
-      - 8081:8081
     expose:
       - 8081
     networks:
@@ -33,6 +31,8 @@ services:
       kafkaserver:
         condition: service_healthy
       discovery-server:
+        condition: service_healthy
+      api-gateway:
         condition: service_healthy
 
   db-passenger:
@@ -71,8 +71,6 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: root
       <<: [*kafka-variables, *eureka-variables]
-    ports: 
-      - 8082:8082
     expose:
       - 8082
     networks:
@@ -83,6 +81,8 @@ services:
       kafkaserver:
         condition: service_healthy
       discovery-server:
+        condition: service_healthy
+      api-gateway:
         condition: service_healthy
 
   db-driver:
@@ -121,8 +121,6 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: root
       <<: [*kafka-variables, *eureka-variables]
-    ports: 
-      - 8083:8083
     expose:
       - 8083
     networks:
@@ -133,6 +131,8 @@ services:
       kafkaserver:
         condition: service_healthy
       discovery-server:
+        condition: service_healthy
+      api-gateway:
         condition: service_healthy
 
   db-rides:
@@ -171,8 +171,6 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: root
       <<: [*kafka-variables, *eureka-variables]
-    ports: 
-      - 8084:8084
     expose:
       - 8084
     networks:
@@ -183,6 +181,8 @@ services:
       kafkaserver:
         condition: service_healthy
       discovery-server:
+        condition: service_healthy
+      api-gateway:
         condition: service_healthy
 
   db-payment:
@@ -214,7 +214,8 @@ services:
     container_name: discovery-server
     restart: always
     environment:
-        SERVER_PORT: 8070
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8070
     healthcheck:
       test: wget -qO- http://localhost:8070/actuator/health
       interval: 30s
@@ -226,6 +227,29 @@ services:
       - 8070
     networks:
       - cab_app_net
+
+  api-gateway:
+    image: cab-app-api-gateway
+    build: cab-app-api-gateway
+    container_name: api-gateway
+    restart: always
+    healthcheck:
+      test: wget -qO- http://localhost:8080/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      <<: [*eureka-variables]
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    networks:
+      - cab_app_net
+    depends_on:
+      discovery-server:
+        condition: service_healthy
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
