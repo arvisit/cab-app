@@ -8,7 +8,7 @@ spring:
       server:
         git:
           uri: "https://github.com/arvisit/cab-app"
-          default-label: test/026-containerization
+          default-label: feat/026-containerization
           search-paths: "config/{application}"
 
 management:
