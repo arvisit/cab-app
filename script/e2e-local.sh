@@ -91,12 +91,14 @@ initializeEnvironment() {
     kafkaPort=29092
     eurekaPort=8070
     gatewayPort=8080
+    configPort=8071
     eurekaHost=localhost
     kafkaHost=localhost
     activeProfile=dev
     dbUrlBase=jdbc:postgresql://localhost:5432
 
     tmpLogDiscovery=/tmp/e2e-local-discovery.log
+    tmpLogConfig=/tmp/e2e-local-config.log
     tmpLogGateway=/tmp/e2e-local-gateway.log
     tmpLogPassenger=/tmp/e2e-local-passenger.log
     tmpLogDriver=/tmp/e2e-local-driver.log
@@ -111,6 +113,19 @@ initializeEnvironment() {
     echo -e "\033[0;35mStart discovery server on port:\033[0m $eurekaPort"
 
     while [[ "$(grep -E "Started CabAppDiscoveryServerApplication" $tmpLogDiscovery)" == "" ]]; do
+        sleep 1
+    done
+
+    mvn spring-boot:run \
+        -Dspring-boot.run.arguments="
+            --EUREKA_HOST=$eurekaHost
+            --EUREKA_PORT=$eurekaPort
+            --spring.profiles.active=$activeProfile
+            --server.port=$configPort" \
+        --file cab-app-config-server/pom.xml | tee $tmpLogConfig &
+    echo -e "\033[0;35mStart config server on port:\033[0m $configPort"
+
+    while [[ "$(grep -E "Started CabAppConfigServerApplication" $tmpLogConfig)" == "" ]]; do
         sleep 1
     done
 
