@@ -79,7 +79,7 @@ for service in *"$selectedService"-service/; do
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
         -DserverPort=$apiGatewayPort \
-        --file "$service"pom.xml
+        --file "$service"pom.xml | tee /tmp/e2e-docker-compose-up-test-"${service::-1}".log
     testResults+=($?)
     testedServices+=("${service::-1}")
 
