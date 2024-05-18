@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: cab-app-payment-service
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

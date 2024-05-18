@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: cab-app-rides-service
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false

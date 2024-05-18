@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: cab-app-passenger-service
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
