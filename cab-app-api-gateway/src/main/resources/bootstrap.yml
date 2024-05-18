@@ -1,6 +1,11 @@
 spring:
   application:
     name: cab-app-api-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: cab-app-config-server
 
 eureka:
   instance:
