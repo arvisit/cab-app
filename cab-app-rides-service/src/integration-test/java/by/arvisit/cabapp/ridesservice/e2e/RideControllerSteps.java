@@ -63,8 +63,6 @@ public class RideControllerSteps {
     private static final String RIDE_ID_QUERY_PARAM = "rideId";
     private static final String URL_DRIVERS_ID_TEMPLATE = "/api/v1/drivers/{id}";
     private static final String URL_PASSENGER_PAYMENTS = "/api/v1/passenger-payments";
-    private static final int DRIVER_SERVICE_PORT = Integer.parseInt(System.getProperty("driverServerPort"));
-    private static final int PAYMENT_SERVICE_PORT = Integer.parseInt(System.getProperty("paymentServerPort"));
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
             "finishRide" };
     private static final String[] BIG_DECIMAL_FIELDS = { "initialCost", "finalCost" };
@@ -182,7 +180,6 @@ public class RideControllerSteps {
         TimeUnit.SECONDS.sleep(1);
 
         Response tmpResponse = RestAssured.given()
-                .port(DRIVER_SERVICE_PORT)
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS_ID_TEMPLATE, driverId);
         DriverResponseDto actual = tmpResponse.as(DriverResponseDto.class);
@@ -235,7 +232,6 @@ public class RideControllerSteps {
         TimeUnit.SECONDS.sleep(1);
 
         Response tmpResponse = RestAssured.given()
-                .port(DRIVER_SERVICE_PORT)
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS_ID_TEMPLATE, driverId);
         DriverResponseDto actual = tmpResponse.as(DriverResponseDto.class);
@@ -323,7 +319,6 @@ public class RideControllerSteps {
     public void checkPaymentAfterEndRideWithBankCard() {
         RideResponseDto ride = response.as(RideResponseDto.class);
         Response tmpResponse = RestAssured.given()
-                .port(PAYMENT_SERVICE_PORT)
                 .contentType(ContentType.JSON)
                 .queryParam(RIDE_ID_QUERY_PARAM, ride.id())
                 .when().get(URL_PASSENGER_PAYMENTS);
