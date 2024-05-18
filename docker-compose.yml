@@ -34,6 +34,8 @@ services:
         condition: service_healthy
       api-gateway:
         condition: service_healthy
+      config-server:
+        condition: service_healthy
 
   db-passenger:
     image: postgres:15-alpine
@@ -83,6 +85,8 @@ services:
       discovery-server:
         condition: service_healthy
       api-gateway:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
 
   db-driver:
@@ -134,6 +138,8 @@ services:
         condition: service_healthy
       api-gateway:
         condition: service_healthy
+      config-server:
+        condition: service_healthy
 
   db-rides:
     image: postgres:15-alpine
@@ -183,6 +189,8 @@ services:
       discovery-server:
         condition: service_healthy
       api-gateway:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
 
   db-payment:
@@ -245,6 +253,31 @@ services:
       - 8080:8080
     expose:
       - 8080
+    networks:
+      - cab_app_net
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  config-server:
+    build: cab-app-config-server
+    image: cab-app-config-server
+    container_name: config-server
+    restart: always
+    healthcheck:
+      test: wget -qO- http://localhost:8071/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      <<: *eureka-variables
+    ports:
+      - 8071:8071
+    expose:
+      - 8071
     networks:
       - cab_app_net
     depends_on:

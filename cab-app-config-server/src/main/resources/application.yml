@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: cab-app-config-server
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/arvisit/cab-app"
+          default-label: test/026-containerization
+          search-paths: "config/{application}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    leaseRenewalIntervalInSeconds: 600
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone:
+        http://${EUREKA_HOST}:${EUREKA_PORT}/eureka/

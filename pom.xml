@@ -16,5 +16,6 @@
         <module>cab-app-common</module>
         <module>cab-app-discovery-server</module>
         <module>cab-app-api-gateway</module>
+        <module>cab-app-config-server</module>
     </modules>
 </project>
