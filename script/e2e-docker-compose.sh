@@ -40,8 +40,8 @@ initializeEnvironment() {
 
     docker compose up --build | tee $tmpLog &
 
-    for service in *-service/; do
-        while [[ "$(grep -E "${service::-1}.+freshExecutor.+eureka/apps/$" $tmpLog)" == "" ]]; do
+    for spiedService in *-service/; do
+        while [[ "$(grep -E "${spiedService::-1}.+freshExecutor.+eureka/apps/(delta)?$" $tmpLog)" == "" ]]; do
             sleep 5
         done
     done
@@ -71,20 +71,14 @@ killEnvironment() {
 testedServices=()
 testResults=()
 
-passengerPort=8081
-driverPort=8082
-ridesPort=8083
-paymentPort=8084
+apiGatewayPort=8080
 
 for service in *"$selectedService"-service/; do
     initializeEnvironment
 
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
-        -DpassengerServerPort=$passengerPort \
-        -DdriverServerPort=$driverPort \
-        -DridesServerPort=$ridesPort \
-        -DpaymentServerPort=$paymentPort \
+        -DserverPort=$apiGatewayPort \
         --file "$service"pom.xml
     testResults+=($?)
     testedServices+=("${service::-1}")

@@ -90,12 +90,14 @@ initializeEnvironment() {
     paymentPort=8084
     kafkaPort=29092
     eurekaPort=8070
+    gatewayPort=8080
     eurekaHost=localhost
     kafkaHost=localhost
     activeProfile=dev
     dbUrlBase=jdbc:postgresql://localhost:5432
 
     tmpLogDiscovery=/tmp/e2e-local-discovery.log
+    tmpLogGateway=/tmp/e2e-local-gateway.log
     tmpLogPassenger=/tmp/e2e-local-passenger.log
     tmpLogDriver=/tmp/e2e-local-driver.log
     tmpLogRides=/tmp/e2e-local-rides.log
@@ -111,6 +113,21 @@ initializeEnvironment() {
     while [[ "$(grep -E "Started CabAppDiscoveryServerApplication" $tmpLogDiscovery)" == "" ]]; do
         sleep 1
     done
+
+    mvn spring-boot:run \
+        -Dspring-boot.run.arguments="
+            --EUREKA_HOST=$eurekaHost
+            --EUREKA_PORT=$eurekaPort
+            --spring.profiles.active=$activeProfile
+            --server.port=$gatewayPort" \
+        --file cab-app-api-gateway/pom.xml | tee $tmpLogGateway &
+    echo -e "\033[0;35mStart api gateway on port:\033[0m $gatewayPort"
+
+    while [[ "$(grep -E "Started CabAppApiGatewayApplication" $tmpLogGateway)" == "" ]]; do
+        sleep 1
+    done
+
+    registeredServices=("passenger" "driver" "rides" "payment")
 
     mvn spring-boot:run \
         -Dspring-boot.run.arguments="
@@ -168,8 +185,8 @@ initializeEnvironment() {
         --file cab-app-payment-service/pom.xml | tee $tmpLogPayment &
     echo -e "\033[0;35mStart payment service on port:\033[0m $paymentPort"
 
-    for spiedService in "${availableServices[@]}"; do
-        while [[ "$(grep -E "cab-app-$spiedService-service.+freshExecutor.+eureka/apps/$" /tmp/e2e-local-"$spiedService".log)" == "" ]]; do
+    for spiedService in "${registeredServices[@]}"; do
+        while [[ "$(grep -E "cab-app-$spiedService-service.+freshExecutor.+eureka/apps/(delta)?$" /tmp/e2e-local-"$spiedService".log)" == "" ]]; do
             sleep 5
         done
     done
@@ -207,10 +224,7 @@ for service in *"$selectedService"-service/; do
 
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
-        -DpassengerServerPort=$passengerPort \
-        -DdriverServerPort=$driverPort \
-        -DridesServerPort=$ridesPort \
-        -DpaymentServerPort=$paymentPort \
+        -DserverPort=$gatewayPort \
         --file "$service"pom.xml
     testResults+=($?)
     testedServices+=("${service::-1}")
