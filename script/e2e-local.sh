@@ -240,7 +240,7 @@ for service in *"$selectedService"-service/; do
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
         -DserverPort=$gatewayPort \
-        --file "$service"pom.xml 2>&1 | tee /tmp/e2e-local-test-"${service::-1}".log
+        --file "$service"pom.xml
     testResults+=($?)
     testedServices+=("${service::-1}")
 
