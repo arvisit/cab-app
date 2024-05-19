@@ -38,7 +38,7 @@ mvn clean --file pom.xml
 initializeEnvironment() {
     tmpLog=/tmp/e2e-docker-compose-up.log
 
-    docker compose up --build | tee $tmpLog &
+    docker compose up --build 2>&1 | tee $tmpLog &
 
     for spiedService in *-service/; do
         while [[ "$(grep -E "${spiedService::-1}.+freshExecutor.+eureka/apps/(delta)?$" $tmpLog)" == "" ]]; do
@@ -79,7 +79,7 @@ for service in *"$selectedService"-service/; do
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
         -DserverPort=$apiGatewayPort \
-        --file "$service"pom.xml | tee /tmp/e2e-docker-compose-up-test-"${service::-1}".log
+        --file "$service"pom.xml 2>&1 | tee /tmp/e2e-docker-compose-up-test-"${service::-1}".log
     testResults+=($?)
     testedServices+=("${service::-1}")
 

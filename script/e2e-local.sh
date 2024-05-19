@@ -109,7 +109,7 @@ initializeEnvironment() {
         -Dspring-boot.run.arguments="
             --spring.profiles.active=$activeProfile
             --server.port=$eurekaPort" \
-        --file cab-app-discovery-server/pom.xml | tee $tmpLogDiscovery &
+        --file cab-app-discovery-server/pom.xml 2>&1 | tee $tmpLogDiscovery &
     echo -e "\033[0;35mStart discovery server on port:\033[0m $eurekaPort"
 
     while [[ "$(grep -E "Started CabAppDiscoveryServerApplication" $tmpLogDiscovery)" == "" ]]; do
@@ -122,7 +122,7 @@ initializeEnvironment() {
             --EUREKA_PORT=$eurekaPort
             --spring.profiles.active=$activeProfile
             --server.port=$configPort" \
-        --file cab-app-config-server/pom.xml | tee $tmpLogConfig &
+        --file cab-app-config-server/pom.xml 2>&1 | tee $tmpLogConfig &
     echo -e "\033[0;35mStart config server on port:\033[0m $configPort"
 
     while [[ "$(grep -E "Started CabAppConfigServerApplication" $tmpLogConfig)" == "" ]]; do
@@ -135,7 +135,7 @@ initializeEnvironment() {
             --EUREKA_PORT=$eurekaPort
             --spring.profiles.active=$activeProfile
             --server.port=$gatewayPort" \
-        --file cab-app-api-gateway/pom.xml | tee $tmpLogGateway &
+        --file cab-app-api-gateway/pom.xml 2>&1 | tee $tmpLogGateway &
     echo -e "\033[0;35mStart api gateway on port:\033[0m $gatewayPort"
 
     while [[ "$(grep -E "Started CabAppApiGatewayApplication" $tmpLogGateway)" == "" ]]; do
@@ -155,7 +155,7 @@ initializeEnvironment() {
             --EUREKA_PORT=$eurekaPort
             --spring.profiles.active=$activeProfile
             --server.port=$passengerPort" \
-        --file cab-app-passenger-service/pom.xml | tee $tmpLogPassenger &
+        --file cab-app-passenger-service/pom.xml 2>&1 | tee $tmpLogPassenger &
     echo -e "\033[0;35mStart passenger service on port:\033[0m $passengerPort"
     mvn spring-boot:run \
         -DskipContracts=true \
@@ -169,7 +169,7 @@ initializeEnvironment() {
             --EUREKA_HOST=$eurekaHost
             --EUREKA_PORT=$eurekaPort
             --server.port=$driverPort" \
-        --file cab-app-driver-service/pom.xml | tee $tmpLogDriver &
+        --file cab-app-driver-service/pom.xml 2>&1 | tee $tmpLogDriver &
     echo -e "\033[0;35mStart driver service on port:\033[0m $driverPort"
     mvn spring-boot:run \
         -DskipContracts=true \
@@ -183,7 +183,7 @@ initializeEnvironment() {
             --EUREKA_HOST=$eurekaHost
             --EUREKA_PORT=$eurekaPort
             --server.port=$ridesPort" \
-        --file cab-app-rides-service/pom.xml | tee $tmpLogRides &
+        --file cab-app-rides-service/pom.xml 2>&1 | tee $tmpLogRides &
     echo -e "\033[0;35mStart rides service on port:\033[0m $ridesPort"
     mvn spring-boot:run \
         -DskipContracts=true \
@@ -197,7 +197,7 @@ initializeEnvironment() {
             --EUREKA_HOST=$eurekaHost
             --EUREKA_PORT=$eurekaPort
             --server.port=$paymentPort" \
-        --file cab-app-payment-service/pom.xml | tee $tmpLogPayment &
+        --file cab-app-payment-service/pom.xml 2>&1 | tee $tmpLogPayment &
     echo -e "\033[0;35mStart payment service on port:\033[0m $paymentPort"
 
     for spiedService in "${registeredServices[@]}"; do
@@ -240,7 +240,7 @@ for service in *"$selectedService"-service/; do
     mvn test -Dtest=CucumberRunnerE2E \
         -DskipContracts=true \
         -DserverPort=$gatewayPort \
-        --file "$service"pom.xml | tee /tmp/e2e-local-test-"${service::-1}".log
+        --file "$service"pom.xml 2>&1 | tee /tmp/e2e-local-test-"${service::-1}".log
     testResults+=($?)
     testedServices+=("${service::-1}")
 
