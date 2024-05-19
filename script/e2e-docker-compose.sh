@@ -34,6 +34,8 @@ dbPaymentContainer=db-payment
 cd ..
 
 mvn clean --file pom.xml
+mvn install --file cab-app-common/pom.xml
+mvn install --file cab-app-exception-handling-starter/pom.xml
 
 initializeEnvironment() {
     tmpLog=/tmp/e2e-docker-compose-up.log
