@@ -17,6 +17,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8081
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       DB_URL: jdbc:postgresql://db-passenger:5432/passenger_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
@@ -69,6 +70,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8082
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       DB_URL: jdbc:postgresql://db-driver:5432/driver_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
@@ -121,6 +123,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8083
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       DB_URL: jdbc:postgresql://db-rides:5432/rides_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
@@ -173,6 +176,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8084
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       DB_URL: jdbc:postgresql://db-payment:5432/payment_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
@@ -224,6 +228,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8070
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
     healthcheck:
       test: wget -qO- http://localhost:8070/actuator/health
       interval: 30s
@@ -249,6 +254,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8080
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       <<: [*eureka-variables]
     ports:
       - 8080:8080
@@ -275,6 +281,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8071
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
       <<: *eureka-variables
     ports:
       - 8071:8071
