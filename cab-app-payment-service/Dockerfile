@@ -18,7 +18,7 @@ RUN mvn dependency:go-offline
 COPY cab-app-payment-service/src ./src
 RUN mvn package -DskipTests --file /cab-app-payment-service/pom.xml
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 ARG JAR_FILE=/cab-app-payment-service/target/cab-app-payment-service-0.0.1-SNAPSHOT.jar
 COPY --from=build $JAR_FILE /opt/payment-service/app.jar
 ENTRYPOINT ["java", "-jar", "/opt/payment-service/app.jar"]

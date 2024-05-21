@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn package -DskipTests
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 ARG JAR_FILE=/cab-app-config-server/target/cab-app-config-server-0.0.1-SNAPSHOT.jar
 COPY --from=build $JAR_FILE /opt/config-server/app.jar
 ENTRYPOINT ["java", "-jar", "/opt/config-server/app.jar"]

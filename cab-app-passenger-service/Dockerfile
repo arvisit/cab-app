@@ -18,7 +18,7 @@ RUN mvn dependency:go-offline
 COPY cab-app-passenger-service/src ./src
 RUN mvn package -DskipTests --file /cab-app-passenger-service/pom.xml
 
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jre-alpine
 ARG JAR_FILE=/cab-app-passenger-service/target/cab-app-passenger-service-0.0.1-SNAPSHOT.jar
 COPY --from=build $JAR_FILE /opt/passenger-service/app.jar
 ENTRYPOINT ["java", "-jar", "/opt/passenger-service/app.jar"]
