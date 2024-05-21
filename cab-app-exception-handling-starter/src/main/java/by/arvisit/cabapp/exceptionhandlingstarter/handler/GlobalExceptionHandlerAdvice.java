@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.BadRequestException;
-import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
+import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.ExceptionResponse;
 import by.arvisit.cabapp.exceptionhandlingstarter.response.MultiExceptionResponse;
 import feign.RetryableException;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 
@@ -80,10 +81,10 @@ public class GlobalExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(ConnectException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ExceptionResponse handle(ConnectException exception) {
         return ExceptionResponse.builder()
-                .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .withMessage(exception.getMessage())
                 .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
                 .build();
@@ -94,7 +95,17 @@ public class GlobalExceptionHandlerAdvice {
     public ExceptionResponse handle(RetryableException exception) {
         return ExceptionResponse.builder()
                 .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
-                .withMessage(exception.getMessage())
+                .withMessage("Failed to connect to another service")
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    @ExceptionHandler(CallNotPermittedException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ExceptionResponse handle(CallNotPermittedException exception) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .withMessage("Service is temporary unavailable. Try again later")
                 .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
                 .build();
     }
