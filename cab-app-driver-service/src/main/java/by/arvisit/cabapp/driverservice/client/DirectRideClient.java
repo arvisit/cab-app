@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Profile({ "itest" })
 @FeignClient(name = "cab-app-rides-service", url = "${spring.settings.cab-app-rides-service.uri}",
         configuration = CabAppFeignClientConfiguration.class)
+@CircuitBreaker(name = "directRideClient")
 public interface DirectRideClient extends RideClient {
 
     @Override
