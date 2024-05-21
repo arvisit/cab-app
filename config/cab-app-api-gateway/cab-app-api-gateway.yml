@@ -5,6 +5,9 @@ spring:
         locator:
           enabled: true
           lowerCaseServiceId: true
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 5000
 
 management:
   endpoints:
