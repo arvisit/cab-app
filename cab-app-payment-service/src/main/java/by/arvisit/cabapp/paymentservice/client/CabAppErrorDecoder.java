@@ -3,6 +3,8 @@ package by.arvisit.cabapp.paymentservice.client;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.http.HttpStatus;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -27,10 +29,10 @@ public class CabAppErrorDecoder implements ErrorDecoder {
         } catch (IOException e) {
             return new Exception(e.getMessage());
         }
-        if (message.status() == 400) {
+        if (message.status() == HttpStatus.BAD_REQUEST.value()) {
             throw new BadRequestException(message.message());
         }
-        if (message.status() == 404) {
+        if (message.status() == HttpStatus.NOT_FOUND.value()) {
             throw new EntityNotFoundException(message.message());
         }
 
