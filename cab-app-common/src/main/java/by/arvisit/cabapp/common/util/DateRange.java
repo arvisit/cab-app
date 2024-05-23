@@ -43,6 +43,9 @@ public class DateRange {
             startDate = Year.parse(strDate).atMonth(Month.JANUARY).atDay(1).atStartOfDay();
             endDate = startDate.plusYears(1).minusNanos(1);
         }
+        if (startDate == null) {
+            throw new IllegalArgumentException("Provided value could not be parsed to date range");
+        }
         return DateRange.builder()
                 .withStartDate(startDate)
                 .withEndDate(endDate)
