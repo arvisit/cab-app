@@ -34,14 +34,57 @@
         </encoder>
     </appender>
 
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <mdc/>
+                <context/>
+                <version/>
+                <logLevel/>
+                <loggerName/>
+                <pattern>
+                    <pattern>
+                        <omitEmptyFields>true</omitEmptyFields>
+                        {
+                            "application": {
+                                "name": "%applicationName"
+                            },
+                            "trace": {
+                                "trace_id": "%mdc{traceId}",
+                                "span_id": "%mdc{spanId}"
+                            }
+                        }
+                    </pattern>
+                </pattern>
+                <threadName/>
+                <message/>
+                <logstashMarkers/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="logstash"/>
+    </root>
+
+    <logger name="by.arvisit.cabapp" level="DEBUG" additivity="false">
+        <appender-ref ref="logstash"/>
+    </logger>
+
     <logger name="by.arvisit.cabapp.paymentservice.controller" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE_CONTROLLER"/>
+        <appender-ref ref="logstash"/>
     </logger>
     <logger name="by.arvisit.cabapp.paymentservice.service" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE_SERVICE"/>
+        <appender-ref ref="logstash"/>
     </logger>
     <logger name="by.arvisit.cabapp.paymentservice.messaging" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE_MESSAGING"/>
+        <appender-ref ref="logstash"/>
     </logger>
 
 </configuration>
