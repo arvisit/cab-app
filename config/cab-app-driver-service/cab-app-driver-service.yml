@@ -44,12 +44,16 @@ spring:
       kafka:
         binder:
           brokers: "${KAFKA_HOST}:${KAFKA_PORT}"
+          enable-observation: true
 
 management:
   endpoints:
     web:
       exposure:
         include: health, info
+  tracing:
+    sampling:
+      probability: 1.0
 
 logging:
   level:
