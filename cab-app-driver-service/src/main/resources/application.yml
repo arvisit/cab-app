@@ -16,6 +16,30 @@ spring:
       pageable:
         max-page-size: 50
 
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+    function:
+      definition: notifyDriversAboutNewRide;notifyAboutRideCancellation;notifyAboutRideFinished
+    stream:
+      bindings:
+        notifyDriversAboutNewRide-in-0:
+          destination: newRideTopic
+          content-type: application/json
+          group: drivers
+        notifyAboutRideCancellation-in-0:
+          destination: canceledRideTopic
+          content-type: application/json
+          group: drivers
+        notifyAboutRideFinished-in-0:
+          destination: finishedRideTopic
+          content-type: application/json
+          group: drivers
+      kafka:
+        binder:
+          brokers: localhost:29092
+
 logging:
   level:
     root: info

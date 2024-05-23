@@ -3,6 +3,7 @@ package by.arvisit.cabapp.ridesservice.service.impl;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
@@ -15,6 +16,7 @@ class RideVerifier {
 
     private static final String STATUS_COULD_NOT_BE_CHANGED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.status.IllegalStateException.template";
     private static final String RIDE_ALREADY_ACCEPTED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.IllegalStateException.template";
+    private static final String DRIVER_NOT_AVAILABLE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.isAvailable.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_FOR_PAYMENT_CONFIRMATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paid.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_TO_APPLY_PROMO_CODE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.promoCode.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_TO_CHANGE_PAYMENT_METHOD_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paymentMethod.IllegalStateException.template";
@@ -55,7 +57,14 @@ class RideVerifier {
             throw new IllegalStateException(errorMessage);
         }
 
-        driverClient.getDriverById(driverId);
+        DriverResponseDto driver = driverClient.getDriverById(driverId);
+
+        if (Boolean.FALSE.equals(driver.isAvailable())) {
+            String errorMessage = messageSource.getMessage(
+                    DRIVER_NOT_AVAILABLE_MESSAGE_TEMPLATE_KEY,
+                    new Object[] { driverId }, null);
+            throw new IllegalStateException(errorMessage);
+        }
     }
 
     public void verifyBeginRide(Ride ride) {

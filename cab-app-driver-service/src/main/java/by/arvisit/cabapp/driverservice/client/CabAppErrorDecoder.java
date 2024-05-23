@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.ridesservice.client;
+package by.arvisit.cabapp.driverservice.client;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +34,9 @@ public class CabAppErrorDecoder implements ErrorDecoder {
         }
         if (message.status() == HttpStatus.NOT_FOUND.value()) {
             throw new EntityNotFoundException(message.message());
+        }
+        if (message.status() == HttpStatus.CONFLICT.value()) {
+            throw new IllegalStateException(message.message());
         }
 
         return defaultErrorDecoder.decode(methodKey, response);

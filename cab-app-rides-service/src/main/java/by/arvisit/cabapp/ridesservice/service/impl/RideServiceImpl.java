@@ -4,7 +4,9 @@ import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -21,6 +23,7 @@ import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
+import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
@@ -45,6 +48,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RideServiceImpl implements RideService {
 
+    private static final String OUT_FINISH_RIDE_CHANNEL = "outFinishRide";
+    private static final Map<String, Boolean> SET_NOT_AVAILABLE_PATCH = Collections.singletonMap("isAvailable", false);
+    private static final String OUT_CANCELED_RIDE_CHANNEL = "outCanceledRide";
+    private static final String OUT_ACCEPTED_RIDE_CHANNEL = "outAcceptedRide";
+    private static final String OUT_NEW_RIDE_CHANNEL = "outNewRide";
     private static final String OUT_CREATE_CARD_PAYMENT_CHANNEL = "outCreateCardPayment";
     private static final String FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.id.EntityNotFoundException.template";
     private static final String INVALID_PAYMENT_METHOD_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.dto.RideRequestDto.paymentMethod.isValidPaymentMethod.message";
@@ -59,6 +67,7 @@ public class RideServiceImpl implements RideService {
     private final PassengerClient passengerClient;
     private final StreamBridge streamBridge;
     private final PaymentVerifier paymentVerifier;
+    private final DriverClient driverClient;
 
     @Transactional
     @Override
@@ -79,8 +88,13 @@ public class RideServiceImpl implements RideService {
         rideToSave.setIsPaid(false);
         rideToSave.setStatus(RideStatusEnum.BOOKED);
 
-        return rideMapper.fromEntityToResponseDto(
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(rideToSave));
+
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_NEW_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional
@@ -100,8 +114,14 @@ public class RideServiceImpl implements RideService {
 
         ride.setStatus(newStatus);
         ride.setCancelRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        return rideMapper.fromEntityToResponseDto(
+
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_CANCELED_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional
@@ -122,8 +142,16 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(newStatus);
         ride.setDriverId(UUID.fromString(driverId));
         ride.setAcceptRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        return rideMapper.fromEntityToResponseDto(
+
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+
+        driverClient.updateAvailability(driverId, SET_NOT_AVAILABLE_PATCH);
+
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_ACCEPTED_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional
@@ -156,7 +184,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.END_RIDE;
 
-        rideVerifier.verifyBeginRide(ride);
+        rideVerifier.verifyEndRide(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -224,8 +252,14 @@ public class RideServiceImpl implements RideService {
         ride.setIsPaid(true);
         ride.setStatus(RideStatusEnum.FINISHED);
         ride.setFinishRide(ZonedDateTime.now(CommonConstants.EUROPE_MINSK_TIMEZONE));
-        return rideMapper.fromEntityToResponseDto(
+
+        RideResponseDto savedRide = rideMapper.fromEntityToResponseDto(
                 rideRepository.save(ride));
+
+        Message<RideResponseDto> message = MessageBuilder.withPayload(savedRide).build();
+        streamBridge.send(OUT_FINISH_RIDE_CHANNEL, message);
+
+        return savedRide;
     }
 
     @Transactional

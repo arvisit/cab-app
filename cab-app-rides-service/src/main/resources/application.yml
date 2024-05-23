@@ -17,6 +17,9 @@ spring:
         max-page-size: 50
 
   cloud:
+    openfeign:
+      okhttp:
+        enabled: true
     function:
       definition: confirmCardPayment
     stream:
@@ -28,6 +31,18 @@ spring:
           destination: cardPaymentCreatedTopic
           content-type: application/json
           group: cardPaymentConfirming
+        outNewRide:
+          destination: newRideTopic
+          content-type: application/json
+        outAcceptedRide:
+          destination: acceptedRideTopic
+          content-type: application/json
+        outCanceledRide:
+          destination: canceledRideTopic
+          content-type: application/json
+        outFinishRide:
+          destination: finishedRideTopic
+          content-type: application/json
       kafka:
         binder:
           brokers: localhost:29092

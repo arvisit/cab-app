@@ -12,6 +12,19 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 
+  cloud:
+    function:
+      definition: notifyAboutRideAcceptance
+    stream:
+      bindings:
+        notifyAboutRideAcceptance-in-0:
+          destination: acceptedRideTopic
+          content-type: application/json
+          group: passengers
+      kafka:
+        binder:
+          brokers: localhost:29092
+
 logging:
   level:
     root: info
