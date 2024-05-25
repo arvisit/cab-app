@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.paymentservice.dto;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import by.arvisit.cabapp.common.util.DateRange;
 import lombok.Builder;
 
 @Builder(setterPrefix = "with")
@@ -15,6 +15,6 @@ public record PassengerPaymentsFilterParams(
         UUID passengerId,
         UUID driverId,
         UUID rideId,
-        ZonedDateTime timestamp) {
+        DateRange timestamp) {
 
 }

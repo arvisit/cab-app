@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.ridesservice.dto;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import by.arvisit.cabapp.common.util.DateRange;
 import lombok.Builder;
 
 @Builder(setterPrefix = "with")
@@ -16,11 +16,11 @@ public record RidesFilterParams(
         String paymentMethod,
         UUID passengerId,
         UUID driverId,
-        ZonedDateTime bookRide,
-        ZonedDateTime cancelRide,
-        ZonedDateTime acceptRide,
-        ZonedDateTime beginRide,
-        ZonedDateTime endRide,
-        ZonedDateTime finishRide) {
+        DateRange bookRide,
+        DateRange cancelRide,
+        DateRange acceptRide,
+        DateRange beginRide,
+        DateRange endRide,
+        DateRange finishRide) {
 
 }

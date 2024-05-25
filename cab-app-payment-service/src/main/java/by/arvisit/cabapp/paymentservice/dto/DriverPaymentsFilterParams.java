@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.paymentservice.dto;
 
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import by.arvisit.cabapp.common.util.DateRange;
 import lombok.Builder;
 
 @Builder(setterPrefix = "with")
@@ -13,6 +13,6 @@ public record DriverPaymentsFilterParams(
         String status,
         String operation,
         UUID driverId,
-        ZonedDateTime timestamp) {
+        DateRange timestamp) {
 
 }

@@ -1,7 +1,6 @@
 package by.arvisit.cabapp.common.validation.provider;
 
 import java.lang.reflect.Field;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -9,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import by.arvisit.cabapp.common.util.DateRange;
 import by.arvisit.cabapp.common.util.ValidationRegexp;
 import by.arvisit.cabapp.common.validation.ParseableDateValues;
 import jakarta.validation.ConstraintValidator;
@@ -23,7 +23,7 @@ public class ParseableDateValuesValidator
     public void initialize(ParseableDateValues constraintAnnotation) {
         Class<?> keysHolder = constraintAnnotation.keysHolder();
         targetKeys = Arrays.stream(keysHolder.getDeclaredFields())
-                .filter(f -> f.getType().equals(ZonedDateTime.class))
+                .filter(f -> f.getType().equals(DateRange.class))
                 .map(Field::getName)
                 .collect(Collectors.toSet());
     }
