@@ -8,19 +8,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import by.arvisit.cabapp.common.validation.provider.MapContainsParseableUUIDValuesValidator;
+import by.arvisit.cabapp.common.validation.provider.ParseableUUIDValuesValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = MapContainsParseableUUIDValuesValidator.class)
-public @interface MapContainsParseableUUIDValues {
+@Constraint(validatedBy = ParseableUUIDValuesValidator.class)
+public @interface ParseableUUIDValues {
 
-    String[] keys();
+    Class<?> keysHolder();
 
-    String message() default "{by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.ParseableUUIDValues.message}";
 
     Class<?>[] groups() default {};
 

@@ -8,19 +8,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import by.arvisit.cabapp.common.validation.provider.MapContainsParseableBooleanValuesValidator;
+import by.arvisit.cabapp.common.validation.provider.AllowedKeysValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = MapContainsParseableBooleanValuesValidator.class)
-public @interface MapContainsParseableBooleanValues {
+@Constraint(validatedBy = AllowedKeysValidator.class)
+public @interface AllowedKeys {
 
-    String[] keys();
+    Class<?> keysHolder();
 
-    String message() default "{by.arvisit.cabapp.common.validation.MapContainsParseableBooleanValues.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.AllowedKeys.message}";
 
     Class<?>[] groups() default {};
 

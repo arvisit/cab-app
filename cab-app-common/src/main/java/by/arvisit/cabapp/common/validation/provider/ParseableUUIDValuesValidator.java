@@ -1,20 +1,27 @@
 package by.arvisit.cabapp.common.validation.provider;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues;
+import by.arvisit.cabapp.common.validation.ParseableUUIDValues;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class MapContainsParseableUUIDValuesValidator implements ConstraintValidator<MapContainsParseableUUIDValues, Map<String, String>> {
+public class ParseableUUIDValuesValidator implements ConstraintValidator<ParseableUUIDValues, Map<String, String>> {
 
     private Set<String> targetKeys;
 
     @Override
-    public void initialize(MapContainsParseableUUIDValues constraintAnnotation) {
-        targetKeys = Set.of(constraintAnnotation.keys());
+    public void initialize(ParseableUUIDValues constraintAnnotation) {
+        Class<?> keysHolder = constraintAnnotation.keysHolder();
+        targetKeys = Arrays.stream(keysHolder.getDeclaredFields())
+                .filter(f -> f.getType().equals(UUID.class))
+                .map(Field::getName)
+                .collect(Collectors.toSet());
     }
 
     @Override

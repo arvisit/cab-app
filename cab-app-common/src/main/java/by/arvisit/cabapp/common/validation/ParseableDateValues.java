@@ -8,19 +8,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import by.arvisit.cabapp.common.validation.provider.MapContainsAllowedKeysValidator;
+import by.arvisit.cabapp.common.validation.provider.ParseableDateValuesValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = MapContainsAllowedKeysValidator.class)
-public @interface MapContainsAllowedKeys {
+@Constraint(validatedBy = ParseableDateValuesValidator.class)
+public @interface ParseableDateValues {
 
-    String[] keys();
+    Class<?> keysHolder();
 
-    String message() default "{by.arvisit.cabapp.common.validation.MapContainsAllowedKeys.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.ParseableDateValues.message}";
 
     Class<?>[] groups() default {};
 
