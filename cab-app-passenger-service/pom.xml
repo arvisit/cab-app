@@ -21,6 +21,7 @@
         <liquibase.url>${env.DB_URL}</liquibase.url>
         <liquibase.username>${env.DB_USERNAME}</liquibase.username>
         <liquibase.password>${env.DB_PASSWORD}</liquibase.password>
+        <hibernate-jpamodelgen.version>6.4.4.Final</hibernate-jpamodelgen.version>
         <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
         <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
@@ -46,6 +47,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate-jpamodelgen.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -122,6 +128,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>${lombok-mapstruct-binding.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate-jpamodelgen.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
