@@ -16,7 +16,9 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
+import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.mapper.PassengerMapper;
+import by.arvisit.cabapp.passengerservice.mapper.PassengersFilterParamsMapper;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
 import by.arvisit.cabapp.passengerservice.persistence.util.PassengerSpecs;
@@ -36,6 +38,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
+    private final PassengersFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final PassengerSpecs passengerSpecs;
 
@@ -45,7 +48,8 @@ public class PassengerServiceImpl implements PassengerService {
         log.debug("Call for PassengerService.getPassengers() with pageable settings: {} and request parametes: {}",
                 pageable, params);
 
-        Specification<Passenger> spec = passengerSpecs.getAllByFilter(params);
+        PassengersFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<Passenger> spec = passengerSpecs.getAllByFilter(filterParams);
         List<PassengerResponseDto> passengers = passengerRepository.findAll(spec, pageable).stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();
