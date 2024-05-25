@@ -1,64 +1,86 @@
 package by.arvisit.cabapp.driverservice.persistence.util;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import by.arvisit.cabapp.common.util.SpecUtil;
+import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
 import by.arvisit.cabapp.driverservice.persistence.model.Car;
 import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer;
+import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer_;
+import by.arvisit.cabapp.driverservice.persistence.model.Car_;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import by.arvisit.cabapp.driverservice.persistence.model.Driver_;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 @Component
 public class DriverSpecs {
 
-    private static final String CAR_MANUFACTURER_NAME_PARAM_NAME = "carManufacturerName";
-    private static final Set<String> VALID_DIRECT_STRING_PARAM_NAMES = Set.of("name", "email");
-    private static final Set<String> VALID_DIRECT_BOOLEAN_PARAM_NAMES = Set.of("isAvailable");
-
-    public Specification<Driver> getAllByFilter(Map<String, String> filterParams) {
-        return (root, query, criteriaBuilder) -> {
-            CriteriaBuilder cb = criteriaBuilder;
+    public Specification<Driver> getAllByFilter(DriversFilterParams filterParams) {
+        return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-
             if (filterParams == null) {
                 return spec;
             }
 
-            String carManufacturerNameValue = filterParams.get(CAR_MANUFACTURER_NAME_PARAM_NAME);
-            if (carManufacturerNameValue != null) {
-                spec = cb.and(spec, getAllByCarManufacturerName(carManufacturerNameValue)
-                        .toPredicate(root, query, criteriaBuilder));
-            }
+            spec = (filterParams.carManufacturerName() != null)
+                    ? cb.and(spec, getAllByCarManufacturerName(filterParams).toPredicate(root, query, cb))
+                    : spec;
 
-            for (Map.Entry<String, String> param : filterParams.entrySet()) {
-                String paramKey = param.getKey();
-                String paramValue = param.getValue();
-                if (VALID_DIRECT_STRING_PARAM_NAMES.contains(paramKey)) {
-                    String likePattern = SpecUtil.toLikePattern(paramValue);
-                    spec = cb.and(spec, cb.like(cb.lower(root.get(paramKey)), likePattern));
-                }
-                if (VALID_DIRECT_BOOLEAN_PARAM_NAMES.contains(paramKey)) {
-                    Boolean parsedValue = SpecUtil.fromString(paramValue);
-                    spec = cb.and(spec, cb.equal(root.get(paramKey), parsedValue));
-                }
+            spec = cb.and(spec, handleLikeStringParams(filterParams).toPredicate(root, query, cb));
+            spec = cb.and(spec, handleEqualBooleanParams(filterParams).toPredicate(root, query, cb));
+
+            return spec;
+        };
+    }
+
+    private Specification<Driver> handleLikeStringParams(DriversFilterParams filterParams) {
+        return (root, query, cb) -> {
+            Predicate spec = cb.conjunction();
+            Map<SingularAttribute<Driver, String>, String> strParams = new HashMap<>();
+            strParams.put(Driver_.email, filterParams.email());
+            strParams.put(Driver_.name, filterParams.name());
+
+            for (Map.Entry<SingularAttribute<Driver, String>, String> param : strParams.entrySet()) {
+                SingularAttribute<Driver, String> key = param.getKey();
+                String value = param.getValue();
+                spec = (value != null)
+                        ? cb.and(spec, SpecUtil.likeString(value, key).toPredicate(root, query, cb))
+                        : spec;
             }
             return spec;
         };
     }
 
-    private Specification<Driver> getAllByCarManufacturerName(String carManufacturerName) {
-        return (root, query, criteriaBuilder) -> {
-            CriteriaBuilder cb = criteriaBuilder;
-            Join<Driver, Car> joinCar = root.join("car");
-            Join<Car, CarManufacturer> joinCarManufacturer = joinCar.join("manufacturer");
+    private Specification<Driver> handleEqualBooleanParams(DriversFilterParams filterParams) {
+        return (root, query, cb) -> {
+            Predicate spec = cb.conjunction();
+            Map<SingularAttribute<Driver, Boolean>, Boolean> strParams = new HashMap<>();
+            strParams.put(Driver_.isAvailable, filterParams.isAvailable());
+
+            for (Map.Entry<SingularAttribute<Driver, Boolean>, Boolean> param : strParams.entrySet()) {
+                SingularAttribute<Driver, Boolean> key = param.getKey();
+                Boolean value = param.getValue();
+                spec = (value != null)
+                        ? cb.and(spec, SpecUtil.equalBoolean(value, key).toPredicate(root, query, cb))
+                        : spec;
+            }
+            return spec;
+        };
+    }
+
+    private Specification<Driver> getAllByCarManufacturerName(DriversFilterParams filterParams) {
+        String carManufacturerName = filterParams.carManufacturerName();
+        return (root, query, cb) -> {
+            Join<Driver, Car> joinCar = root.join(Driver_.car);
+            Join<Car, CarManufacturer> joinCarManufacturer = joinCar.join(Car_.manufacturer);
             String likePattern = SpecUtil.toLikePattern(carManufacturerName);
-            return cb.like(cb.lower(joinCarManufacturer.get("name")), likePattern);
+            return cb.like(cb.lower(joinCarManufacturer.get(CarManufacturer_.name)), likePattern);
         };
     }
 }

@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
+import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
 import by.arvisit.cabapp.driverservice.mapper.DriverMapper;
+import by.arvisit.cabapp.driverservice.mapper.DriversFilterParamsMapper;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
 import by.arvisit.cabapp.driverservice.persistence.repository.DriverRepository;
 import by.arvisit.cabapp.driverservice.persistence.util.DriverSpecs;
@@ -36,6 +38,7 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
+    private final DriversFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final DriverSpecs driverSpecs;
 
@@ -45,7 +48,8 @@ public class DriverServiceImpl implements DriverService {
         log.debug("Call for DriverService.getDrivers() with pageable settings: {} and request parameters: {}", pageable,
                 params);
 
-        Specification<Driver> spec = driverSpecs.getAllByFilter(params);
+        DriversFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<Driver> spec = driverSpecs.getAllByFilter(filterParams);
         List<DriverResponseDto> drivers = driverRepository.findAll(spec, pageable).stream()
                 .map(driverMapper::fromEntityToResponseDto)
                 .toList();
