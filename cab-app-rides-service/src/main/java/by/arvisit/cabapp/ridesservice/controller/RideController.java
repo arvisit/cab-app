@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
-import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
+import by.arvisit.cabapp.common.validation.AllowedKeys;
 import by.arvisit.cabapp.common.validation.MapContainsKey;
-import by.arvisit.cabapp.common.validation.MapContainsParseableDateValues;
-import by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues;
+import by.arvisit.cabapp.common.validation.ParseableDateValues;
+import by.arvisit.cabapp.common.validation.ParseableUUIDValues;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
+import by.arvisit.cabapp.ridesservice.dto.RidesFilterParams;
 import by.arvisit.cabapp.ridesservice.service.RatingService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
 import by.arvisit.cabapp.ridesservice.util.AppConstants;
@@ -46,7 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 public class RideController {
 
-    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.ridesservice.controller.RideController.requestParams.MapContainsAllowedKeys.message}";
     private static final String DRIVER_ID_KEY = "driverId";
     private static final String PROMO_CODE_KEYWORD_KEY = "promoCodeKeyword";
     private static final String PAYMENT_METHOD_KEY = "paymentMethod";
@@ -217,16 +217,9 @@ public class RideController {
     @GetMapping
     public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
-            @MapContainsAllowedKeys(
-                    keys = { "page", "size", "sort", "startAddress", "destinationAddress", "status", "paymentMethod",
-                            "passengerId", "driverId", "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
-                            "finishRide" },
-                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
-            @MapContainsParseableUUIDValues(
-                    keys = { "passengerId", "driverId" })
-            @MapContainsParseableDateValues(
-                    keys = { "driverId", "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
-                            "finishRide" }) Map<String, @NotBlank String> requestParams) {
+            @AllowedKeys(keysHolder = RidesFilterParams.class)
+            @ParseableUUIDValues(keysHolder = RidesFilterParams.class)
+            @ParseableDateValues(keysHolder = RidesFilterParams.class) Map<String, @NotBlank String> requestParams) {
         log.debug("Get all rides according to request parameters: {}", requestParams);
         ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable, requestParams);
 

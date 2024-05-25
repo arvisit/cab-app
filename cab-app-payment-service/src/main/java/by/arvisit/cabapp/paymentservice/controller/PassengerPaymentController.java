@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
-import by.arvisit.cabapp.common.validation.MapContainsAllowedKeys;
-import by.arvisit.cabapp.common.validation.MapContainsParseableDateValues;
-import by.arvisit.cabapp.common.validation.MapContainsParseableUUIDValues;
+import by.arvisit.cabapp.common.validation.AllowedKeys;
+import by.arvisit.cabapp.common.validation.ParseableDateValues;
+import by.arvisit.cabapp.common.validation.ParseableUUIDValues;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.service.PassengerPaymentService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -36,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PassengerPaymentController {
 
-    private static final String REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE = "{by.arvisit.cabapp.paymentservice.controller.PassengerPaymentController.requestParams.MapContainsAllowedKeys.message}";
     private final PassengerPaymentService passengerPaymentService;
 
     @PostMapping
@@ -59,14 +59,10 @@ public class PassengerPaymentController {
     public ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(
             @PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
-            @MapContainsAllowedKeys(
-                    keys = { "page", "size", "sort", "status", "paymentMethod", "passengerId", "driverId", "rideId",
-                            "timestamp" },
-                    message = REQUEST_PARAMS_VALIDATION_NOT_ALLOWED_KEYS_MESSAGE)
-            @MapContainsParseableUUIDValues(
-                    keys = { "passengerId", "driverId", "rideId" })
-            @MapContainsParseableDateValues(
-                    keys = { "timestamp" }) Map<String, @NotBlank String> requestParams) {
+            @AllowedKeys(keysHolder = PassengerPaymentsFilterParams.class)
+            @ParseableUUIDValues(keysHolder = PassengerPaymentsFilterParams.class)
+            @ParseableDateValues(
+                    keysHolder = PassengerPaymentsFilterParams.class) Map<String, @NotBlank String> requestParams) {
 
         log.debug("Get all passenger payments according to request parameters: {}", requestParams);
         ListContainerResponseDto<PassengerPaymentResponseDto> response = passengerPaymentService.getPayments(pageable,
