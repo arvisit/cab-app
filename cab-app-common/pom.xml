@@ -13,6 +13,7 @@
         <lombok.version>1.18.30</lombok.version>
         <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
         <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
+        <spring-data-jpa.version>3.2.4</spring-data-jpa.version>
     </properties>
 
     <dependencies>
@@ -30,6 +31,11 @@
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>${jakarta.validation-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${spring-data-jpa.version}</version>
         </dependency>
     </dependencies>
 
