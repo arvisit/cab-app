@@ -21,7 +21,9 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
@@ -43,6 +45,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
     private final PassengerPaymentRepository passengerPaymentRepository;
     private final PassengerPaymentMapper passengerPaymentMapper;
+    private final PassengerPaymentsFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final PassengerPaymentVerifier passengerPaymentVerifier;
     private final StreamBridge streamBridge;
@@ -92,7 +95,8 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
                 "Call for PassengerPaymentService.getPayments() with pageable settings: {} and request parameters: {}",
                 pageable, params);
 
-        Specification<PassengerPayment> spec = passengerPaymentSpecs.getAllByFilter(params);
+        PassengerPaymentsFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<PassengerPayment> spec = passengerPaymentSpecs.getAllByFilter(filterParams);
         List<PassengerPaymentResponseDto> payments = passengerPaymentRepository.findAll(spec, pageable).stream()
                 .map(passengerPaymentMapper::fromEntityToResponseDto)
                 .toList();

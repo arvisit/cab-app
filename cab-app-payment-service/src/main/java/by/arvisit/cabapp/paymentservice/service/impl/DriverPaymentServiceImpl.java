@@ -19,7 +19,9 @@ import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.DriverPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
@@ -38,6 +40,7 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
 
     private final DriverPaymentRepository driverPaymentRepository;
     private final DriverPaymentMapper driverPaymentMapper;
+    private final DriverPaymentsFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final DriverPaymentVerifier driverPaymentVerifier;
     private final DriverPaymentSpecs driverPaymentSpecs;
@@ -74,7 +77,8 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
         log.debug("Call for DriverPaymentService.getPayments() with pageable settings: {} and request parameters: {}",
                 pageable, params);
 
-        Specification<DriverPayment> spec = driverPaymentSpecs.getAllByFilter(params);
+        DriverPaymentsFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<DriverPayment> spec = driverPaymentSpecs.getAllByFilter(filterParams);
         List<DriverPaymentResponseDto> payments = driverPaymentRepository.findAll(spec, pageable).stream()
                 .map(driverPaymentMapper::fromEntityToResponseDto)
                 .toList();
