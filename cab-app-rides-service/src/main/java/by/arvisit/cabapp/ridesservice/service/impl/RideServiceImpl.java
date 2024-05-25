@@ -30,7 +30,9 @@ import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
+import by.arvisit.cabapp.ridesservice.dto.RidesFilterParams;
 import by.arvisit.cabapp.ridesservice.mapper.RideMapper;
+import by.arvisit.cabapp.ridesservice.mapper.RidesFilterParamsMapper;
 import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
@@ -61,6 +63,7 @@ public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
+    private final RidesFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final CostService costService;
     private final PromoCodeService promoCodeService;
@@ -382,7 +385,8 @@ public class RideServiceImpl implements RideService {
         log.debug("Call for RideService.getRides() with pageable settings: {} and request parameters: {}", pageable,
                 params);
 
-        Specification<Ride> spec = rideSpecs.getAllByFilter(params);
+        RidesFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<Ride> spec = rideSpecs.getAllByFilter(filterParams);
         List<RideResponseDto> rides = rideRepository.findAll(spec, pageable).stream()
                 .map(rideMapper::fromEntityToResponseDto)
                 .toList();
