@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.paymentservice.mapper;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.Map;
 import java.util.UUID;
 
@@ -7,37 +9,41 @@ import org.springframework.stereotype.Component;
 
 import by.arvisit.cabapp.common.util.DateRange;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
+import lombok.SneakyThrows;
 
 @Component
 public class PassengerPaymentsFilterParamsMapper {
 
-    private static final String TIMESTAMP = "timestamp";
-    private static final String PASSENGER_ID = "passengerId";
-    private static final String DRIVER_ID = "driverId";
-    private static final String RIDE_ID = "rideId";
-    private static final String STATUS = "status";
-    private static final String PAYMENT_METHOD = "paymentMethod";
-
+    @SneakyThrows
     public PassengerPaymentsFilterParams fromMapParams(Map<String, String> params) {
-        String timestamp = params.get(TIMESTAMP);
-        String passengerId = params.get(PASSENGER_ID);
-        String driverId = params.get(DRIVER_ID);
-        String rideId = params.get(RIDE_ID);
-        return PassengerPaymentsFilterParams.builder()
-                .withStatus(params.get(STATUS))
-                .withPaymentMethod(params.get(PAYMENT_METHOD))
-                .withPassengerId(getNullOrUUID(passengerId))
-                .withDriverId(getNullOrUUID(driverId))
-                .withRideId(getNullOrUUID(rideId))
-                .withTimestamp(timestamp != null
-                        ? DateRange.fromSingleValue(timestamp)
-                        : null)
-                .build();
+        Constructor<?> constructor = PassengerPaymentsFilterParams.class.getDeclaredConstructors()[0];
+        Parameter[] parameters = constructor.getParameters();
+
+        Object[] args = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            String value = params.get(parameter.getName());
+            if (parameter.getType().equals(UUID.class)) {
+                args[i] = getNullOrUUID(value);
+            } else if (parameter.getType().equals(DateRange.class)) {
+                args[i] = getNullOrDateRange(value);
+            } else {
+                args[i] = value;
+            }
+        }
+
+        return (PassengerPaymentsFilterParams) constructor.newInstance(args);
     }
 
     private UUID getNullOrUUID(String str) {
         return str != null
                 ? UUID.fromString(str)
+                : null;
+    }
+
+    private DateRange getNullOrDateRange(String str) {
+        return str != null
+                ? DateRange.fromSingleValue(str)
                 : null;
     }
 }

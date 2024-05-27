@@ -1,28 +1,39 @@
 package by.arvisit.cabapp.driverservice.mapper;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
+import lombok.SneakyThrows;
 
 @Component
 public class DriversFilterParamsMapper {
 
-    private static final String IS_AVAILABLE = "isAvailable";
-    private static final String CAR_MANUFACTURER_NAME = "carManufacturerName";
-    private static final String EMAIL = "email";
-    private static final String NAME = "name";
-
+    @SneakyThrows
     public DriversFilterParams fromMapParams(Map<String, String> params) {
-        String isAvailable = params.get(IS_AVAILABLE);
-        return DriversFilterParams.builder()
-                .withName(params.get(NAME))
-                .withEmail(params.get(EMAIL))
-                .withCarManufacturerName(params.get(CAR_MANUFACTURER_NAME))
-                .withIsAvailable(isAvailable != null
-                        ? Boolean.parseBoolean(isAvailable)
-                        : null)
-                .build();
+        Constructor<?> constructor = DriversFilterParams.class.getDeclaredConstructors()[0];
+        Parameter[] parameters = constructor.getParameters();
+
+        Object[] args = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            String value = params.get(parameter.getName());
+            if (parameter.getType().equals(Boolean.class)) {
+                args[i] = getNullOrBoolean(value);
+            } else {
+                args[i] = value;
+            }
+        }
+
+        return (DriversFilterParams) constructor.newInstance(args);
+    }
+
+    private Boolean getNullOrBoolean(String str) {
+        return str != null
+                ? Boolean.parseBoolean(str)
+                : null;
     }
 }
