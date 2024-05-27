@@ -26,20 +26,45 @@ public class DriverPaymentSpecs {
                 return spec;
             }
 
-            spec = cb.and(spec, handleEqualEnumParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleEqualUUIDParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleBetweenDateRangeParams(filterParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> enumParams = collectEqualEnumParams(
+                    filterParams);
+            spec = cb.and(spec, handleEqualEnumParams(enumParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<DriverPayment, UUID>, UUID> uuidParams = collectEqualUUIDParams(filterParams);
+            spec = cb.and(spec, handleEqualUUIDParams(uuidParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> dateRangeParams = collectBetweenDateRangeParams(
+                    filterParams);
+            spec = cb.and(spec, handleBetweenDateRangeParams(dateRangeParams).toPredicate(root, query, cb));
 
             return spec;
         };
     }
 
-    private Specification<DriverPayment> handleEqualEnumParams(DriverPaymentsFilterParams filterParams) {
+    private Map<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> collectEqualEnumParams(
+            DriverPaymentsFilterParams filterParams) {
+        Map<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> params = new HashMap<>();
+        params.put(DriverPayment_.status, filterParams.status());
+        params.put(DriverPayment_.operation, filterParams.operation());
+        return params;
+    }
+
+    private Map<SingularAttribute<DriverPayment, UUID>, UUID> collectEqualUUIDParams(
+            DriverPaymentsFilterParams filterParams) {
+        Map<SingularAttribute<DriverPayment, UUID>, UUID> params = new HashMap<>();
+        params.put(DriverPayment_.driverId, filterParams.driverId());
+        return params;
+    }
+
+    private Map<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> collectBetweenDateRangeParams(
+            DriverPaymentsFilterParams filterParams) {
+        Map<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> params = new HashMap<>();
+        params.put(DriverPayment_.timestamp, filterParams.timestamp());
+        return params;
+    }
+
+    private Specification<DriverPayment> handleEqualEnumParams(
+            Map<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> enumParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> enumParams = new HashMap<>();
-            enumParams.put(DriverPayment_.status, filterParams.status());
-            enumParams.put(DriverPayment_.operation, filterParams.operation());
 
             for (Map.Entry<SingularAttribute<DriverPayment, ? extends Enum<?>>, String> param : enumParams.entrySet()) {
                 SingularAttribute<DriverPayment, ? extends Enum<?>> key = param.getKey();
@@ -52,11 +77,10 @@ public class DriverPaymentSpecs {
         };
     }
 
-    private Specification<DriverPayment> handleEqualUUIDParams(DriverPaymentsFilterParams filterParams) {
+    private Specification<DriverPayment> handleEqualUUIDParams(
+            Map<SingularAttribute<DriverPayment, UUID>, UUID> uuidParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<DriverPayment, UUID>, UUID> uuidParams = new HashMap<>();
-            uuidParams.put(DriverPayment_.driverId, filterParams.driverId());
 
             for (Map.Entry<SingularAttribute<DriverPayment, UUID>, UUID> param : uuidParams.entrySet()) {
                 SingularAttribute<DriverPayment, UUID> key = param.getKey();
@@ -69,13 +93,13 @@ public class DriverPaymentSpecs {
         };
     }
 
-    private Specification<DriverPayment> handleBetweenDateRangeParams(DriverPaymentsFilterParams filterParams) {
+    private Specification<DriverPayment> handleBetweenDateRangeParams(
+            Map<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> dateRangeParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> dateParams = new HashMap<>();
-            dateParams.put(DriverPayment_.timestamp, filterParams.timestamp());
 
-            for (Map.Entry<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> param : dateParams.entrySet()) {
+            for (Map.Entry<SingularAttribute<DriverPayment, ZonedDateTime>, DateRange> param : dateRangeParams
+                    .entrySet()) {
                 SingularAttribute<DriverPayment, ZonedDateTime> key = param.getKey();
                 DateRange value = param.getValue();
                 spec = (value != null)

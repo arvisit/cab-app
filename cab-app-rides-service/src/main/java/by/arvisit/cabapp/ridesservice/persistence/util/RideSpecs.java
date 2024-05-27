@@ -26,21 +26,57 @@ public class RideSpecs {
                 return spec;
             }
 
-            spec = cb.and(spec, handleLikeStringParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleEqualEnumParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleEqualUUIDParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleBetweenDateRangeParams(filterParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Ride, String>, String> strParams = collectLikeStringParams(filterParams);
+            spec = cb.and(spec, handleLikeStringParams(strParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Ride, ? extends Enum<?>>, String> enumParams = collectEqualEnumParams(filterParams);
+            spec = cb.and(spec, handleEqualEnumParams(enumParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Ride, UUID>, UUID> uuidParams = collectEqualUUIDParams(filterParams);
+            spec = cb.and(spec, handleEqualUUIDParams(uuidParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Ride, ZonedDateTime>, DateRange> dateRangeParams = collectBetweenDateRangeParams(
+                    filterParams);
+            spec = cb.and(spec, handleBetweenDateRangeParams(dateRangeParams).toPredicate(root, query, cb));
 
             return spec;
         };
     }
 
-    private Specification<Ride> handleLikeStringParams(RidesFilterParams filterParams) {
+    private Map<SingularAttribute<Ride, String>, String> collectLikeStringParams(RidesFilterParams filterParams) {
+        Map<SingularAttribute<Ride, String>, String> params = new HashMap<>();
+        params.put(Ride_.startAddress, filterParams.startAddress());
+        params.put(Ride_.destinationAddress, filterParams.destinationAddress());
+        return params;
+    }
+
+    private Map<SingularAttribute<Ride, ? extends Enum<?>>, String> collectEqualEnumParams(
+            RidesFilterParams filterParams) {
+        Map<SingularAttribute<Ride, ? extends Enum<?>>, String> params = new HashMap<>();
+        params.put(Ride_.status, filterParams.status());
+        params.put(Ride_.paymentMethod, filterParams.paymentMethod());
+        return params;
+    }
+
+    private Map<SingularAttribute<Ride, UUID>, UUID> collectEqualUUIDParams(RidesFilterParams filterParams) {
+        Map<SingularAttribute<Ride, UUID>, UUID> params = new HashMap<>();
+        params.put(Ride_.passengerId, filterParams.passengerId());
+        params.put(Ride_.driverId, filterParams.driverId());
+        return params;
+    }
+
+    private Map<SingularAttribute<Ride, ZonedDateTime>, DateRange> collectBetweenDateRangeParams(
+            RidesFilterParams filterParams) {
+        Map<SingularAttribute<Ride, ZonedDateTime>, DateRange> params = new HashMap<>();
+        params.put(Ride_.bookRide, filterParams.bookRide());
+        params.put(Ride_.cancelRide, filterParams.cancelRide());
+        params.put(Ride_.acceptRide, filterParams.acceptRide());
+        params.put(Ride_.beginRide, filterParams.beginRide());
+        params.put(Ride_.endRide, filterParams.endRide());
+        params.put(Ride_.finishRide, filterParams.finishRide());
+        return params;
+    }
+
+    private Specification<Ride> handleLikeStringParams(Map<SingularAttribute<Ride, String>, String> strParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Ride, String>, String> strParams = new HashMap<>();
-            strParams.put(Ride_.startAddress, filterParams.startAddress());
-            strParams.put(Ride_.destinationAddress, filterParams.destinationAddress());
 
             for (Map.Entry<SingularAttribute<Ride, String>, String> param : strParams.entrySet()) {
                 SingularAttribute<Ride, String> key = param.getKey();
@@ -53,12 +89,10 @@ public class RideSpecs {
         };
     }
 
-    private Specification<Ride> handleEqualEnumParams(RidesFilterParams filterParams) {
+    private Specification<Ride> handleEqualEnumParams(
+            Map<SingularAttribute<Ride, ? extends Enum<?>>, String> enumParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Ride, ? extends Enum<?>>, String> enumParams = new HashMap<>();
-            enumParams.put(Ride_.status, filterParams.status());
-            enumParams.put(Ride_.paymentMethod, filterParams.paymentMethod());
 
             for (Map.Entry<SingularAttribute<Ride, ? extends Enum<?>>, String> param : enumParams.entrySet()) {
                 SingularAttribute<Ride, ? extends Enum<?>> key = param.getKey();
@@ -71,12 +105,9 @@ public class RideSpecs {
         };
     }
 
-    private Specification<Ride> handleEqualUUIDParams(RidesFilterParams filterParams) {
+    private Specification<Ride> handleEqualUUIDParams(Map<SingularAttribute<Ride, UUID>, UUID> uuidParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Ride, UUID>, UUID> uuidParams = new HashMap<>();
-            uuidParams.put(Ride_.passengerId, filterParams.passengerId());
-            uuidParams.put(Ride_.driverId, filterParams.driverId());
 
             for (Map.Entry<SingularAttribute<Ride, UUID>, UUID> param : uuidParams.entrySet()) {
                 SingularAttribute<Ride, UUID> key = param.getKey();
@@ -89,18 +120,12 @@ public class RideSpecs {
         };
     }
 
-    private Specification<Ride> handleBetweenDateRangeParams(RidesFilterParams filterParams) {
+    private Specification<Ride> handleBetweenDateRangeParams(
+            Map<SingularAttribute<Ride, ZonedDateTime>, DateRange> dateRangeParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Ride, ZonedDateTime>, DateRange> dateParams = new HashMap<>();
-            dateParams.put(Ride_.bookRide, filterParams.bookRide());
-            dateParams.put(Ride_.cancelRide, filterParams.cancelRide());
-            dateParams.put(Ride_.acceptRide, filterParams.acceptRide());
-            dateParams.put(Ride_.beginRide, filterParams.beginRide());
-            dateParams.put(Ride_.endRide, filterParams.endRide());
-            dateParams.put(Ride_.finishRide, filterParams.finishRide());
 
-            for (Map.Entry<SingularAttribute<Ride, ZonedDateTime>, DateRange> param : dateParams.entrySet()) {
+            for (Map.Entry<SingularAttribute<Ride, ZonedDateTime>, DateRange> param : dateRangeParams.entrySet()) {
                 SingularAttribute<Ride, ZonedDateTime> key = param.getKey();
                 DateRange value = param.getValue();
                 spec = (value != null)

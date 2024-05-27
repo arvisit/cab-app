@@ -23,18 +23,25 @@ public class PassengerSpecs {
                 return spec;
             }
 
-            spec = cb.and(spec, handleLikeStringParams(filterParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Passenger, String>, String> strParams = collectLikeStringParams(filterParams);
+            spec = cb.and(spec, handleLikeStringParams(strParams).toPredicate(root, query, cb));
 
             return spec;
         };
     }
 
-    private Specification<Passenger> handleLikeStringParams(PassengersFilterParams filterParams) {
+    private Map<SingularAttribute<Passenger, String>, String> collectLikeStringParams(
+            PassengersFilterParams filterParams) {
+        Map<SingularAttribute<Passenger, String>, String> params = new HashMap<>();
+        params.put(Passenger_.email, filterParams.email());
+        params.put(Passenger_.name, filterParams.name());
+        return params;
+    }
+
+    private Specification<Passenger> handleLikeStringParams(
+            Map<SingularAttribute<Passenger, String>, String> strParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Passenger, String>, String> strParams = new HashMap<>();
-            strParams.put(Passenger_.email, filterParams.email());
-            strParams.put(Passenger_.name, filterParams.name());
 
             for (Map.Entry<SingularAttribute<Passenger, String>, String> param : strParams.entrySet()) {
                 SingularAttribute<Passenger, String> key = param.getKey();

@@ -32,19 +32,32 @@ public class DriverSpecs {
                     ? cb.and(spec, getAllByCarManufacturerName(filterParams).toPredicate(root, query, cb))
                     : spec;
 
-            spec = cb.and(spec, handleLikeStringParams(filterParams).toPredicate(root, query, cb));
-            spec = cb.and(spec, handleEqualBooleanParams(filterParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Driver, String>, String> strParams = collectLikeStringParams(filterParams);
+            spec = cb.and(spec, handleLikeStringParams(strParams).toPredicate(root, query, cb));
+            Map<SingularAttribute<Driver, Boolean>, Boolean> boolParams = collectEqualBooleanParams(filterParams);
+            spec = cb.and(spec, handleEqualBooleanParams(boolParams).toPredicate(root, query, cb));
 
             return spec;
         };
     }
 
-    private Specification<Driver> handleLikeStringParams(DriversFilterParams filterParams) {
+    private Map<SingularAttribute<Driver, String>, String> collectLikeStringParams(DriversFilterParams filterParams) {
+        Map<SingularAttribute<Driver, String>, String> params = new HashMap<>();
+        params.put(Driver_.email, filterParams.email());
+        params.put(Driver_.name, filterParams.name());
+        return params;
+    }
+
+    private Map<SingularAttribute<Driver, Boolean>, Boolean> collectEqualBooleanParams(
+            DriversFilterParams filterParams) {
+        Map<SingularAttribute<Driver, Boolean>, Boolean> params = new HashMap<>();
+        params.put(Driver_.isAvailable, filterParams.isAvailable());
+        return params;
+    }
+
+    private Specification<Driver> handleLikeStringParams(Map<SingularAttribute<Driver, String>, String> strParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Driver, String>, String> strParams = new HashMap<>();
-            strParams.put(Driver_.email, filterParams.email());
-            strParams.put(Driver_.name, filterParams.name());
 
             for (Map.Entry<SingularAttribute<Driver, String>, String> param : strParams.entrySet()) {
                 SingularAttribute<Driver, String> key = param.getKey();
@@ -57,13 +70,12 @@ public class DriverSpecs {
         };
     }
 
-    private Specification<Driver> handleEqualBooleanParams(DriversFilterParams filterParams) {
+    private Specification<Driver> handleEqualBooleanParams(
+            Map<SingularAttribute<Driver, Boolean>, Boolean> boolParams) {
         return (root, query, cb) -> {
             Predicate spec = cb.conjunction();
-            Map<SingularAttribute<Driver, Boolean>, Boolean> strParams = new HashMap<>();
-            strParams.put(Driver_.isAvailable, filterParams.isAvailable());
 
-            for (Map.Entry<SingularAttribute<Driver, Boolean>, Boolean> param : strParams.entrySet()) {
+            for (Map.Entry<SingularAttribute<Driver, Boolean>, Boolean> param : boolParams.entrySet()) {
                 SingularAttribute<Driver, Boolean> key = param.getKey();
                 Boolean value = param.getValue();
                 spec = (value != null)
