@@ -3,8 +3,9 @@ package by.arvisit.cabapp.passengerservice.service.impl;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_EMAIL;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_ID_STRING;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.DEFAULT_PAGEABLE_SIZE;
-import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.NEW_NAME;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.NEW_EMAIL;
+import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.NEW_NAME;
+import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getEmptyPassengersFilterParams;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getPassenger;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getPassengerRequestDto;
 import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getPassengerResponseDto;
@@ -36,6 +37,7 @@ import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExist
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.mapper.PassengerMapper;
+import by.arvisit.cabapp.passengerservice.mapper.PassengersFilterParamsMapper;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
 import by.arvisit.cabapp.passengerservice.persistence.util.PassengerSpecs;
@@ -54,6 +56,8 @@ class PassengerServiceImplTest {
     private MessageSource messageSource;
     @Mock
     private PassengerSpecs passengerSpecs;
+    @Mock
+    private PassengersFilterParamsMapper filterParamsMapper;
 
     @Test
     void shouldReturnContainerWithPassengerResponseDto_whenGetPassengers() {
@@ -65,6 +69,8 @@ class PassengerServiceImplTest {
         Page<Passenger> passengersPage = new PageImpl<>(passengers);
         Specification<Passenger> spec = (root, query, cb) -> cb.conjunction();
 
+        when(filterParamsMapper.fromMapParams(any()))
+        .thenReturn(getEmptyPassengersFilterParams().build());
         when(passengerSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(passengerRepository.findAll(spec, pageable))
