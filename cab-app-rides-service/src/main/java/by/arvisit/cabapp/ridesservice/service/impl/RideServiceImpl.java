@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,15 @@ import by.arvisit.cabapp.ridesservice.client.PaymentClient;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
+import by.arvisit.cabapp.ridesservice.dto.RidesFilterParams;
 import by.arvisit.cabapp.ridesservice.mapper.RideMapper;
+import by.arvisit.cabapp.ridesservice.mapper.RidesFilterParamsMapper;
 import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
+import by.arvisit.cabapp.ridesservice.persistence.util.RideSpecs;
 import by.arvisit.cabapp.ridesservice.service.CostService;
 import by.arvisit.cabapp.ridesservice.service.PromoCodeService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
@@ -59,6 +63,7 @@ public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
+    private final RidesFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final CostService costService;
     private final PromoCodeService promoCodeService;
@@ -68,6 +73,7 @@ public class RideServiceImpl implements RideService {
     private final StreamBridge streamBridge;
     private final PaymentVerifier paymentVerifier;
     private final DriverClient driverClient;
+    private final RideSpecs rideSpecs;
 
     @Transactional
     @Override
@@ -375,10 +381,13 @@ public class RideServiceImpl implements RideService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<RideResponseDto> getRides(Pageable pageable) {
-        log.debug("Call for RideService.getRides() with pageable settings: {}", pageable);
+    public ListContainerResponseDto<RideResponseDto> getRides(Pageable pageable, Map<String, String> params) {
+        log.debug("Call for RideService.getRides() with pageable settings: {} and request parameters: {}", pageable,
+                params);
 
-        List<RideResponseDto> rides = rideRepository.findAll(pageable).stream()
+        RidesFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<Ride> spec = rideSpecs.getAllByFilter(filterParams);
+        List<RideResponseDto> rides = rideRepository.findAll(spec, pageable).stream()
                 .map(rideMapper::fromEntityToResponseDto)
                 .toList();
 
@@ -386,7 +395,7 @@ public class RideServiceImpl implements RideService {
                 .withValues(rides)
                 .withCurrentPage(pageable.getPageNumber())
                 .withSize(pageable.getPageSize())
-                .withLastPage(getLastPageNumber(rideRepository.count(), pageable.getPageSize()))
+                .withLastPage(getLastPageNumber(rideRepository.count(spec), pageable.getPageSize()))
                 .withSort(pageable.getSort().toString())
                 .build();
     }

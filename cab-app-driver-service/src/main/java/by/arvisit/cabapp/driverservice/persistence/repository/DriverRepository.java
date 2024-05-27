@@ -6,10 +6,11 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
 
-public interface DriverRepository extends JpaRepository<Driver, UUID> {
+public interface DriverRepository extends JpaRepository<Driver, UUID>, JpaSpecificationExecutor<Driver> {
 
     Optional<Driver> findByEmail(String email);
 

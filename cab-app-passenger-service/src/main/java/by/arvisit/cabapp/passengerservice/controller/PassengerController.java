@@ -1,6 +1,10 @@
 package by.arvisit.cabapp.passengerservice.controller;
 
+import java.util.Map;
+
 import org.hibernate.validator.constraints.UUID;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -11,14 +15,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.AllowedKeys;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
+import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,10 +81,17 @@ public class PassengerController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
-        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers();
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers(
+            @PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable
+            @AllowedKeys(keysHolder = PassengersFilterParams.class)
+            Map<String, @NotBlank String> requestParams) {
 
-        log.debug("Got all passengers. Total count: {}", response.values().size());
+        log.debug("Get all passengers according to request parameters: {}", requestParams);
+        ListContainerResponseDto<PassengerResponseDto> response = passengerService.getPassengers(pageable,
+                requestParams);
+
+        log.debug("Got all passengers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;
     }
 

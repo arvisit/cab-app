@@ -5,10 +5,12 @@ import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +19,13 @@ import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.DriverPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
+import by.arvisit.cabapp.paymentservice.persistence.util.DriverPaymentSpecs;
 import by.arvisit.cabapp.paymentservice.service.DriverPaymentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +40,10 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
 
     private final DriverPaymentRepository driverPaymentRepository;
     private final DriverPaymentMapper driverPaymentMapper;
+    private final DriverPaymentsFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final DriverPaymentVerifier driverPaymentVerifier;
+    private final DriverPaymentSpecs driverPaymentSpecs;
 
     @Transactional
     @Override
@@ -65,10 +72,14 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<DriverPaymentResponseDto> getPayments(Pageable pageable) {
-        log.debug("Call for DriverPaymentService.getPayments() with pageable settings: {}", pageable);
+    public ListContainerResponseDto<DriverPaymentResponseDto> getPayments(Pageable pageable,
+            Map<String, String> params) {
+        log.debug("Call for DriverPaymentService.getPayments() with pageable settings: {} and request parameters: {}",
+                pageable, params);
 
-        List<DriverPaymentResponseDto> payments = driverPaymentRepository.findAll(pageable).stream()
+        DriverPaymentsFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<DriverPayment> spec = driverPaymentSpecs.getAllByFilter(filterParams);
+        List<DriverPaymentResponseDto> payments = driverPaymentRepository.findAll(spec, pageable).stream()
                 .map(driverPaymentMapper::fromEntityToResponseDto)
                 .toList();
 
@@ -76,7 +87,7 @@ public class DriverPaymentServiceImpl implements DriverPaymentService {
                 .withValues(payments)
                 .withCurrentPage(pageable.getPageNumber())
                 .withSize(pageable.getPageSize())
-                .withLastPage(getLastPageNumber(driverPaymentRepository.count(), pageable.getPageSize()))
+                .withLastPage(getLastPageNumber(driverPaymentRepository.count(spec), pageable.getPageSize()))
                 .withSort(pageable.getSort().toString())
                 .build();
     }

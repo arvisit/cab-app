@@ -6,11 +6,12 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 
-public interface RideRepository extends JpaRepository<Ride, UUID> {
+public interface RideRepository extends JpaRepository<Ride, UUID>, JpaSpecificationExecutor<Ride> {
 
     List<Ride> findByPassengerId(UUID passengerId, Pageable pageable);
 

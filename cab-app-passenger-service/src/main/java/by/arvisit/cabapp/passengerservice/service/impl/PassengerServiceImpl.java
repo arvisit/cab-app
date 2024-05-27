@@ -1,19 +1,27 @@
 package by.arvisit.cabapp.passengerservice.service.impl;
 
+import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
+
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
-import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
+import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.mapper.PassengerMapper;
+import by.arvisit.cabapp.passengerservice.mapper.PassengersFilterParamsMapper;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 import by.arvisit.cabapp.passengerservice.persistence.repository.PassengerRepository;
+import by.arvisit.cabapp.passengerservice.persistence.util.PassengerSpecs;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,19 +38,28 @@ public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final PassengerMapper passengerMapper;
+    private final PassengersFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
+    private final PassengerSpecs passengerSpecs;
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<PassengerResponseDto> getPassengers() {
-        log.debug("Call for PassengerService.getPassengers()");
+    public ListContainerResponseDto<PassengerResponseDto> getPassengers(Pageable pageable, Map<String, String> params) {
+        log.debug("Call for PassengerService.getPassengers() with pageable settings: {} and request parametes: {}",
+                pageable, params);
 
-        List<PassengerResponseDto> passengers = passengerRepository.findAll().stream()
+        PassengersFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<Passenger> spec = passengerSpecs.getAllByFilter(filterParams);
+        List<PassengerResponseDto> passengers = passengerRepository.findAll(spec, pageable).stream()
                 .map(passengerMapper::fromEntityToResponseDto)
                 .toList();
 
         return ListContainerResponseDto.<PassengerResponseDto>builder()
                 .withValues(passengers)
+                .withCurrentPage(pageable.getPageNumber())
+                .withSize(pageable.getPageSize())
+                .withLastPage(getLastPageNumber(passengerRepository.count(spec), pageable.getPageSize()))
+                .withSort(pageable.getSort().toString())
                 .build();
     }
 

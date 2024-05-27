@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.driverservice.validation;
+package by.arvisit.cabapp.common.validation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -8,18 +8,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import by.arvisit.cabapp.common.validation.provider.ParseableUUIDValuesValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = MapContainsKeyValidator.class)
-public @interface MapContainsKey {
+@Constraint(validatedBy = ParseableUUIDValuesValidator.class)
+public @interface ParseableUUIDValues {
 
-    String value();
+    Class<?> keysHolder();
 
-    String message() default "{by.arvisit.cabapp.driverservice.validation.MapContainsKey.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.ParseableUUIDValues.message}";
 
     Class<?>[] groups() default {};
 

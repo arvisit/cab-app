@@ -16,16 +16,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.AllowedKeys;
+import by.arvisit.cabapp.common.validation.MapContainsKey;
+import by.arvisit.cabapp.common.validation.ParseableBooleanValues;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
+import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
 import by.arvisit.cabapp.driverservice.service.DriverService;
-import by.arvisit.cabapp.driverservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -85,8 +90,14 @@ public class DriverController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable);
+    public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable
+            @AllowedKeys(keysHolder = DriversFilterParams.class)
+            @ParseableBooleanValues(
+                    keysHolder = DriversFilterParams.class) Map<String, @NotBlank String> requestParams) {
+
+        log.debug("Get all drivers according to request parameters: {}", requestParams);
+        ListContainerResponseDto<DriverResponseDto> response = driverService.getDrivers(pageable, requestParams);
 
         log.debug("Got all drivers. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;

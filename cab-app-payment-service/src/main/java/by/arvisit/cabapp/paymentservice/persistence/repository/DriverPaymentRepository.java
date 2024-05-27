@@ -4,12 +4,13 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 
-public interface DriverPaymentRepository extends JpaRepository<DriverPayment, UUID> {
+public interface DriverPaymentRepository extends JpaRepository<DriverPayment, UUID>, JpaSpecificationExecutor<DriverPayment> {
 
     @Query("""
             SELECT (

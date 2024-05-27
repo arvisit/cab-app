@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.ridesservice.validation;
+package by.arvisit.cabapp.common.validation;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -8,19 +8,19 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import by.arvisit.cabapp.ridesservice.validation.provider.MapContainsKeyValidator;
+import by.arvisit.cabapp.common.validation.provider.AllowedKeysValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = MapContainsKeyValidator.class)
-public @interface MapContainsKey {
+@Constraint(validatedBy = AllowedKeysValidator.class)
+public @interface AllowedKeys {
 
-    String value();
+    Class<?> keysHolder();
 
-    String message() default "{by.arvisit.cabapp.ridesservice.validation.MapContainsKey.message}";
+    String message() default "{by.arvisit.cabapp.common.validation.AllowedKeys.message}";
 
     Class<?>[] groups() default {};
 

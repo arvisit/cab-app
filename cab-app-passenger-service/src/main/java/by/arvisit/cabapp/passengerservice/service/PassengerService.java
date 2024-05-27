@@ -1,12 +1,16 @@
 package by.arvisit.cabapp.passengerservice.service;
 
-import by.arvisit.cabapp.passengerservice.dto.ListContainerResponseDto;
+import java.util.Map;
+
+import org.springframework.data.domain.Pageable;
+
+import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 
 public interface PassengerService {
 
-    ListContainerResponseDto<PassengerResponseDto> getPassengers();
+    ListContainerResponseDto<PassengerResponseDto> getPassengers(Pageable pageable, Map<String, String> params);
 
     PassengerResponseDto getPassengerById(String id);
 

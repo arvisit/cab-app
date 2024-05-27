@@ -15,16 +15,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.common.validation.AllowedKeys;
+import by.arvisit.cabapp.common.validation.MapContainsKey;
+import by.arvisit.cabapp.common.validation.ParseableDateValues;
+import by.arvisit.cabapp.common.validation.ParseableUUIDValues;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
+import by.arvisit.cabapp.ridesservice.dto.RidesFilterParams;
 import by.arvisit.cabapp.ridesservice.service.RatingService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
 import by.arvisit.cabapp.ridesservice.util.AppConstants;
-import by.arvisit.cabapp.ridesservice.validation.MapContainsKey;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -210,8 +215,13 @@ public class RideController {
     }
 
     @GetMapping
-    public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable) {
-        ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable);
+    public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable,
+            @RequestParam @Nullable
+            @AllowedKeys(keysHolder = RidesFilterParams.class)
+            @ParseableUUIDValues(keysHolder = RidesFilterParams.class)
+            @ParseableDateValues(keysHolder = RidesFilterParams.class) Map<String, @NotBlank String> requestParams) {
+        log.debug("Get all rides according to request parameters: {}", requestParams);
+        ListContainerResponseDto<RideResponseDto> response = rideService.getRides(pageable, requestParams);
 
         log.debug("Got all rides. Total count: {}. Pageable settings: {}", response.values().size(), pageable);
         return response;

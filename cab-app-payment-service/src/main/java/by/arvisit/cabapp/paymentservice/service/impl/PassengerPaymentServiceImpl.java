@@ -5,11 +5,13 @@ import static by.arvisit.cabapp.common.util.PaginationUtil.getLastPageNumber;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,14 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
+import by.arvisit.cabapp.paymentservice.persistence.util.PassengerPaymentSpecs;
 import by.arvisit.cabapp.paymentservice.service.PassengerPaymentService;
 import by.arvisit.cabapp.paymentservice.util.AppConstants;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,9 +45,11 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
     private final PassengerPaymentRepository passengerPaymentRepository;
     private final PassengerPaymentMapper passengerPaymentMapper;
+    private final PassengerPaymentsFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final PassengerPaymentVerifier passengerPaymentVerifier;
     private final StreamBridge streamBridge;
+    private final PassengerPaymentSpecs passengerPaymentSpecs;
 
     @Transactional
     @Override
@@ -82,10 +89,15 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
 
     @Transactional(readOnly = true)
     @Override
-    public ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(Pageable pageable) {
-        log.debug("Call for PassengerPaymentService.getPayments() with pageable settings: {}", pageable);
+    public ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(Pageable pageable,
+            Map<String, String> params) {
+        log.debug(
+                "Call for PassengerPaymentService.getPayments() with pageable settings: {} and request parameters: {}",
+                pageable, params);
 
-        List<PassengerPaymentResponseDto> payments = passengerPaymentRepository.findAll(pageable).stream()
+        PassengerPaymentsFilterParams filterParams = filterParamsMapper.fromMapParams(params);
+        Specification<PassengerPayment> spec = passengerPaymentSpecs.getAllByFilter(filterParams);
+        List<PassengerPaymentResponseDto> payments = passengerPaymentRepository.findAll(spec, pageable).stream()
                 .map(passengerPaymentMapper::fromEntityToResponseDto)
                 .toList();
 
@@ -93,7 +105,7 @@ public class PassengerPaymentServiceImpl implements PassengerPaymentService {
                 .withValues(payments)
                 .withCurrentPage(pageable.getPageNumber())
                 .withSize(pageable.getPageSize())
-                .withLastPage(getLastPageNumber(passengerPaymentRepository.count(), pageable.getPageSize()))
+                .withLastPage(getLastPageNumber(passengerPaymentRepository.count(spec), pageable.getPageSize()))
                 .withSort(pageable.getSort().toString())
                 .build();
     }

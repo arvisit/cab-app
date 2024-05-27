@@ -1,15 +1,17 @@
 package by.arvisit.cabapp.paymentservice.persistence.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
-import java.util.List;
 
-public interface PassengerPaymentRepository extends JpaRepository<PassengerPayment, UUID> {
+public interface PassengerPaymentRepository
+        extends JpaRepository<PassengerPayment, UUID>, JpaSpecificationExecutor<PassengerPayment> {
 
     @Query("""
             SELECT COUNT(p) > 0
