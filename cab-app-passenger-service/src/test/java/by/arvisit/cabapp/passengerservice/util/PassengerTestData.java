@@ -1,12 +1,15 @@
 package by.arvisit.cabapp.passengerservice.util;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
+import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 
 public final class PassengerTestData {
@@ -15,6 +18,9 @@ public final class PassengerTestData {
     public static final String UNSORTED = "UNSORTED";
     public static final String NOT_ALLOWED_REQUEST_PARAM = "passengerId";
     public static final String NAME_REQUEST_PARAM = "name";
+    public static final String EMAIL_REQUEST_PARAM = "email";
+    public static final String NAME_TO_FILTER = "jack";
+    public static final String EMAIL_TO_FILTER = "com";
     public static final String DEFAULT_CARD_NUMBER = "7853471929691513";
     public static final String NEW_CARD_NUMBER = "1111222233334444";
     public static final String DEFAULT_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
@@ -64,6 +70,25 @@ public final class PassengerTestData {
                 .withSize(DEFAULT_PAGEABLE_SIZE)
                 .withLastPage(0)
                 .withSort(UNSORTED);
+    }
+
+    public static PassengersFilterParams.PassengersFilterParamsBuilder getEmptyPassengersFilterParams() {
+        return PassengersFilterParams.builder()
+                .withEmail(null)
+                .withName(null);
+    }
+
+    public static PassengersFilterParams.PassengersFilterParamsBuilder getFilledPassengersFilterParams() {
+        return PassengersFilterParams.builder()
+                .withEmail(EMAIL_TO_FILTER)
+                .withName(NAME_TO_FILTER);
+    }
+
+    public static Map<String, String> getRequestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put(NAME_REQUEST_PARAM, NAME_TO_FILTER);
+        params.put(EMAIL_REQUEST_PARAM, EMAIL_TO_FILTER);
+        return params;
     }
 
     public static Stream<String> blankStrings() {
