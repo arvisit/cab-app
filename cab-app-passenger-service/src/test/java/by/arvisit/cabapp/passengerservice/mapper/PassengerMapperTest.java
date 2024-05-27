@@ -9,15 +9,12 @@ import static by.arvisit.cabapp.passengerservice.util.PassengerTestData.getPasse
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
 
-@ExtendWith(MockitoExtension.class)
 class PassengerMapperTest {
 
     private PassengerMapper passengerMapper = Mappers.getMapper(PassengerMapper.class);
