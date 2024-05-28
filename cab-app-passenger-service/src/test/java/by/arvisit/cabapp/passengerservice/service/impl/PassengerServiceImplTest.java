@@ -70,7 +70,7 @@ class PassengerServiceImplTest {
         Specification<Passenger> spec = (root, query, cb) -> cb.conjunction();
 
         when(filterParamsMapper.fromMapParams(any()))
-        .thenReturn(getEmptyPassengersFilterParams().build());
+                .thenReturn(getEmptyPassengersFilterParams().build());
         when(passengerSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(passengerRepository.findAll(spec, pageable))
