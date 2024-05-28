@@ -71,7 +71,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSavePassenger() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getSavePassengerRequest().build())
@@ -92,7 +91,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenUpdatePassenger() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getUpdatePassengerRequest().build())
@@ -112,7 +110,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn204AndMinusOnePassenger_whenDeletePassenger() {
-
         List<Passenger> passengersBeforeDelete = passengerRepository.findAll();
 
         Response response = RestAssured.given()
@@ -137,7 +134,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPassengerById() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGERS_ID_TEMPLATE, JOHN_DOE_ID_STRING);
@@ -156,7 +152,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPassengerByEmail() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGERS_EMAIL_TEMPLATE, JOHN_DOE_EMAIL);
@@ -175,7 +170,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPassengersWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGERS);
@@ -203,7 +197,6 @@ class PassengerControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPassengersWithNameEmailRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(NAME_QUERY_PARAM, VALUE_FOR_NAME_QUERY_PARAM)
