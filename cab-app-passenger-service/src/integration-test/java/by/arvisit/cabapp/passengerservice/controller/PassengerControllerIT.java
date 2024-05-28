@@ -33,6 +33,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.passengerservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.passengerservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
@@ -45,6 +46,7 @@ import io.restassured.response.Response;
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
+@ExtendWith(KafkaTestContainerExtension.class)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
