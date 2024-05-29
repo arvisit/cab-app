@@ -1,6 +1,5 @@
 FROM docker.elastic.co/kibana/kibana:7.7.0
 
-COPY docker/kibana/*index-pattern.json /usr/share/kibana/
 COPY docker/kibana/init-index-patterns.sh /usr/share/kibana/init-index-patterns.sh
 USER root
 RUN chmod +x /usr/share/kibana/init-index-patterns.sh
