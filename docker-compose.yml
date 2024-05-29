@@ -43,7 +43,10 @@ services:
         condition: service_healthy
 
   db-passenger:
-    image: postgres:15-alpine
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
     container_name: db-passenger
     restart: always
     healthcheck:
@@ -95,7 +98,10 @@ services:
         condition: service_healthy
 
   db-driver:
-    image: postgres:15-alpine
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
     container_name: db-driver
     restart: always
     healthcheck:
@@ -147,7 +153,10 @@ services:
         condition: service_healthy
 
   db-rides:
-    image: postgres:15-alpine
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
     container_name: db-rides
     restart: always
     healthcheck:
@@ -199,7 +208,10 @@ services:
         condition: service_healthy
 
   db-payment:
-    image: postgres:15-alpine
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
     container_name: db-payment
     restart: always
     healthcheck:
