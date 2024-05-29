@@ -59,6 +59,10 @@ metricbeat.modules:
       - activity
       - statement
     period: 10s
-    hosts: ["postgres-container:5432?sslmode=disable"]
+    hosts:
+      - "db-passenger:5432?sslmode=disable"
+      - "db-driver:5432?sslmode=disable"
+      - "db-rides:5432?sslmode=disable"
+      - "db-payment:5432?sslmode=disable"
     username: postgres
     password: root
