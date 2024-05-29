@@ -25,6 +25,11 @@ services:
       DB_URL: jdbc:postgresql://db-passenger:5432/passenger_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-passenger-service
+        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.passengerservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
     expose:
       - 8081
@@ -80,6 +85,11 @@ services:
       DB_URL: jdbc:postgresql://db-driver:5432/driver_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-driver-service
+        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.driverservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
     expose:
       - 8082
@@ -135,6 +145,11 @@ services:
       DB_URL: jdbc:postgresql://db-rides:5432/rides_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-rides-service
+        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.ridesservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
     expose:
       - 8083
@@ -190,6 +205,11 @@ services:
       DB_URL: jdbc:postgresql://db-payment:5432/payment_service_db
       DB_USERNAME: postgres
       DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-payment-service
+        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.paymentservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
     expose:
       - 8084
@@ -433,6 +453,23 @@ services:
     depends_on:
       setup-metricbeat:
         condition: service_completed_successfully
+
+  apm-server:
+    build:
+      context: ./
+      dockerfile: ./docker/apm/Dockerfile
+    image: apm-server-custom
+    container_name: apm-server
+    user: apm-server
+    ports:
+      - 8200:8200
+    networks:
+      - cab_app_net
+    depends_on:
+      kibana:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   pgdata:
