@@ -367,7 +367,7 @@ services:
     command:
       logstash -f /etc/logstash/conf.d/logstash.conf
     volumes:
-     - ./docker-conf:/etc/logstash/conf.d
+     - ./docker/logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf
     ports:
       - 5000:5000
     networks:
