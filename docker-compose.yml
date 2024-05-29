@@ -27,7 +27,7 @@ services:
       DB_PASSWORD: root
       JVM_OPTIONS:
         -Delastic.apm.service_name=cab-app-passenger-service
-        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.passengerservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
@@ -87,7 +87,7 @@ services:
       DB_PASSWORD: root
       JVM_OPTIONS:
         -Delastic.apm.service_name=cab-app-driver-service
-        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.driverservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
@@ -147,7 +147,7 @@ services:
       DB_PASSWORD: root
       JVM_OPTIONS:
         -Delastic.apm.service_name=cab-app-rides-service
-        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.ridesservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
@@ -207,7 +207,7 @@ services:
       DB_PASSWORD: root
       JVM_OPTIONS:
         -Delastic.apm.service_name=cab-app-payment-service
-        -Delastic.apm.server_urls=http://localhost:8200
+        -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.paymentservice
       <<: [*kafka-variables, *eureka-variables, *logstash-variables]
