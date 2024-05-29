@@ -364,7 +364,10 @@ services:
       - cab_app_net
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.7.0
+    build:
+      context: ./
+      dockerfile: ./docker/kibana/Dockerfile
+    image: kibana-extended
     container_name: kibana
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9300
