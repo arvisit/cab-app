@@ -360,6 +360,12 @@ services:
     ports:
       - 9300:9300
       - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - cab_app_net
 
@@ -373,6 +379,12 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9300
     ports:
       - 5601:5601
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - cab_app_net
 
@@ -387,6 +399,40 @@ services:
       - 5000:5000
     networks:
       - cab_app_net
+
+  setup-metricbeat:
+    build:
+      context: ./
+      dockerfile: ./docker/setup-metricbeat/Dockerfile
+    image: setup-metricbeat
+    container_name: setup-metricbeat
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - cab_app_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+
+  metricbeat:
+    build:
+      context: ./
+      dockerfile: ./docker/metricbeat/Dockerfile
+    image: metricbeat-extended
+    container_name: metricbeat
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+    networks:
+     - cab_app_net
+    depends_on:
+      setup-metricbeat:
+        condition: service_completed_successfully
 
 volumes:
   pgdata:
