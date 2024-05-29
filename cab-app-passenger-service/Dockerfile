@@ -32,5 +32,6 @@ COPY --from=extract /application/dependencies/ ./
 COPY --from=extract /application/spring-boot-loader/ ./
 COPY --from=extract /application/snapshot-dependencies/ ./
 COPY --from=extract /application/application/ ./
+COPY --from=build /opt/apm-agent.jar /opt/apm-agent.jar
 ENTRYPOINT ["java", "-javaagent:/opt/apm-agent.jar", "$JVM_OPTIONS", "org.springframework.boot.loader.launch.JarLauncher"]
 
