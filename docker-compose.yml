@@ -50,7 +50,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: passenger_service_db
     ports:
       - 5433:5432
     expose:
@@ -103,7 +102,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: driver_service_db
     ports:
       - 5434:5432
     expose:
@@ -156,7 +154,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: rides_service_db
     ports:
       - 5435:5432
     expose:
@@ -209,7 +206,6 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: payment_service_db
     ports:
       - 5436:5432
     expose:
