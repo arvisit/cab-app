@@ -1,6 +1,8 @@
 package by.arvisit.cabapp.driverservice.util;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -11,6 +13,7 @@ import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
 import by.arvisit.cabapp.driverservice.dto.ColorResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
+import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
 import by.arvisit.cabapp.driverservice.persistence.model.Car;
 import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer;
 import by.arvisit.cabapp.driverservice.persistence.model.Color;
@@ -51,6 +54,12 @@ public final class DriverTestData {
     public static final String NOT_ALLOWED_REQUEST_PARAM = "driverId";
     public static final String NAME_REQUEST_PARAM = "name";
     public static final String IS_AVAILABLE_REQUEST_PARAM = "isAvailable";
+    public static final String CAR_MANUFACTURER_NAME_REQUEST_PARAM = "carManufacturerName";
+    public static final String EMAIL_REQUEST_PARAM = "email";
+    public static final String NAME_TO_FILTER = "jack";
+    public static final String EMAIL_TO_FILTER = "com";
+    public static final String IS_AVAILABLE_TO_FILTER = "true";
+    public static final String CAR_MANUFACTURER_NAME_TO_FILTER = "Audi";
     public static final String IS_AVAILABLE_KEY = "isAvailable";
 
     private DriverTestData() {
@@ -165,6 +174,31 @@ public final class DriverTestData {
                 .withLastPage(0)
                 .withSort(UNSORTED)
                 .withValues(List.of(getCarResponseDto().build()));
+    }
+
+    public static DriversFilterParams.DriversFilterParamsBuilder getEmptyDriversFilterParams() {
+        return DriversFilterParams.builder()
+                .withEmail(null)
+                .withName(null)
+                .withIsAvailable(null)
+                .withCarManufacturerName(null);
+    }
+
+    public static DriversFilterParams.DriversFilterParamsBuilder getFilledDriversFilterParams() {
+        return DriversFilterParams.builder()
+                .withEmail(EMAIL_TO_FILTER)
+                .withName(NAME_TO_FILTER)
+                .withIsAvailable(Boolean.parseBoolean(IS_AVAILABLE_TO_FILTER))
+                .withCarManufacturerName(CAR_MANUFACTURER_NAME_TO_FILTER);
+    }
+
+    public static Map<String, String> getRequestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put(NAME_REQUEST_PARAM, NAME_TO_FILTER);
+        params.put(EMAIL_REQUEST_PARAM, EMAIL_TO_FILTER);
+        params.put(IS_AVAILABLE_REQUEST_PARAM, IS_AVAILABLE_TO_FILTER);
+        params.put(CAR_MANUFACTURER_NAME_REQUEST_PARAM, CAR_MANUFACTURER_NAME_TO_FILTER);
+        return params;
     }
 
     public static Stream<String> blankStrings() {

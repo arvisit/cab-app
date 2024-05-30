@@ -9,6 +9,7 @@ import static by.arvisit.cabapp.driverservice.util.DriverTestData.getDriver;
 import static by.arvisit.cabapp.driverservice.util.DriverTestData.getDriverRequestDto;
 import static by.arvisit.cabapp.driverservice.util.DriverTestData.getDriverResponseDto;
 import static by.arvisit.cabapp.driverservice.util.DriverTestData.getDriverResponseDtoInListContainer;
+import static by.arvisit.cabapp.driverservice.util.DriverTestData.getEmptyDriversFilterParams;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,6 +40,7 @@ import org.springframework.data.jpa.domain.Specification;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.mapper.DriverMapper;
+import by.arvisit.cabapp.driverservice.mapper.DriversFilterParamsMapper;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
 import by.arvisit.cabapp.driverservice.persistence.repository.DriverRepository;
 import by.arvisit.cabapp.driverservice.persistence.util.DriverSpecs;
@@ -55,6 +57,8 @@ class DriverServiceImplTest {
     @Mock
     private DriverMapper driverMapper;
     @Mock
+    private DriversFilterParamsMapper filterParamsMapper;
+    @Mock
     private MessageSource messageSource;
     @Mock
     private DriverSpecs driverSpecs;
@@ -69,6 +73,8 @@ class DriverServiceImplTest {
         Page<Driver> driversPage = new PageImpl<>(drivers);
         Specification<Driver> spec = (root, query, cb) -> cb.conjunction();
 
+        when(filterParamsMapper.fromMapParams(any()))
+                .thenReturn(getEmptyDriversFilterParams().build());
         when(driverSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(driverRepository.findAll(spec, pageable))
