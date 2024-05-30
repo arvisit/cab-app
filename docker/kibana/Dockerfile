@@ -1,4 +1,4 @@
-FROM docker.elastic.co/kibana/kibana:7.7.0
+FROM docker.elastic.co/kibana/kibana:7.17.21
 
 COPY docker/kibana/init-index-patterns.sh /usr/share/kibana/init-index-patterns.sh
 USER root
