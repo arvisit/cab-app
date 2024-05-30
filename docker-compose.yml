@@ -489,9 +489,6 @@ services:
 
   grafana:
     image: grafana/grafana:9.5.2
-#    build:
-#      context: ./
-#      dockerfile: ./docker/grafana/Dockerfile
     container_name: grafana
     restart: unless-stopped
     environment:
