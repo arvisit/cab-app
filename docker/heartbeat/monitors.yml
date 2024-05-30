@@ -1,0 +1,13 @@
+- type: http
+  id: service-status
+  name: Service Status
+  hosts:
+    - "http://passenger-service:8081/actuator/health"
+    - "http://driver-service:8082/actuator/health"
+    - "http://rides-service:8083/actuator/health"
+    - "http://payment-service:8084/actuator/health"
+    - "http://config-server:8071/actuator/health"
+    - "http://discovery-server:8070/actuator/health"
+    - "http://api-gateway:8080/actuator/health"
+  check.response.status: [200]
+  schedule: '@every 5s'

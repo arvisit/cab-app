@@ -456,6 +456,20 @@ services:
       setup-metricbeat:
         condition: service_completed_successfully
 
+  heartbeat:
+    build:
+      context: ./
+      dockerfile: ./docker/heartbeat/Dockerfile
+    image: heartbeat-extended
+    container_name: heartbeat
+    volumes:
+      - ./docker/heartbeat/monitors.yml:/usr/share/heartbeat/monitors.d/monitors.yml
+    networks:
+     - cab_app_net
+    depends_on:
+      setup-metricbeat:
+        condition: service_completed_successfully
+
   apm-server:
     build:
       context: ./

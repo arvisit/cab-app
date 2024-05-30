@@ -1,0 +1,9 @@
+heartbeat.config.monitors:
+  path: /usr/share/heartbeat/monitors.d/*.yml
+  reload.enabled: true
+  reload.period: 1s
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+setup.kibana:
+  host: "kibana:5601"
