@@ -6,6 +6,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.BeforeAll;
@@ -18,7 +20,9 @@ import io.restassured.RestAssured;
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-public class CucumberCTConfiguration {
+public class CucumberComponentTestConfiguration {
+
+    static KafkaContainer kafkaContainer;
 
     @LocalServerPort
     private int serverPort;
@@ -26,6 +30,13 @@ public class CucumberCTConfiguration {
     @BeforeAll
     public static void setUpDB() {
         System.setProperty("spring.datasource.url", "jdbc:tc:postgresql:15-alpine:///");
+    }
+
+    @BeforeAll
+    public static void setUpKafka() {
+        kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
+        kafkaContainer.start();
+        System.setProperty("spring.kafka.bootstrap-servers", kafkaContainer.getBootstrapServers());
     }
 
     @Before

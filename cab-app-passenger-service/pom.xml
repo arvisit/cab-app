@@ -27,6 +27,7 @@
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <integration-test-pattern>**/*IntegrationTest.java</integration-test-pattern>
+        <component-test-pattern>**/*ComponentTest.java</component-test-pattern>
         <cucumber.version>7.17.0</cucumber.version>
     </properties>
     
@@ -262,6 +263,7 @@
                 <configuration>
                     <includes>
                         <include>${integration-test-pattern}</include>
+                        <include>${component-test-pattern}</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -271,6 +273,7 @@
                 <configuration>
                     <excludes>
                         <exclude>${integration-test-pattern}</exclude>
+                        <exclude>${component-test-pattern}</exclude>
                     </excludes>
                 </configuration>
             </plugin>
