@@ -1,19 +1,19 @@
 package by.arvisit.cabapp.passengerservice.controller;
 
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.JOHN_DOE_EMAIL;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.JOHN_DOE_ID_STRING;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_EMAIL_TEMPLATE;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_ID_TEMPLATE;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getAddedPassengerResponse;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getJaneDoe;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getJannyDoe;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getJohnDoe;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getJohnnyDoe;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getListContainerForPassengers;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getSavePassengerRequest;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatePassengerRequest;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatedPassengerResponse;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.JOHN_DOE_EMAIL;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.JOHN_DOE_ID_STRING;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS_EMAIL_TEMPLATE;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS_ID_TEMPLATE;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getAddedPassengerResponse;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getJaneDoe;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getJannyDoe;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getJohnDoe;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getJohnnyDoe;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getListContainerForPassengers;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getSavePassengerRequest;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getUpdatePassengerRequest;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getUpdatedPassengerResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import io.restassured.response.Response;
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-passengers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-class PassengerControllerIT {
+class PassengerControllerIntegrationTest {
 
     private static final String ID_FIELD = "id";
     private static final String VALUES_FIELD = "values";

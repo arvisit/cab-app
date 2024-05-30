@@ -6,9 +6,9 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 
-public final class PassengerITData {
+public final class PassengerIntegrationTestData {
 
-    private PassengerITData() {
+    private PassengerIntegrationTestData() {
     }
 
     public static final String URL_PASSENGERS = "/api/v1/passengers";
