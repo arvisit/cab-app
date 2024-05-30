@@ -487,6 +487,33 @@ services:
       elasticsearch:
         condition: service_healthy
 
+  grafana:
+    image: grafana/grafana:9.5.2
+#    build:
+#      context: ./
+#      dockerfile: ./docker/grafana/Dockerfile
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - 3000:3000
+    networks:
+      - cab_app_net
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - cab_app_net
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
 volumes:
   pgdata:
   esdata:
