@@ -22,6 +22,8 @@ import io.restassured.RestAssured;
         @Sql(scripts = "classpath:sql/delete-passengers.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 public class CucumberComponentTestConfiguration {
 
+    private static final String SPRING_KAFKA_BOOTSTRAP_SERVERS = "spring.kafka.bootstrap-servers";
+
     static KafkaContainer kafkaContainer;
 
     @LocalServerPort
@@ -34,9 +36,12 @@ public class CucumberComponentTestConfiguration {
 
     @BeforeAll
     public static void setUpKafka() {
-        kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
-        kafkaContainer.start();
-        System.setProperty("spring.kafka.bootstrap-servers", kafkaContainer.getBootstrapServers());
+        System.out.println("BOOTSTRAP KAFKA " + System.getProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS));
+        if (System.getProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS) == null) {
+            kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
+            kafkaContainer.start();
+            System.setProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS, kafkaContainer.getBootstrapServers());
+        }
     }
 
     @Before
