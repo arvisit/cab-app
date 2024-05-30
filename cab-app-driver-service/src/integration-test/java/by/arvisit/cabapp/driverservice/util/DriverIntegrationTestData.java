@@ -1,7 +1,7 @@
 package by.arvisit.cabapp.driverservice.util;
 
-import static by.arvisit.cabapp.driverservice.util.CarManufacturerITData.CAR_MANUFACTURERS;
-import static by.arvisit.cabapp.driverservice.util.ColorITData.COLORS;
+import static by.arvisit.cabapp.driverservice.util.CarManufacturerIntegrationTestData.CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.ColorIntegrationTestData.COLORS;
 
 import java.util.Collections;
 
@@ -11,9 +11,9 @@ import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 
-public final class DriverITData {
+public final class DriverIntegrationTestData {
 
-    private DriverITData() {
+    private DriverIntegrationTestData() {
     }
 
     public static final String URL_COLORS = "/api/v1/colors";

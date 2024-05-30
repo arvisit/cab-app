@@ -1,12 +1,13 @@
 package by.arvisit.cabapp.driverservice.controller;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.JOHN_DOE_CAR_ID_STRING;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS_ID_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJaneDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJannyDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnnyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.JOHN_DOE_CAR_ID_STRING;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJaneDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJannyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnnyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -23,9 +24,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.driverservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.driverservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
-import by.arvisit.cabapp.driverservice.util.DriverITData;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -33,12 +34,13 @@ import io.restassured.response.Response;
 
 @ActiveProfiles("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
+@ExtendWith(KafkaTestContainerExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-cars-drivers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-cars-drivers.sql",
                 executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-class CarControllerIT {
+class CarControllerIntegrationTest {
 
     private static final String VALUES_FIELD = "values";
 
@@ -52,7 +54,6 @@ class CarControllerIT {
 
     @Test
     void shouldReturn200_whenGetCars() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_CARS);
@@ -64,8 +65,7 @@ class CarControllerIT {
         ListContainerResponseDto<CarResponseDto> result = response
                 .as(new TypeRef<ListContainerResponseDto<CarResponseDto>>() {
                 });
-        ListContainerResponseDto<CarResponseDto> expected = DriverITData
-                .getListContainerForResponse(CarResponseDto.class)
+        ListContainerResponseDto<CarResponseDto> expected = getListContainerForResponse(CarResponseDto.class)
                 .withValues(List.of(getJaneDoeCar().build(), getJannyDoeCar().build(), getJohnnyDoeCar().build(),
                         getJohnDoeCar().build()))
                 .withLastPage(0)
@@ -82,7 +82,6 @@ class CarControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetCarById() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_CARS_ID_TEMPLATE, JOHN_DOE_CAR_ID_STRING);

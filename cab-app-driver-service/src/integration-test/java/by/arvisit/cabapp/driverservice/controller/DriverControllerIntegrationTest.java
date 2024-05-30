@@ -1,21 +1,21 @@
 package by.arvisit.cabapp.driverservice.controller;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.JOHN_DOE_EMAIL;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.JOHN_DOE_ID_STRING;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_AVAILABLE_DRIVERS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS_EMAIL_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS_ID_AVAILABILITY_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS_ID_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getAddedDriverResponse;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJaneDoe;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJannyDoe;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnDoe;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnnyDoe;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getListContainerForResponse;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getSaveDriverRequest;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdateDriverRequest;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdatedDriverResponse;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.JOHN_DOE_EMAIL;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.JOHN_DOE_ID_STRING;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_AVAILABLE_DRIVERS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS_EMAIL_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS_ID_AVAILABILITY_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getAddedDriverResponse;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJaneDoe;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJannyDoe;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnDoe;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnnyDoe;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getListContainerForResponse;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getSaveDriverRequest;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getUpdateDriverRequest;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getUpdatedDriverResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -36,6 +36,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.driverservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.driverservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
@@ -47,12 +48,13 @@ import io.restassured.response.Response;
 
 @ActiveProfiles("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
+@ExtendWith(KafkaTestContainerExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-cars-drivers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-cars-drivers.sql",
                 executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-class DriverControllerIT {
+class DriverControllerIntegrationTest {
 
     private static final String IS_AVAILABLE_PATCH_KEY = "isAvailable";
     private static final String ID_FIELD = "id";
@@ -75,7 +77,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSaveDriver() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getSaveDriverRequest().build())
@@ -96,7 +97,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenUpdateDriver() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getUpdateDriverRequest().build())
@@ -141,7 +141,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn204AndMinusOneDriver_whenDeleteDriver() {
-
         List<Driver> driversBeforeDelete = driverRepository.findAll();
 
         Response response = RestAssured.given()
@@ -166,7 +165,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriverById() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS_ID_TEMPLATE, JOHN_DOE_ID_STRING);
@@ -185,7 +183,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriverByEmail() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS_EMAIL_TEMPLATE, JOHN_DOE_EMAIL);
@@ -204,7 +201,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriversWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVERS);
@@ -232,7 +228,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetAvailableDriversWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_AVAILABLE_DRIVERS);
@@ -259,7 +254,6 @@ class DriverControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriversWithNameEmailRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(NAME_QUERY_PARAM, VALUE_FOR_NAME_QUERY_PARAM)

@@ -4,9 +4,9 @@ import java.util.List;
 
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
 
-public class CarManufacturerITData {
+public class CarManufacturerIntegrationTestData {
 
-    private CarManufacturerITData() {
+    private CarManufacturerIntegrationTestData() {
     }
 
     public static final List<CarManufacturerResponseDto> CAR_MANUFACTURERS;

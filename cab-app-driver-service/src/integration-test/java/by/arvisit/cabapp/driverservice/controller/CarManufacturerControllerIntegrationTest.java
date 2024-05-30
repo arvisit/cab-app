@@ -1,7 +1,8 @@
 package by.arvisit.cabapp.driverservice.controller;
 
-import static by.arvisit.cabapp.driverservice.util.CarManufacturerITData.CAR_MANUFACTURERS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.CarManufacturerIntegrationTestData.CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
+import by.arvisit.cabapp.driverservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.driverservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
-import by.arvisit.cabapp.driverservice.util.DriverITData;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -24,8 +25,9 @@ import io.restassured.response.Response;
 
 @ActiveProfiles("itest")
 @ExtendWith(PostgreSQLTestContainerExtension.class)
+@ExtendWith(KafkaTestContainerExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class CarManufacturerControllerIT {
+class CarManufacturerControllerIntegrationTest {
 
     private static final String VALUES_FIELD = "values";
 
@@ -39,7 +41,6 @@ class CarManufacturerControllerIT {
 
     @Test
     void shouldReturn200_whenGetCarManufacturers() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_CAR_MANUFACTURERS);
@@ -51,8 +52,8 @@ class CarManufacturerControllerIT {
         ListContainerResponseDto<CarManufacturerResponseDto> result = response
                 .as(new TypeRef<ListContainerResponseDto<CarManufacturerResponseDto>>() {
                 });
-        ListContainerResponseDto<CarManufacturerResponseDto> expected = DriverITData
-                .getListContainerForResponse(CarManufacturerResponseDto.class)
+        ListContainerResponseDto<CarManufacturerResponseDto> expected = getListContainerForResponse(
+                CarManufacturerResponseDto.class)
                 .withValues(CAR_MANUFACTURERS)
                 .withLastPage(1)
                 .build();
