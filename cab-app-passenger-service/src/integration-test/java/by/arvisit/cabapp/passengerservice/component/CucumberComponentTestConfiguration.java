@@ -36,7 +36,6 @@ public class CucumberComponentTestConfiguration {
 
     @BeforeAll
     public static void setUpKafka() {
-        System.out.println("BOOTSTRAP KAFKA " + System.getProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS));
         if (System.getProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS) == null) {
             kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
             kafkaContainer.start();
