@@ -457,12 +457,10 @@ services:
         condition: service_completed_successfully
 
   heartbeat:
-    build:
-      context: ./
-      dockerfile: ./docker/heartbeat/Dockerfile
-    image: heartbeat-extended
+    image: docker.elastic.co/beats/heartbeat:7.17.21
     container_name: heartbeat
     volumes:
+      - ./docker/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
       - ./docker/heartbeat/monitors.yml:/usr/share/heartbeat/monitors.d/monitors.yml
     networks:
      - cab_app_net
