@@ -1,0 +1,6 @@
+logging:
+  config: classpath:logback-dev.xml
+  level:
+    '[by.arvisit.cabapp]': debug
+    '[org.springframework.security]': debug
+    '[org.springframework.web]': debug
