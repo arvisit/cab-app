@@ -10,6 +10,10 @@ x-logstash-variables: &logstash-variables
   LOGSTASH_HOST: logstash
   LOGSTASH_PORT: 5000
 
+x-zipkin-variables: &zipkin-variables
+  ZIPKIN_HOST: zipkin
+  ZIPKIN_PORT: 9411
+
 services:
 
   passenger-service:
@@ -30,7 +34,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.passengerservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
     expose:
       - 8081
     networks:
@@ -90,7 +94,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.driverservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
     expose:
       - 8082
     networks:
@@ -150,7 +154,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.ridesservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
     expose:
       - 8083
     networks:
@@ -210,7 +214,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.paymentservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
     expose:
       - 8084
     networks:
@@ -287,7 +291,12 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       SERVER_PORT: 8080
       SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
-      <<: [*eureka-variables]
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-api-gateway
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.apigateway
+      <<: [*eureka-variables, *logstash-variables, *zipkin-variables]
     ports:
       - 8080:8080
     expose:
@@ -508,6 +517,20 @@ services:
       - cab_app_net
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - "ES_HOSTS=elasticsearch:9200"
+    ports:
+      - 9411:9411
+    networks:
+      - cab_app_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   pgdata:
