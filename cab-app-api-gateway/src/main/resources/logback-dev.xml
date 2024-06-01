@@ -42,6 +42,7 @@
 
     <logger name="by.arvisit.cabapp" level="DEBUG" additivity="false">
         <appender-ref ref="logstash"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
 </configuration>
