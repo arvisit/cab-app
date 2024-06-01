@@ -7,8 +7,9 @@ until curl --output /dev/null --silent --head --fail $kibanaUrl; do
   sleep 5
 done
 
-for indexFile in *-index-pattern.json; do
-    indexTitle="$(echo "$indexFile" | cut -d'-' -f1)-*"
+for indexFile in index-patterns/*.json; do
+    indexTitle="${indexFile##*/}"
+    indexTitle="${indexTitle%%*.}-*"
     response=$(curl -s -o /dev/null -w "%{http_code}" -X GET "$kibanaUrl/api/saved_objects/index-pattern/$indexTitle")
 
     # Create index pattern in Kibana

@@ -1,0 +1,6 @@
+{
+  "attributes": {
+    "title": "zipkin-*",
+    "timeFieldName": "timestamp_millis"
+  }
+}
