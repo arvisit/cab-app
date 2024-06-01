@@ -7,3 +7,25 @@ datasources:
     access: proxy
     url: http://prometheus:9090
     isDefault: true
+  - name: Zipkin
+    label: Zipkin
+    type: zipkin
+    access: proxy
+    url: http://zipkin:9411
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: Elasticsearch
+        spanStartTimeShift: '1h'
+        spanEndTimeShift: '-1h'
+        filterByTraceID: true
+      nodeGraph:
+        enabled: true
+    isDefault: false
+  - name: Elasticsearch
+    label: Elasticsearch
+    type: elasticsearch
+    access: proxy
+    url: http://elasticsearch:9200
+    jsonData:
+      timeField: '@timestamp'
+      logMessageField: message
