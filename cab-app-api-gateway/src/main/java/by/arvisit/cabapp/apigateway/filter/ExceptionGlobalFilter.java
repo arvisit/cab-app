@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.apigateway.config;
+package by.arvisit.cabapp.apigateway.filter;
 
 import java.net.ConnectException;
 import java.time.ZoneId;
@@ -18,6 +18,7 @@ import org.springframework.web.server.ServerWebExchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import by.arvisit.cabapp.apigateway.dto.ExceptionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;

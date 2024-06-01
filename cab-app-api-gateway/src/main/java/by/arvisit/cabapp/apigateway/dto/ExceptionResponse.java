@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.apigateway.config;
+package by.arvisit.cabapp.apigateway.dto;
 
 import java.time.ZonedDateTime;
 
