@@ -18,6 +18,7 @@ datasources:
         spanStartTimeShift: '1h'
         spanEndTimeShift: '-1h'
         filterByTraceID: true
+        filterBySpanID: true
       nodeGraph:
         enabled: true
     isDefault: false
