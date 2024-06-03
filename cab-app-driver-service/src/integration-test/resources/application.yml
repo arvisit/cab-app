@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/changelog/changelog.xml
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  data:
+    web:
+      pageable:
+        max-page-size: 50
+
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+    function:
+      definition: notifyDriversAboutNewRide;notifyAboutRideCancellation;notifyAboutRideFinished
+    stream:
+      bindings:
+        notifyDriversAboutNewRide-in-0:
+          destination: newRideTopic
+          content-type: application/json
+          group: drivers
+        notifyAboutRideCancellation-in-0:
+          destination: canceledRideTopic
+          content-type: application/json
+          group: drivers
+        notifyAboutRideFinished-in-0:
+          destination: finishedRideTopic
+          content-type: application/json
+          group: drivers
+
+logging:
+  level:
+    root: info
+    liquibase: error
+
+exception:
+  handling:
+    include: true
