@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.driverservice.component;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.DEFAULT_PAGEABLE_SIZE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.UNSORTED;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_COLORS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.DEFAULT_PAGEABLE_SIZE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.UNSORTED;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_COLORS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;

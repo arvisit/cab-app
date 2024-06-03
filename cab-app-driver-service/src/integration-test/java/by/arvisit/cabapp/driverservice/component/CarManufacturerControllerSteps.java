@@ -1,5 +1,8 @@
 package by.arvisit.cabapp.driverservice.component;
 
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.DEFAULT_PAGEABLE_SIZE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.UNSORTED;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CAR_MANUFACTURERS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -9,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
-import by.arvisit.cabapp.driverservice.util.DriverITData;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -31,7 +33,7 @@ public class CarManufacturerControllerSteps {
     public void sendGetCarManufacturersWithNoRequestParamsRequest() {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .when().get(DriverITData.URL_CAR_MANUFACTURERS);
+                .when().get(URL_CAR_MANUFACTURERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about these car manufacturers from page 0:")
@@ -51,9 +53,9 @@ public class CarManufacturerControllerSteps {
         assertThat(actual.lastPage())
                 .isOne();
         assertThat(actual.size())
-                .isEqualTo(DriverITData.DEFAULT_PAGEABLE_SIZE);
+                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
         assertThat(actual.sort())
-                .isEqualTo(DriverITData.UNSORTED);
+                .isEqualTo(UNSORTED);
 
         assertThat(actual.values())
                 .containsExactlyInAnyOrderElementsOf(expectedCarManufacturers);
@@ -64,7 +66,7 @@ public class CarManufacturerControllerSteps {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(pageParam, pageValue)
-                .when().get(DriverITData.URL_CAR_MANUFACTURERS);
+                .when().get(URL_CAR_MANUFACTURERS);
     }
 
     @Then("response should have 200 status, json content type, contain info about these car manufacturers from page 1:")
@@ -84,9 +86,9 @@ public class CarManufacturerControllerSteps {
         assertThat(actual.lastPage())
                 .isOne();
         assertThat(actual.size())
-                .isEqualTo(DriverITData.DEFAULT_PAGEABLE_SIZE);
+                .isEqualTo(DEFAULT_PAGEABLE_SIZE);
         assertThat(actual.sort())
-                .isEqualTo(DriverITData.UNSORTED);
+                .isEqualTo(UNSORTED);
 
         assertThat(actual.values())
                 .containsExactlyInAnyOrderElementsOf(expectedCarManufacturers);

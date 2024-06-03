@@ -1,13 +1,14 @@
 package by.arvisit.cabapp.driverservice.component;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.DEFAULT_PAGEABLE_SIZE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.UNSORTED;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS_ID_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJaneDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJannyDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnDoeCar;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnnyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.DEFAULT_PAGEABLE_SIZE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.UNSORTED;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJaneDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJannyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnnyDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
-import by.arvisit.cabapp.driverservice.util.DriverITData;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -51,8 +51,7 @@ public class CarControllerSteps {
                 .as(new TypeRef<ListContainerResponseDto<CarResponseDto>>() {
                 });
 
-        ListContainerResponseDto<CarResponseDto> expected = DriverITData
-                .getListContainerForResponse(CarResponseDto.class)
+        ListContainerResponseDto<CarResponseDto> expected = getListContainerForResponse(CarResponseDto.class)
                 .withValues(List.of(getJaneDoeCar().build(), getJannyDoeCar().build(), getJohnnyDoeCar().build(),
                         getJohnDoeCar().build()))
                 .withLastPage(0)
