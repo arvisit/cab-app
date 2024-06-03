@@ -19,6 +19,7 @@ public class KafkaTestContainerExtension implements BeforeAllCallback, AfterAllC
 
     @Override
     public void afterAll(ExtensionContext context) throws Exception {
+        kafkaContainer.stop();
     }
 
 }
