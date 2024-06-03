@@ -4,7 +4,7 @@ import java.util.List;
 
 import by.arvisit.cabapp.driverservice.dto.ColorResponseDto;
 
-public class ColorIntegrationTestData {
+public final class ColorIntegrationTestData {
 
     private ColorIntegrationTestData() {
     }
