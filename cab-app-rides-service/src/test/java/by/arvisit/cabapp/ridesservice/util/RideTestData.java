@@ -4,7 +4,9 @@ import static by.arvisit.cabapp.common.util.CommonConstants.EUROPE_MINSK_TIMEZON
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -13,11 +15,13 @@ import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.common.util.DateRange;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
+import by.arvisit.cabapp.ridesservice.dto.RidesFilterParams;
 import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
@@ -74,7 +78,7 @@ public final class RideTestData {
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
     public static final String ENCODING_UTF_8 = "UTF-8";
-    
+
     public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
     public static final String DEFAULT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
     public static final String DEFAULT_DRIVER_NAME = "Jeremias Olsen";
@@ -103,17 +107,29 @@ public final class RideTestData {
     public static final String URL_RIDES_PASSENGER_ID_TEMPLATE = "/api/v1/rides/passengers/{id}";
     public static final String URL_RIDES_DRIVER_ID_TEMPLATE = "/api/v1/rides/drivers/{id}";
     public static final String URL_RIDES_PARAM_VALUE_TEMPLATE = "/api/v1/rides?{param}={value}";
-    
+
     public static final String DRIVER_ID_KEY = "driverId";
     public static final String PROMO_CODE_KEYWORD_KEY = "promoCodeKeyword";
     public static final String PAYMENT_METHOD_KEY = "paymentMethod";
     public static final String DRIVER_SCORE_KEY = "driverScore";
     public static final String PASSENGER_SCORE_KEY = "passengerScore";
-    
+
     public static final String NOT_ALLOWED_REQUEST_PARAM = "noSuchParam";
-    public static final String DRIVER_ID_REQUEST_PARAM = "driverId";
+    public static final String FINISH_RIDE_REQUEST_PARAM = "finishRide";
+    public static final String END_RIDE_REQUEST_PARAM = "endRide";
+    public static final String BEGIN_RIDE_REQUEST_PARAM = "beginRide";
+    public static final String ACCEPT_RIDE_REQUEST_PARAM = "acceptRide";
+    public static final String CANCEL_RIDE_REQUEST_PARAM = "cancelRide";
     public static final String BOOK_RIDE_REQUEST_PARAM = "bookRide";
-    
+    public static final String DRIVER_ID_REQUEST_PARAM = "driverId";
+    public static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
+    public static final String PAYMENT_METHOD_REQUEST_PARAM = "paymentMethod";
+    public static final String STATUS_REQUEST_PARAM = "status";
+    public static final String DESTINATION_ADDRESS_REQUEST_PARAM = "destinationAddress";
+    public static final String START_ADDRESS_REQUEST_PARAM = "startAddress";
+
+    public static final String DATE_REQUEST_VALUE = "2024-01-02";
+    public static final DateRange DATE_RANGE_FROM_REQUEST = DateRange.fromSingleValue(DATE_REQUEST_VALUE);
 
     private RideTestData() {
     }
@@ -147,7 +163,7 @@ public final class RideTestData {
                 .withStartAddress(RIDE_DEFAULT_START_ADDRESS)
                 .withDestinationAddress(RIDE_DEFAULT_DESTINATION_ADDRESS);
     }
-    
+
     public static Ride.RideBuilder getRideToSave() {
         return Ride.builder()
                 .withPassengerId(RIDE_DEFAULT_PASSENGER_ID_UUID)
@@ -594,7 +610,7 @@ public final class RideTestData {
                 .withPaymentMethod(RIDE_DEFAULT_PAYMENT_METHOD_STRING)
                 .withCardNumber(DEFAULT_PASSENGER_CARD_NUMBER);
     }
-    
+
     public static PassengerPaymentResponseDto.PassengerPaymentResponseDtoBuilder getPassengerPaymentResponseDto() {
         return PassengerPaymentResponseDto.builder()
                 .withId(PASSENGER_PAYMENT_DEFAULT_ID)
@@ -630,7 +646,7 @@ public final class RideTestData {
                 .withEmail(DEFAULT_PASSENGER_EMAIL)
                 .withCardNumber(DEFAULT_PASSENGER_CARD_NUMBER);
     }
-    
+
     public static DriverResponseDto.DriverResponseDtoBuilder getDriverResponseDto() {
         return DriverResponseDto.builder()
                 .withIsAvailable(DEFAULT_DRIVER_IS_AVAILABLE)
@@ -656,6 +672,55 @@ public final class RideTestData {
                 .withSize(DEFAULT_PAGEABLE_SIZE)
                 .withLastPage(0)
                 .withSort(UNSORTED);
+    }
+
+    public static RidesFilterParams.RidesFilterParamsBuilder getEmptyRidesFilterParams() {
+        return RidesFilterParams.builder()
+                .withStartAddress(null)
+                .withDestinationAddress(null)
+                .withStatus(null)
+                .withPaymentMethod(null)
+                .withPassengerId(null)
+                .withDriverId(null)
+                .withBookRide(null)
+                .withCancelRide(null)
+                .withAcceptRide(null)
+                .withBeginRide(null)
+                .withEndRide(null)
+                .withFinishRide(null);
+    }
+
+    public static RidesFilterParams.RidesFilterParamsBuilder getFilledRidesFilterParams() {
+        return RidesFilterParams.builder()
+                .withStartAddress(RIDE_DEFAULT_START_ADDRESS)
+                .withDestinationAddress(RIDE_DEFAULT_DESTINATION_ADDRESS)
+                .withStatus(RideStatusEnum.BOOKED.toString())
+                .withPaymentMethod(RIDE_DEFAULT_PAYMENT_METHOD_STRING)
+                .withPassengerId(RIDE_DEFAULT_PASSENGER_ID_UUID)
+                .withDriverId(RIDE_DEFAULT_DRIVER_ID_UUID)
+                .withBookRide(DATE_RANGE_FROM_REQUEST)
+                .withCancelRide(DATE_RANGE_FROM_REQUEST)
+                .withAcceptRide(DATE_RANGE_FROM_REQUEST)
+                .withBeginRide(DATE_RANGE_FROM_REQUEST)
+                .withEndRide(DATE_RANGE_FROM_REQUEST)
+                .withFinishRide(DATE_RANGE_FROM_REQUEST);
+    }
+
+    public static Map<String, String> getRequestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put(START_ADDRESS_REQUEST_PARAM, RIDE_DEFAULT_START_ADDRESS);
+        params.put(DESTINATION_ADDRESS_REQUEST_PARAM, RIDE_DEFAULT_DESTINATION_ADDRESS);
+        params.put(STATUS_REQUEST_PARAM, RideStatusEnum.BOOKED.toString());
+        params.put(PAYMENT_METHOD_REQUEST_PARAM, RIDE_DEFAULT_PAYMENT_METHOD_STRING);
+        params.put(PASSENGER_ID_REQUEST_PARAM, RIDE_DEFAULT_PASSENGER_ID_STRING);
+        params.put(DRIVER_ID_REQUEST_PARAM, RIDE_DEFAULT_DRIVER_ID_STRING);
+        params.put(BOOK_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        params.put(CANCEL_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        params.put(ACCEPT_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        params.put(BEGIN_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        params.put(END_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        params.put(FINISH_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        return params;
     }
 
     public static Stream<String> blankStrings() {
