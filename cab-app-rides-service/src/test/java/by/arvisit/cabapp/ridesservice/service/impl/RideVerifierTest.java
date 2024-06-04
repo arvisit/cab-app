@@ -1,7 +1,7 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
-import static by.arvisit.cabapp.ridesservice.util.RideTestData.RIDE_DEFAULT_DRIVER_ID_STRING;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.ANOTHER_DRIVER_ID_STRING;
+import static by.arvisit.cabapp.ridesservice.util.RideTestData.RIDE_DEFAULT_DRIVER_ID_STRING;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getAcceptedRide;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getBeganRide;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getBookedRide;
@@ -11,9 +11,11 @@ import static by.arvisit.cabapp.ridesservice.util.RideTestData.getFinishedRide;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getFinishedWithScoresRide;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,7 @@ import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
+import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
 import by.arvisit.cabapp.ridesservice.util.RideTestData;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +40,8 @@ class RideVerifierTest {
 
     @InjectMocks
     private RideVerifier rideVerifier;
+    @Mock
+    private RideRepository rideRepository;
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -53,6 +58,19 @@ class RideVerifierTest {
 
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyCreateRide(ride));
+    }
+
+    @Test
+    void shouldThrowIllegalStateException_whenVerifyCreateRideWithPassengerHasInProgressRide() {
+        Ride ride = RideTestData.getRideToSave().build();
+        PassengerResponseDto passenger = RideTestData.getPassengerResponseDto().build();
+        when(passengerClient.getPassengerById(anyString()))
+                .thenReturn(passenger);
+        when(rideRepository.hasInProgressRides(any(UUID.class)))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> rideVerifier.verifyCreateRide(ride))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest
