@@ -69,6 +69,7 @@ import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
 import by.arvisit.cabapp.ridesservice.mapper.RideMapper;
+import by.arvisit.cabapp.ridesservice.mapper.RidesFilterParamsMapper;
 import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
@@ -77,6 +78,7 @@ import by.arvisit.cabapp.ridesservice.persistence.util.RideSpecs;
 import by.arvisit.cabapp.ridesservice.service.CostService;
 import by.arvisit.cabapp.ridesservice.service.PromoCodeService;
 import by.arvisit.cabapp.ridesservice.util.PaymentVerifier;
+import by.arvisit.cabapp.ridesservice.util.RideTestData;
 import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,6 +96,8 @@ class RideServiceImplTest {
     private RideRepository rideRepository;
     @Mock
     private RideMapper rideMapper;
+    @Mock
+    private RidesFilterParamsMapper filterParamsMapper;
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -861,6 +865,8 @@ class RideServiceImplTest {
         Page<Ride> ridesPage = new PageImpl<>(rides);
         Specification<Ride> spec = (root, query, cb) -> cb.conjunction();
 
+        when(filterParamsMapper.fromMapParams(any()))
+                .thenReturn(RideTestData.getEmptyRidesFilterParams().build());
         when(rideSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(rideRepository.findAll(spec, pageable))
