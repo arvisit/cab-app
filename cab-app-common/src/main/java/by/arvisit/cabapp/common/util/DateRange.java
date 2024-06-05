@@ -9,11 +9,13 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @Builder(setterPrefix = "with")
 public class DateRange {
 

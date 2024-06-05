@@ -23,7 +23,6 @@ import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.common.util.CommonConstants;
-import by.arvisit.cabapp.exceptionhandlingstarter.exception.ValueAlreadyInUseException;
 import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.client.PaymentClient;
@@ -365,7 +364,7 @@ public class RideServiceImpl implements RideService {
             String errorMessage = messageSource.getMessage(
                     FOUND_NO_ENTITY_BY_ID_MESSAGE_TEMPLATE_KEY,
                     new Object[] { id }, null);
-            throw new ValueAlreadyInUseException(errorMessage);
+            throw new EntityNotFoundException(errorMessage);
         }
         rideRepository.deleteById(uuid);
     }

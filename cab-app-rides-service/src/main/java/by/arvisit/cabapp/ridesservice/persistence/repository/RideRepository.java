@@ -26,4 +26,13 @@ public interface RideRepository extends JpaRepository<Ride, UUID>, JpaSpecificat
     long countByPassengerId(UUID passengerId);
 
     long countByDriverId(UUID driverId);
+
+    @Query("""
+            SELECT COUNT(r) > 0
+            FROM Ride r
+            WHERE r.passengerId = :passengerId
+                AND r.status NOT IN (by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum.CANCELED,
+                    by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum.FINISHED)
+            """)
+    boolean hasInProgressRides(UUID passengerId);
 }

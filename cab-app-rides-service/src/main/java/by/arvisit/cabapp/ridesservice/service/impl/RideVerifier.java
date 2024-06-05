@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
+import java.util.UUID;
+
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,7 @@ import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
+import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,13 +25,23 @@ class RideVerifier {
     private static final String ILLEGAL_STATUS_TO_CHANGE_PAYMENT_METHOD_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paymentMethod.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_TO_SCORE_DRIVER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverScore.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_TO_SCORE_PASSENGER_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.passengerScore.IllegalStateException.template";
+    private static final String ILLEGAL_STATE_FOR_NEW_RIDE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.passengerId.IllegalStateException.template";
 
+    private final RideRepository rideRepository;
     private final MessageSource messageSource;
     private final PassengerClient passengerClient;
     private final DriverClient driverClient;
 
     public void verifyCreateRide(Ride ride) {
-        passengerClient.getPassengerById(ride.getPassengerId().toString());
+        UUID passengerId = ride.getPassengerId();
+        passengerClient.getPassengerById(passengerId.toString());
+
+        if (rideRepository.hasInProgressRides(passengerId)) {
+            String errorMessage = messageSource.getMessage(
+                    ILLEGAL_STATE_FOR_NEW_RIDE_TEMPLATE_KEY,
+                    new Object[] { passengerId }, null);
+            throw new IllegalStateException(errorMessage);
+        }
     }
 
     public void verifyCancelRide(Ride ride) {
@@ -89,7 +102,8 @@ class RideVerifier {
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.FINISHED;
 
-        if (currentStatus != RideStatusEnum.END_RIDE && currentStatus != RideStatusEnum.FINISHED && !ride.getIsPaid()) {
+        if ((currentStatus != RideStatusEnum.END_RIDE || !ride.getIsPaid())
+                && currentStatus != RideStatusEnum.FINISHED) {
             throwExceptionForIllegalStatusChange(ride, newStatus);
         }
     }
