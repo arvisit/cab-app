@@ -1,19 +1,19 @@
 package by.arvisit.cabapp.ridesservice.controller;
 
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BRILLIANT10_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.NEW_PROMO_CODE_DISCOUNT_PERCENT;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.NEW_PROMO_CODE_KEYWORD;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ACTIVE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedPromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBRILLIANT10ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getListContainerForResponse;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewPromoCodeRequestDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPAIN49ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPAIN49NotActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getRICE23NotActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BRILLIANT10_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.NEW_PROMO_CODE_DISCOUNT_PERCENT;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.NEW_PROMO_CODE_KEYWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ACTIVE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ID_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getAddedPromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBRILLIANT10ActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getListContainerForResponse;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getNewPromoCodeRequestDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPAIN49ActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPAIN49NotActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getRICE23NotActivePromoCodeResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -49,7 +49,7 @@ import io.restassured.response.Response;
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-promo-codes.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
-class PromoCodeControllerIT {
+class PromoCodeControllerIntegrationTest {
 
     private static final String ID_FIELD = "id";
     private static final String VALUES_FIELD = "values";
@@ -66,7 +66,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSavePromoCode() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getNewPromoCodeRequestDto().build())
@@ -87,7 +86,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenUpdatePromoCode() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getNewPromoCodeRequestDto().build())
@@ -110,7 +108,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenDeactivatePromoCode() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getNewPromoCodeRequestDto().build())
@@ -132,7 +129,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn204AndMinusOnePromoCode_whenDeletePromoCode() {
-
         List<PromoCode> promoCodesBeforeDelete = promoCodeRepository.findAll();
 
         Response response = RestAssured.given()
@@ -157,7 +153,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPromoCodeById() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getNewPromoCodeRequestDto().build())
@@ -177,7 +172,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPromoCodes() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PROMO_CODES);
@@ -208,7 +202,6 @@ class PromoCodeControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetActivePromoCodes() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PROMO_CODES_ACTIVE);
@@ -234,5 +227,4 @@ class PromoCodeControllerIT {
         assertThat(result.values())
                 .containsExactlyInAnyOrderElementsOf(expected.values());
     }
-
 }

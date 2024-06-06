@@ -1,60 +1,60 @@
 package by.arvisit.cabapp.ridesservice.controller;
 
-import static by.arvisit.cabapp.ridesservice.util.RideITData.ACCEPTED_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BEGAN_BANK_CARD_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BEGAN_CASH_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BOOKED_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BRILLIANT10_KEYWORD;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DEFAULT_SCORE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_1_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_3_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_4_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_ID_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_SCORE_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.ENDED_BANK_CARD_NOT_PAID_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.ENDED_BANK_CARD_PAID_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.ENDED_CASH_NOT_PAID_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.FINISHED_NO_SCORES_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PASSENGER_1_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PASSENGER_3_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PASSENGER_4_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PASSENGER_SCORE_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PAYMENT_METHOD_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.PROMO_CODE_KEYWORD_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.RIDE_FINAL_COST_WITH_BRILLIANT10_PROMO_CODE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_DRIVER_ID_RATING_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_DRIVER_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_ACCEPT_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_APPLY_PROMO_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_BEGIN_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_CANCEL_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_CHANGE_PAYMENT_METHOD_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_END_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_FINISH_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_SCORE_DRIVER_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_SCORE_PASSENGER_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_PASSENGER_ID_RATING_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_PASSENGER_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getAcceptedRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBeganBankCardRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBeganCashRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBookedRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getDriverRating;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getDriverResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getEndedBankCardNotPaidRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getEndedBankCardPaidRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getEndedCashNotPaidRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getFinishedNoScoresRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getFinishedWithScoresRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getListContainerForResponse;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewRideRequestDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPassengerPaymentResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPassengerRating;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPassengerResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ACCEPTED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_BANK_CARD_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_CASH_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BOOKED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BRILLIANT10_KEYWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_SCORE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_3_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_4_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_ID_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_SCORE_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_BANK_CARD_NOT_PAID_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_BANK_CARD_PAID_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_CASH_NOT_PAID_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.FINISHED_NO_SCORES_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_3_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_4_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_SCORE_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PAYMENT_METHOD_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PROMO_CODE_KEYWORD_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.RIDE_FINAL_COST_WITH_BRILLIANT10_PROMO_CODE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_DRIVER_ID_RATING_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_DRIVER_ID_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_ACCEPT_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_APPLY_PROMO_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_BEGIN_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_CANCEL_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_CHANGE_PAYMENT_METHOD_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_END_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_FINISH_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_SCORE_DRIVER_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_SCORE_PASSENGER_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_PASSENGER_ID_RATING_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_PASSENGER_ID_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getAcceptedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getAddedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBeganBankCardRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBeganCashRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBookedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getDriverRating;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getDriverResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getEndedBankCardNotPaidRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getEndedBankCardPaidRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getEndedCashNotPaidRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getFinishedNoScoresRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getFinishedWithScoresRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getListContainerForResponse;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getNewRideRequestDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPassengerPaymentResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPassengerRating;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPassengerResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -104,7 +104,7 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 @WireMockTest(httpPort = 8480)
-class RideControllerIT {
+class RideControllerIntegrationTest {
 
     private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
@@ -128,7 +128,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSaveRide() throws Exception {
-
         PassengerResponseDto passenger = getPassengerResponseDto().build();
         wireMockService.mockResponseForPassengerClientGetPassengerById(passenger);
 
@@ -160,7 +159,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenCancelRide() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_CANCEL_TEMPLATE, BOOKED_RIDE_ID);
@@ -189,7 +187,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenAcceptRide() throws Exception {
-
         DriverResponseDto driverBeforeAccept = getDriverResponseDto().build();
         wireMockService.mockResponseForDriverClientGetDriverById(driverBeforeAccept);
         DriverResponseDto driverAfterAccept = getDriverResponseDto()
@@ -230,7 +227,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenBeginRide() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_BEGIN_TEMPLATE, ACCEPTED_RIDE_ID);
@@ -259,7 +255,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenEndRidePaidWithBankCard() throws Exception {
-
         PassengerResponseDto passenger = getPassengerResponseDto()
                 .withId(PASSENGER_3_ID)
                 .build();
@@ -293,7 +288,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenEndRidePaidWithCash() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, BEGAN_CASH_RIDE_ID);
@@ -322,7 +316,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenFinishRide() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_FINISH_TEMPLATE, ENDED_BANK_CARD_PAID_RIDE_ID);
@@ -351,7 +344,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenConfirmPaymentCash() throws Exception {
-
         PassengerPaymentResponseDto payment = getPassengerPaymentResponseDto().build();
         wireMockService.mockResponseForPaymentClientSave(payment);
 
@@ -386,7 +378,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenConfirmPaymentBankCard() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, ENDED_BANK_CARD_NOT_PAID_RIDE_ID);
@@ -418,7 +409,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenApplyPromoCode() {
-
         String promoCodeKeyword = BRILLIANT10_KEYWORD;
         Map<String, String> requestDto = Map.of(PROMO_CODE_KEYWORD_KEY, promoCodeKeyword);
 
@@ -450,7 +440,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenChangePaymentMethod() {
-
         String paymentMethod = PaymentMethodEnum.CASH.toString();
         Map<String, String> requestDto = Map.of(PAYMENT_METHOD_KEY, paymentMethod);
 
@@ -481,7 +470,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenScoreDriver() {
-
         Integer score = DEFAULT_SCORE;
         Map<String, Integer> requestDto = Map.of(DRIVER_SCORE_KEY, score);
 
@@ -512,7 +500,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenScorePassenger() {
-
         Integer score = DEFAULT_SCORE;
         Map<String, Integer> requestDto = Map.of(PASSENGER_SCORE_KEY, score);
 
@@ -543,7 +530,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn204AndMinusOneRide_whenDeleteRide() {
-
         List<Ride> ridesBeforeDelete = rideRepository.findAll();
 
         String rideId = FINISHED_NO_SCORES_RIDE_ID;
@@ -569,7 +555,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetRideById() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_ID_TEMPLATE, FINISHED_NO_SCORES_RIDE_ID);
@@ -594,7 +579,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetRidesWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES);
@@ -631,7 +615,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetRidesWithPassengerIdRequestParam() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(PASSENGER_ID_REQUEST_PARAM, PASSENGER_4_ID)
@@ -663,7 +646,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetRidesByPassengerId() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_PASSENGER_ID_TEMPLATE, PASSENGER_4_ID);
@@ -694,7 +676,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetRidesByDriverId() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_DRIVER_ID_TEMPLATE, DRIVER_3_ID);
@@ -726,7 +707,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPassengerRating() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_PASSENGER_ID_RATING_TEMPLATE, PASSENGER_1_ID);
@@ -745,7 +725,6 @@ class RideControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriverRating() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_RIDES_DRIVER_ID_RATING_TEMPLATE, DRIVER_4_ID);
