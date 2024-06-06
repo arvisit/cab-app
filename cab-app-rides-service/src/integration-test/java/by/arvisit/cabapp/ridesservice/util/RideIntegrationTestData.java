@@ -19,7 +19,7 @@ import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.UserTypeEnum;
 
-public final class RideITData {
+public final class RideIntegrationTestData {
 
     public static final String URL_PROMO_CODES = "/api/v1/promo-codes";
     public static final String URL_PROMO_CODES_ACTIVE = "/api/v1/promo-codes/active";
@@ -135,7 +135,7 @@ public final class RideITData {
     public static final ZonedDateTime PASSENGER_PAYMENT_DEFAULT_TIMESTAMP = ZonedDateTime.of(2024, 4, 4, 12, 6, 0, 0,
             EUROPE_MINSK_TIMEZONE);
 
-    private RideITData() {
+    private RideIntegrationTestData() {
     }
 
     public static PromoCodeRequestDto.PromoCodeRequestDtoBuilder getNewPromoCodeRequestDto() {
