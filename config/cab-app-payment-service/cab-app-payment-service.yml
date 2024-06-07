@@ -17,6 +17,12 @@ spring:
         max-page-size: 50
   
   cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 1000
+            read-timeout: 5000
     function:
       definition: createPayment
     stream:

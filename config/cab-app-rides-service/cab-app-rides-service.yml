@@ -20,6 +20,11 @@ spring:
     openfeign:
       okhttp:
         enabled: true
+      client:
+        config:
+          default:
+            connect-timeout: 1000
+            read-timeout: 5000
     function:
       definition: confirmCardPayment
     stream:
