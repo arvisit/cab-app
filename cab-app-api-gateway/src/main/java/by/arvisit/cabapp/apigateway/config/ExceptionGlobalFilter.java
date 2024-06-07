@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.support.ServiceUnavailableException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,9 @@ public class ExceptionGlobalFilter implements GlobalFilter, Ordered {
             } else if (ex instanceof ConnectException connectException) {
                 exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
                 exceptionResponse = handle(connectException);
+            } else if (ex instanceof ServiceUnavailableException serviceUnavailableException) {
+                exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+                exceptionResponse = handle(serviceUnavailableException);
             } else {
                 exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
                 exceptionResponse = handle(ex);
@@ -82,6 +86,14 @@ public class ExceptionGlobalFilter implements GlobalFilter, Ordered {
     }
 
     private ExceptionResponse handle(ConnectException connectException) {
+        return ExceptionResponse.builder()
+                .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .withMessage(SERVICE_IS_TEMPORARY_UNAVAILABLE_MESSAGE)
+                .withTimeStamp(ZonedDateTime.now(EUROPE_MINSK_TIMEZONE))
+                .build();
+    }
+
+    private ExceptionResponse handle(ServiceUnavailableException serviceUnavailableException) {
         return ExceptionResponse.builder()
                 .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
                 .withMessage(SERVICE_IS_TEMPORARY_UNAVAILABLE_MESSAGE)
