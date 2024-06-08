@@ -22,6 +22,7 @@ management:
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
+        "[resilience4j.circuitbreaker.calls]": true
   tracing:
     sampling:
       probability: 1.0
