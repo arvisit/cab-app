@@ -13,6 +13,6 @@ import io.cucumber.core.options.Constants;
 @ConfigurationParameter(key = Constants.FEATURES_PROPERTY_NAME, value = "classpath:features")
 @ConfigurationParameter(key = Constants.FILTER_TAGS_PROPERTY_NAME, value = "@component")
 @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-ct-reports")
-public class CucumberRunnerIT {
+public class CucumberRunnerComponentTest {
 
 }
