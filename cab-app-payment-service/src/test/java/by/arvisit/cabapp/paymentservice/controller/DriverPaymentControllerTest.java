@@ -68,7 +68,7 @@ class DriverPaymentControllerTest {
     private static final String UNPARSEABLE_DATE_MESSAGE = "Unparseable date values detected";
     private static final String UNPARSEABLE_UUID_MESSAGE = "Unparseable UUID values detected";
     private static final String REQUEST_PARAMS_VALUE_BLANK_MESSAGE = "must not be blank";
-    private static final String REQUEST_PARAMS_NOT_ALLOWED_MESSAGE = "Only specified request parameters are allowed: [page, size, sort, status, operation, driverId, timestamp]";
+    private static final String REQUEST_PARAMS_NOT_ALLOWED_MESSAGE = "Invalid input parameters: noSuchParam. Valid parameters are: size, driverId, page, sort, operation, status, timestamp";
     private static final String OPERATION_TYPE_NOT_VALID_MESSAGE = "Operation type should be WITHDRAWAL or REPAYMENT";
     private static final String OPERATION_BLANK_MESSAGE = "Operation should not be blank";
     private static final String CARD_NUMBER_NOT_MATCH_PATTERN = "Card number should consist of 16 digits";
