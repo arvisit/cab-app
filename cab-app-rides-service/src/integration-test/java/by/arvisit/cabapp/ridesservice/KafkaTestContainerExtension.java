@@ -1,4 +1,4 @@
-package by.arvisit.cabapp.passengerservice;
+package by.arvisit.cabapp.ridesservice;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
