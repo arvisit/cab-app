@@ -532,6 +532,55 @@ services:
       elasticsearch:
         condition: service_healthy
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: keycloak
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db-keycloak:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: root
+    command:
+      - start-dev
+      - "--import-realm"
+    ports:
+      - 8180:8080
+    volumes:
+      - ./docker/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    networks:
+      - cab_app_net
+    depends_on:
+      db-keycloak:
+        condition: service_healthy
+
+  db-keycloak:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-keycloak
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d keycloak
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5437:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-keycloak.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
 volumes:
   pgdata:
   esdata:
