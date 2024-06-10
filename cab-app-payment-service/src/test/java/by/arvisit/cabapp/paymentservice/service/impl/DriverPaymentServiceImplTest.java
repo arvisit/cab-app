@@ -8,6 +8,7 @@ import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getDriverAcc
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getDriverPayment;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getDriverPaymentRequestDto;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getDriverPaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getEmptyDriverPaymentsFilterParams;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,6 +38,7 @@ import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.DriverPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 import by.arvisit.cabapp.paymentservice.persistence.repository.DriverPaymentRepository;
 import by.arvisit.cabapp.paymentservice.persistence.util.DriverPaymentSpecs;
@@ -51,6 +53,8 @@ class DriverPaymentServiceImplTest {
     private DriverPaymentRepository driverPaymentRepository;
     @Mock
     private DriverPaymentMapper driverPaymentMapper;
+    @Mock
+    private DriverPaymentsFilterParamsMapper filterParamsMapper;
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -117,6 +121,8 @@ class DriverPaymentServiceImplTest {
         Page<DriverPayment> driverPaymentsPage = new PageImpl<>(driverPayments);
         Specification<DriverPayment> spec = (root, query, cb) -> cb.conjunction();
 
+        when(filterParamsMapper.fromMapParams(any()))
+                .thenReturn(getEmptyDriverPaymentsFilterParams().build());
         when(driverPaymentSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(driverPaymentRepository.findAll(spec, pageable))

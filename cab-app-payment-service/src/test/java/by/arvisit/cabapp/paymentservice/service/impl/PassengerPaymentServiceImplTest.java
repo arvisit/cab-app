@@ -2,6 +2,7 @@ package by.arvisit.cabapp.paymentservice.service.impl;
 
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.DEFAULT_PAGEABLE_SIZE;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.PASSENGER_PAYMENT_ID_STRING;
+import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getEmptyPassengerPaymentsFilterParams;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getListContainerForResponse;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getPassengerPayment;
 import static by.arvisit.cabapp.paymentservice.util.PaymentTestData.getPassengerPaymentRequestDto;
@@ -33,6 +34,7 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentMapper;
+import by.arvisit.cabapp.paymentservice.mapper.PassengerPaymentsFilterParamsMapper;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.repository.PassengerPaymentRepository;
 import by.arvisit.cabapp.paymentservice.persistence.util.PassengerPaymentSpecs;
@@ -47,6 +49,8 @@ class PassengerPaymentServiceImplTest {
     private PassengerPaymentRepository passengerPaymentRepository;
     @Mock
     private PassengerPaymentMapper passengerPaymentMapper;
+    @Mock
+    private PassengerPaymentsFilterParamsMapper filterParamsMapper;
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -115,6 +119,8 @@ class PassengerPaymentServiceImplTest {
         Page<PassengerPayment> passengerPaymentsPage = new PageImpl<>(passengerPayments);
         Specification<PassengerPayment> spec = (root, query, cb) -> cb.conjunction();
 
+        when(filterParamsMapper.fromMapParams(any()))
+                .thenReturn(getEmptyPassengerPaymentsFilterParams().build());
         when(passengerPaymentSpecs.getAllByFilter(any()))
                 .thenReturn(spec);
         when(passengerPaymentRepository.findAll(spec, pageable))
