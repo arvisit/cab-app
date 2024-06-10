@@ -27,9 +27,10 @@ import io.restassured.RestAssured;
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 })
-public class CucumberCTConfiguration {
+public class CucumberComponentTestConfiguration {
 
     private static final int WIRE_MOCK_SERVER_PORT = 8480;
+    private static final String SPRING_KAFKA_BOOTSTRAP_SERVERS = "spring.kafka.bootstrap-servers";
 
     static KafkaContainer kafkaContainer;
 
@@ -44,9 +45,11 @@ public class CucumberCTConfiguration {
 
     @BeforeAll
     public static void setUpKafka() {
-        kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
-        kafkaContainer.start();
-        System.setProperty("spring.kafka.bootstrap-servers", kafkaContainer.getBootstrapServers());
+        if (System.getProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS) == null) {
+            kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.4"));
+            kafkaContainer.start();
+            System.setProperty(SPRING_KAFKA_BOOTSTRAP_SERVERS, kafkaContainer.getBootstrapServers());
+        }
     }
 
     @Before
