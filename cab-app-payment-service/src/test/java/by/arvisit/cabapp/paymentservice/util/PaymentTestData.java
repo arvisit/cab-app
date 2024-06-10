@@ -5,6 +5,8 @@ import static by.arvisit.cabapp.common.util.CommonConstants.EUROPE_MINSK_TIMEZON
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -12,11 +14,14 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
+import by.arvisit.cabapp.common.util.DateRange;
 import by.arvisit.cabapp.paymentservice.dto.DriverAccountBalanceResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.DriverPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.persistence.model.DriverPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
@@ -79,6 +84,13 @@ public final class PaymentTestData {
     public static final String DRIVER_ID_REQUEST_PARAM = "driverId";
     public static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
     public static final String TIMESTAMP_REQUEST_PARAM = "timestamp";
+    public static final String RIDE_ID_REQUEST_PARAM = "rideId";
+    public static final String STATUS_REQUEST_PARAM = "status";
+    public static final String PAYMENT_METHOD_REQUEST_PARAM = "paymentMethod";
+    public static final String OPERATION_REQUEST_PARAM = "operation";
+
+    public static final String DATE_REQUEST_VALUE = "2024-01-02";
+    public static final DateRange DATE_RANGE_FROM_REQUEST = DateRange.fromSingleValue(DATE_REQUEST_VALUE);
 
     private PaymentTestData() {
     }
@@ -206,6 +218,62 @@ public final class PaymentTestData {
                 .withSize(DEFAULT_PAGEABLE_SIZE)
                 .withLastPage(0)
                 .withSort(UNSORTED);
+    }
+
+    public static PassengerPaymentsFilterParams.PassengerPaymentsFilterParamsBuilder getEmptyPassengerPaymentsFilterParams() {
+        return PassengerPaymentsFilterParams.builder()
+                .withStatus(null)
+                .withPaymentMethod(null)
+                .withPassengerId(null)
+                .withDriverId(null)
+                .withRideId(null)
+                .withTimestamp(null);
+    }
+
+    public static PassengerPaymentsFilterParams.PassengerPaymentsFilterParamsBuilder getFilledPassengerPaymentsFilterParams() {
+        return PassengerPaymentsFilterParams.builder()
+                .withStatus(PaymentStatusEnum.SUCCESS.toString())
+                .withPaymentMethod(PaymentMethodEnum.BANK_CARD.toString())
+                .withPassengerId(PASSENGER_ID_UUID)
+                .withDriverId(DRIVER_ID_UUID)
+                .withRideId(RIDE_ID_UUID)
+                .withTimestamp(DATE_RANGE_FROM_REQUEST);
+    }
+
+    public static Map<String, String> getPassengerPaymentsRequestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put(STATUS_REQUEST_PARAM, PaymentStatusEnum.SUCCESS.toString());
+        params.put(PAYMENT_METHOD_REQUEST_PARAM, PaymentMethodEnum.BANK_CARD.toString());
+        params.put(PASSENGER_ID_REQUEST_PARAM, PASSENGER_ID_STRING);
+        params.put(DRIVER_ID_REQUEST_PARAM, DRIVER_ID_STRING);
+        params.put(RIDE_ID_REQUEST_PARAM, RIDE_ID_STRING);
+        params.put(TIMESTAMP_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        return params;
+    }
+
+    public static DriverPaymentsFilterParams.DriverPaymentsFilterParamsBuilder getEmptyDriverPaymentsFilterParams() {
+        return DriverPaymentsFilterParams.builder()
+                .withStatus(null)
+                .withOperation(null)
+                .withDriverId(null)
+                .withTimestamp(null);
+    }
+
+    public static DriverPaymentsFilterParams.DriverPaymentsFilterParamsBuilder getFilledDriverPaymentsFilterParams() {
+        return DriverPaymentsFilterParams.builder()
+                .withStatus(PaymentStatusEnum.SUCCESS.toString())
+                .withOperation(OperationTypeEnum.WITHDRAWAL.toString())
+                .withDriverId(DRIVER_ID_UUID)
+                .withTimestamp(DATE_RANGE_FROM_REQUEST);
+    }
+
+    public static Map<String, String> getDriverPaymentsRequestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put(STATUS_REQUEST_PARAM, PaymentStatusEnum.SUCCESS.toString());
+        params.put(OPERATION_REQUEST_PARAM, OperationTypeEnum.WITHDRAWAL.toString());
+        params.put(DRIVER_ID_REQUEST_PARAM, DRIVER_ID_STRING);
+        params.put(TIMESTAMP_REQUEST_PARAM, DATE_REQUEST_VALUE);
+        return params;
     }
 
     public static Stream<String> blankStrings() {
