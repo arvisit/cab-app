@@ -64,7 +64,7 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-passenger-payments.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 })
 @WireMockTest(httpPort = 8480)
-class DriverPaymentControllerIT {
+class DriverPaymentControllerIntegrationTest {
 
     private static final String BALANCE_FIELD = "balance";
     private static final String AMOUNT_FIELD = "amount";

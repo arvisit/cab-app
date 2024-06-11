@@ -54,7 +54,7 @@ import io.restassured.response.Response;
         @Sql(scripts = "classpath:sql/delete-passenger-payments.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 })
 @WireMockTest(httpPort = 8480)
-class PassengerPaymentControllerIT {
+class PassengerPaymentControllerIntegrationTest {
 
     private static final String[] BIG_DECIMAL_FIELDS = { "amount", "feeAmount" };
     private static final String ID_FIELD = "id";
