@@ -19,7 +19,7 @@ import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
 
-public final class PaymentITData {
+public final class PaymentIntegrationTestData {
 
     public static final String DRIVER_REPAYMENT_10_ID = "e64f3f82-83dd-4fd8-8155-c5ed1b100dc1";
     public static final String DRIVER_WITHDRAWAL_50_ID = "761212b8-4796-4e99-a901-e93b5b64a3d9";
@@ -70,7 +70,7 @@ public final class PaymentITData {
     public static final String OPERATION_REQUEST_PARAM = "operation";
     public static final String PAYMENT_METHOD_REQUEST_PARAM = "paymentMethod";
 
-    private PaymentITData() {
+    private PaymentIntegrationTestData() {
     }
 
     public static PassengerResponseDto.PassengerResponseDtoBuilder getPassengerResponseDto() {
