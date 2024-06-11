@@ -74,7 +74,6 @@ class PassengerPaymentControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSaveWithValidInput() throws Exception {
-
         PassengerResponseDto passenger = getPassengerResponseDto().build();
         wireMockService.mockResponseForPassengerClientGetPassengerById(passenger);
         RideResponseDto ride = getRideResponseDto().build();
@@ -100,7 +99,6 @@ class PassengerPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentByIdWithExistingId() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(getPassengerPaymentRequestDto().build())
@@ -128,7 +126,6 @@ class PassengerPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentsWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_PASSENGER_PAYMENTS);
@@ -161,7 +158,6 @@ class PassengerPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentsWithCashPaymentMethodRequestParam() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(PAYMENT_METHOD_REQUEST_PARAM, PaymentMethodEnum.CASH.toString())

@@ -87,7 +87,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn201AndExpectedResponse_whenSaveWithValidInput() throws Exception {
-
         DriverResponseDto driver = getDriverResponseDto().build();
         wireMockService.mockResponseForDriverClientGetDriverById(driver);
 
@@ -113,7 +112,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn201AndExpectedBalance_whenSaveWithdrawal() throws Exception {
-
         DriverResponseDto driver = getDriverResponseDto().build();
         wireMockService.mockResponseForDriverClientGetDriverById(driver);
 
@@ -140,7 +138,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn201AndExpectedBalance_whenSaveRepayment() throws Exception {
-
         DriverResponseDto driver = getDriverResponseDto().build();
         wireMockService.mockResponseForDriverClientGetDriverById(driver);
 
@@ -167,7 +164,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentByIdWithExistingId() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVER_PAYMENTS_ID_TEMPLATE, DRIVER_WITHDRAWAL_100_ID);
@@ -191,7 +187,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentsWithNoRequestParams() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVER_PAYMENTS);
@@ -223,7 +218,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetPaymentsWithDriverIdAndOperationTypeRequestParam() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .queryParam(OPERATION_REQUEST_PARAM, OperationTypeEnum.REPAYMENT.toString())
@@ -255,7 +249,6 @@ class DriverPaymentControllerIT {
 
     @Test
     void shouldReturn200AndExpectedResponse_whenGetDriverAccountBalanceWithExistingId() {
-
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .when().get(URL_DRIVER_PAYMENTS_DRIVERS_ID_BALANCE_TEMPLATE, DRIVER_ID_STRING);
