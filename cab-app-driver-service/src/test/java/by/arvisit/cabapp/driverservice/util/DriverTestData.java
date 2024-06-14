@@ -18,7 +18,10 @@ import by.arvisit.cabapp.driverservice.persistence.model.Car;
 import by.arvisit.cabapp.driverservice.persistence.model.CarManufacturer;
 import by.arvisit.cabapp.driverservice.persistence.model.Color;
 import by.arvisit.cabapp.driverservice.persistence.model.Driver;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DriverTestData {
 
     public static final Integer COLOR_ID_WHITE = 1;
@@ -61,9 +64,6 @@ public final class DriverTestData {
     public static final String IS_AVAILABLE_TO_FILTER = "true";
     public static final String CAR_MANUFACTURER_NAME_TO_FILTER = "Audi";
     public static final String IS_AVAILABLE_KEY = "isAvailable";
-
-    private DriverTestData() {
-    }
 
     public static Color.ColorBuilder getColor() {
         return Color.builder()

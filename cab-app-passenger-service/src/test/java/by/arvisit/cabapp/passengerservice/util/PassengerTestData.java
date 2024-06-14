@@ -11,7 +11,10 @@ import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.persistence.model.Passenger;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PassengerTestData {
 
     public static final int DEFAULT_PAGEABLE_SIZE = 10;
@@ -36,9 +39,6 @@ public final class PassengerTestData {
     public static final String URL_PASSENGERS_EMAIL_TEMPLATE = "/api/v1/passengers/by-email/{email}";
     public static final String URL_PASSENGERS_PARAM_VALUE_TEMPLATE = "/api/v1/passengers?{param}={value}";
     public static final String ENCODING_UTF_8 = "UTF-8";
-
-    private PassengerTestData() {
-    }
 
     public static Passenger.PassengerBuilder getPassenger() {
         return Passenger.builder()

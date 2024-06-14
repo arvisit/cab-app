@@ -10,11 +10,11 @@ import by.arvisit.cabapp.driverservice.dto.CarRequestDto;
 import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DriverIntegrationTestData {
-
-    private DriverIntegrationTestData() {
-    }
 
     public static final String URL_COLORS = "/api/v1/colors";
     public static final String URL_CAR_MANUFACTURERS = "/api/v1/car-manufacturers";

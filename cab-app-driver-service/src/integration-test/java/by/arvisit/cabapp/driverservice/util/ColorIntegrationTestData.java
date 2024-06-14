@@ -3,11 +3,11 @@ package by.arvisit.cabapp.driverservice.util;
 import java.util.List;
 
 import by.arvisit.cabapp.driverservice.dto.ColorResponseDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColorIntegrationTestData {
-
-    private ColorIntegrationTestData() {
-    }
 
     public static final List<ColorResponseDto> COLORS;
 
