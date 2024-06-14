@@ -1,17 +1,17 @@
 package by.arvisit.cabapp.paymentservice.component;
 
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.DRIVER_WITHDRAWAL_100_ID;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS_DRIVERS_ID_BALANCE_TEMPLATE;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS_ID_TEMPLATE;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedDriverPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverAccountBalanceResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverPaymentRequestDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverRepayment10PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverWithdrawal100PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverWithdrawal50PaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getListContainerForResponse;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.DRIVER_WITHDRAWAL_100_ID;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_DRIVER_PAYMENTS;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_DRIVER_PAYMENTS_DRIVERS_ID_BALANCE_TEMPLATE;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_DRIVER_PAYMENTS_ID_TEMPLATE;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getAddedDriverPaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverAccountBalanceResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverPaymentRequestDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverRepayment10PaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverWithdrawal100PaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverWithdrawal50PaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getListContainerForResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;

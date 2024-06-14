@@ -1,16 +1,16 @@
 package by.arvisit.cabapp.paymentservice.component;
 
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS_ID_TEMPLATE;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedPassengerPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getListContainerForResponse;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentRequestDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto1;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto2;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto3;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto4;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getRideResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_PASSENGER_PAYMENTS;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_PASSENGER_PAYMENTS_ID_TEMPLATE;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getAddedPassengerPaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getListContainerForResponse;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentRequestDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentResponseDto1;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentResponseDto2;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentResponseDto3;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentResponseDto4;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getRideResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
