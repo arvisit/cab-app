@@ -17,5 +17,6 @@
         <module>cab-app-discovery-server</module>
         <module>cab-app-api-gateway</module>
         <module>cab-app-config-server</module>
+        <module>cab-app-jwt-converter-starter</module>
     </modules>
 </project>
