@@ -28,7 +28,7 @@ import io.restassured.RestAssured;
         @Sql(scripts = "classpath:sql/delete-driver-payments.sql", executionPhase = ExecutionPhase.AFTER_TEST_CLASS),
         @Sql(scripts = "classpath:sql/delete-passenger-payments.sql", executionPhase = ExecutionPhase.AFTER_TEST_CLASS)
 })
-public class CucumberCTConfiguration {
+public class CucumberComponentTestConfiguration {
 
     private static final int WIRE_MOCK_SERVER_PORT = 8480;
 
