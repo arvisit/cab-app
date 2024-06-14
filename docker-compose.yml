@@ -14,6 +14,13 @@ x-zipkin-variables: &zipkin-variables
   ZIPKIN_HOST: zipkin
   ZIPKIN_PORT: 9411
 
+x-keycloak-variables: &keycloak-variables
+  KEYCLOAK_HOST: keycloak
+  KEYCLOAK_PORT: 8080
+  CAB_APP_CLIENT_SECRET: wZpxwHzxVfPmqi46Ck5BUD6wxMD5QlSe
+  KEYCLOAK_ADMIN: admin
+  KEYCLOAK_ADMIN_PASSWORD: admin
+
 services:
 
   passenger-service:
@@ -34,7 +41,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.passengerservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
     expose:
       - 8081
     networks:
@@ -296,7 +303,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.apigateway
-      <<: [*eureka-variables, *logstash-variables, *zipkin-variables]
+      <<: [*eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
     ports:
       - 8080:8080
     expose:
