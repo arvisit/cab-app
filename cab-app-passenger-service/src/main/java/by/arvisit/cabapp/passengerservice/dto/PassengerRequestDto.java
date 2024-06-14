@@ -19,6 +19,8 @@ public record PassengerRequestDto(
         String email,
         @Pattern(regexp = CARD_NUMBER,
                 message = "{by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto.cardNumber.Pattern.message}")
-        String cardNumber) {
+        String cardNumber,
+        @NotBlank // TODO Add message
+        String password) {
 
  }

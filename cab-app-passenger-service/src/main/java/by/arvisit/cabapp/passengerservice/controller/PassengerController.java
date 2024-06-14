@@ -25,6 +25,7 @@ import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengersFilterParams;
 import by.arvisit.cabapp.passengerservice.service.PassengerService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -81,6 +82,7 @@ public class PassengerController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<PassengerResponseDto> getPassengers(
             @PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable

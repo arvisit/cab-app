@@ -41,6 +41,7 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengersFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final PassengerSpecs passengerSpecs;
+    private final KeycloakService keycloakService;
 
     @Transactional(readOnly = true)
     @Override
@@ -97,6 +98,7 @@ public class PassengerServiceImpl implements PassengerService {
                     new Object[] { dto.email() }, null);
             throw new UsernameAlreadyExistsException(errorMessage);
         }
+        keycloakService.addUser(dto); // TODO check for exceptions
         return passengerMapper.fromEntityToResponseDto(
                 passengerRepository.save(passengerMapper.fromRequestDtoToEntity(dto)));
     }
