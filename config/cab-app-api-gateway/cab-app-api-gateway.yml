@@ -8,6 +8,28 @@ spring:
       httpclient:
         connect-timeout: 3000
         response-timeout: 5000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/cab-app-realm
+          jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: cab-app
+            client-secret: ${CAB_APP_CLIENT_SECRET}
+            authorization-grant-type: autorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            scope: openid
+        provider:
+          keycloak:
+            token-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/token
+            authorization-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/auth
+            user-name-attribute: preferred_username
+            user-info-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/userinfo
+            jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
+            user-info-authentication-method: header
 
 management:
   endpoints:
