@@ -22,6 +22,7 @@
         <liquibase.username>${env.DB_USERNAME}</liquibase.username>
         <liquibase.password>${env.DB_PASSWORD}</liquibase.password>
         <integration-test-pattern>**/*IntegrationTest.java</integration-test-pattern>
+        <component-test-pattern>**/*ComponentTest.java</component-test-pattern>
         <hibernate-jpamodelgen.version>6.4.4.Final</hibernate-jpamodelgen.version>
         <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
         <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
@@ -286,6 +287,7 @@
                 <configuration>
                     <includes>
                         <include>${integration-test-pattern}</include>
+                        <include>${component-test-pattern}</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -295,6 +297,7 @@
                 <configuration>
                     <excludes>
                         <exclude>${integration-test-pattern}</exclude>
+                        <exclude>${component-test-pattern}</exclude>
                     </excludes>
                 </configuration>
             </plugin>
