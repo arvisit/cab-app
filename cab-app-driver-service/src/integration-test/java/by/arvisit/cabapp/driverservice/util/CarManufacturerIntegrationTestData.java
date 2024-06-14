@@ -3,11 +3,11 @@ package by.arvisit.cabapp.driverservice.util;
 import java.util.List;
 
 import by.arvisit.cabapp.driverservice.dto.CarManufacturerResponseDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CarManufacturerIntegrationTestData {
-
-    private CarManufacturerIntegrationTestData() {
-    }
 
     public static final List<CarManufacturerResponseDto> CAR_MANUFACTURERS;
 

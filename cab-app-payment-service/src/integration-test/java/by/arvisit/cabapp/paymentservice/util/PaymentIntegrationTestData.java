@@ -18,7 +18,10 @@ import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PaymentIntegrationTestData {
 
     public static final String DRIVER_REPAYMENT_10_ID = "e64f3f82-83dd-4fd8-8155-c5ed1b100dc1";
@@ -69,9 +72,6 @@ public final class PaymentIntegrationTestData {
     public static final String DRIVER_ID_REQUEST_PARAM = "driverId";
     public static final String OPERATION_REQUEST_PARAM = "operation";
     public static final String PAYMENT_METHOD_REQUEST_PARAM = "paymentMethod";
-
-    private PaymentIntegrationTestData() {
-    }
 
     public static PassengerResponseDto.PassengerResponseDtoBuilder getPassengerResponseDto() {
         return PassengerResponseDto.builder()

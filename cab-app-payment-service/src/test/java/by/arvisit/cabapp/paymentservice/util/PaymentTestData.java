@@ -27,7 +27,10 @@ import by.arvisit.cabapp.paymentservice.persistence.model.OperationTypeEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PassengerPayment;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.paymentservice.persistence.model.PaymentStatusEnum;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class PaymentTestData {
 
     public static final BigDecimal DRIVER_ACCOUNT_BALANCE_ENOUGH = BigDecimal.valueOf(1000);
@@ -91,9 +94,6 @@ public final class PaymentTestData {
 
     public static final String DATE_REQUEST_VALUE = "2024-01-02";
     public static final DateRange DATE_RANGE_FROM_REQUEST = DateRange.fromSingleValue(DATE_REQUEST_VALUE);
-
-    private PaymentTestData() {
-    }
 
     public static PassengerPaymentRequestDto.PassengerPaymentRequestDtoBuilder getPassengerPaymentRequestDto() {
         return PassengerPaymentRequestDto.builder()

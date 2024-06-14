@@ -27,7 +27,10 @@ import by.arvisit.cabapp.ridesservice.persistence.model.PromoCode;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.UserTypeEnum;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class RideTestData {
 
     private static final String PASSENGER_PAYMENT_DEFAULT_STATUS = "SUCCESS";
@@ -130,9 +133,6 @@ public final class RideTestData {
 
     public static final String DATE_REQUEST_VALUE = "2024-01-02";
     public static final DateRange DATE_RANGE_FROM_REQUEST = DateRange.fromSingleValue(DATE_REQUEST_VALUE);
-
-    private RideTestData() {
-    }
 
     public static PromoCodeRequestDto.PromoCodeRequestDtoBuilder getPromoCodeRequestDto() {
         return PromoCodeRequestDto.builder()
