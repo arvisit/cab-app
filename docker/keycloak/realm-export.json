@@ -528,6 +528,7 @@
         "realm-management": [
           "view-users",
           "query-users",
+          "view-clients",
           "view-realm",
           "manage-users"
         ]
@@ -759,7 +760,7 @@
       "consentRequired": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
       "publicClient": false,
       "frontchannelLogout": true,
