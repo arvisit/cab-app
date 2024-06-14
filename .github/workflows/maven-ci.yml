@@ -10,6 +10,7 @@ env:
   INNER_DEPENDENCIES: |
     cab-app-common/
     cab-app-exception-handling-starter/
+    cab-app-jwt-converter-starter/
 
 jobs:
   test:
