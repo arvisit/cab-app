@@ -8,7 +8,7 @@ spring:
       server:
         git:
           uri: "https://github.com/arvisit/cab-app"
-          default-label: feat/027-monitoring # FIXME change to dev before PR
+          default-label: feat/028-security # FIXME change to dev before PR
           search-paths: "config/{application}"
 
 management:
