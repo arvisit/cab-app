@@ -22,6 +22,7 @@
         <liquibase.username>${env.DB_USERNAME}</liquibase.username>
         <liquibase.password>${env.DB_PASSWORD}</liquibase.password>
         <integration-test-pattern>**/*IntegrationTest.java</integration-test-pattern>
+        <component-test-pattern>**/*ComponentTest.java</component-test-pattern>
         <hibernate-jpamodelgen.version>6.4.4.Final</hibernate-jpamodelgen.version>
         <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
         <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
@@ -30,6 +31,7 @@
         <wiremock.version>3.5.4</wiremock.version>
         <jetty.version>11.0.18</jetty.version>
         <jetty-bom.version>12.0.3</jetty-bom.version>
+        <cucumber.version>7.17.0</cucumber.version>
     </properties>
     
     <dependencyManagement>
@@ -45,6 +47,13 @@
                 <groupId>org.eclipse.jetty.ee10</groupId>
                 <artifactId>jetty-ee10-bom</artifactId>
                 <version>${jetty-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-bom</artifactId>
+                <version>${cucumber.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -156,6 +165,28 @@
             <artifactId>wiremock</artifactId>
             <version>${wiremock.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -256,6 +287,7 @@
                 <configuration>
                     <includes>
                         <include>${integration-test-pattern}</include>
+                        <include>${component-test-pattern}</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -265,6 +297,7 @@
                 <configuration>
                     <excludes>
                         <exclude>${integration-test-pattern}</exclude>
+                        <exclude>${component-test-pattern}</exclude>
                     </excludes>
                 </configuration>
             </plugin>
