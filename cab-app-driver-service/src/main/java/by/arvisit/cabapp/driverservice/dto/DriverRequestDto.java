@@ -23,6 +23,8 @@ public record DriverRequestDto(
         @Pattern(regexp = CARD_NUMBER,
             message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.cardNumber.Pattern.message}")
         String cardNumber,
+        @NotBlank // TODO Add message
+        String password,
         @NotNull(message = "{by.arvisit.cabapp.driverservice.dto.DriverRequestDto.car.NotNull.message}")
         @Valid
         CarRequestDto car) {

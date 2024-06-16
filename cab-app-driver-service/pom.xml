@@ -24,6 +24,7 @@
         <hibernate-jpamodelgen.version>6.4.4.Final</hibernate-jpamodelgen.version>
         <cab-app-exception-handling-starter.version>0.0.1-SNAPSHOT</cab-app-exception-handling-starter.version>
         <cab-app-common.version>0.0.1-SNAPSHOT</cab-app-common.version>
+        <cab-app-jwt-converter-starter.version>0.0.1-SNAPSHOT</cab-app-jwt-converter-starter.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <integration-test-pattern>**/*IntegrationTest.java</integration-test-pattern>
         <component-test-pattern>**/*ComponentTest.java</component-test-pattern>
@@ -31,6 +32,7 @@
         <cucumber.version>7.17.0</cucumber.version>
         <spring-cloud-contract-maven-plugin.version>4.1.2</spring-cloud-contract-maven-plugin.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+        <keycloak.version>25.0.0</keycloak.version>
     </properties>
     
     <dependencyManagement>
@@ -83,6 +85,11 @@
             <groupId>by.arvisit</groupId>
             <artifactId>cab-app-common</artifactId>
             <version>${cab-app-common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>by.arvisit</groupId>
+            <artifactId>cab-app-jwt-converter-starter</artifactId>
+            <version>${cab-app-jwt-converter-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -156,6 +163,24 @@
         <dependency>
             <groupId>io.github.resilience4j</groupId>
             <artifactId>resilience4j-micrometer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${keycloak.version}</version>
         </dependency>
 
         <dependency>

@@ -41,6 +41,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriversFilterParamsMapper filterParamsMapper;
     private final MessageSource messageSource;
     private final DriverSpecs driverSpecs;
+    private final KeycloakService keycloakService;
 
     @Transactional(readOnly = true)
     @Override
@@ -116,8 +117,10 @@ public class DriverServiceImpl implements DriverService {
             throw new UsernameAlreadyExistsException(errorMessage);
         }
 
+        String id = keycloakService.addUser(dto);
         Driver driverToSave = driverMapper.fromRequestDtoToEntity(dto);
         driverToSave.setIsAvailable(false);
+        driverToSave.setId(UUID.fromString(id));
         return driverMapper.fromEntityToResponseDto(
                 driverRepository.save(driverToSave));
     }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriversFilterParams;
 import by.arvisit.cabapp.driverservice.service.DriverService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -57,6 +59,7 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public DriverResponseDto update(@PathVariable @UUID String id, @RequestBody @Valid DriverRequestDto dto) {
         DriverResponseDto response = driverService.update(id, dto);
 
@@ -65,6 +68,7 @@ public class DriverController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable @UUID String id) {
         driverService.delete(id);
 
@@ -73,6 +77,7 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public DriverResponseDto getDriverById(@PathVariable @UUID String id) {
         DriverResponseDto response = driverService.getDriverById(id);
 
@@ -81,6 +86,7 @@ public class DriverController {
     }
 
     @GetMapping("/by-email/{email}")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #email == authentication.principal.username) || hasRole('ROLE_ADMIN')")
     public DriverResponseDto getDriverByEmail(@PathVariable @Email String email) {
         DriverResponseDto response = driverService.getDriverByEmail(email);
 
@@ -89,6 +95,7 @@ public class DriverController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<DriverResponseDto> getDrivers(@PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
             @AllowedKeys(keysHolder = DriversFilterParams.class)
@@ -103,6 +110,7 @@ public class DriverController {
     }
 
     @GetMapping("/available")
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<DriverResponseDto> getAvailableDrivers(
             @PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<DriverResponseDto> response = driverService.getAvailableDrivers(pageable);
@@ -112,6 +120,7 @@ public class DriverController {
     }
 
     @PatchMapping("/{id}/availability")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public DriverResponseDto updateAvailability(@PathVariable @UUID String id,
             @RequestBody
             @Valid

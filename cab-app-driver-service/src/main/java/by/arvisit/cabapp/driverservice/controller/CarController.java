@@ -13,6 +13,7 @@ import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
 import by.arvisit.cabapp.driverservice.service.CarService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<CarResponseDto> getCars(@PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<CarResponseDto> response = carService.getCars(pageable);
 
@@ -35,6 +37,7 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public CarResponseDto getCarById(@PathVariable @UUID String id) {
         CarResponseDto response = carService.getCarById(id);
 
