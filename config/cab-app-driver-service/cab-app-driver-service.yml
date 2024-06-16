@@ -46,6 +46,18 @@ spring:
           brokers: "${KAFKA_HOST}:${KAFKA_PORT}"
           enable-observation: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: cab-app
+            client-secret: ${CAB_APP_CLIENT_SECRET}
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/cab-app-realm
+          jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
+
 management:
   endpoints:
     web:
@@ -94,3 +106,15 @@ resilience4j:
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
           - feign.RetryableException
+
+token:
+  converter:
+    include: true
+    principal-attribute: preferred_username
+    resource-id: cab-app
+
+keycloak:
+  server-url: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}
+  realm: cab-app-realm
+  username: ${KEYCLOAK_ADMIN}
+  password: ${KEYCLOAK_ADMIN_PASSWORD}
