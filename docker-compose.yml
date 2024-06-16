@@ -101,7 +101,7 @@ services:
         -Delastic.apm.server_urls=http://apm-server:8200
         -Delastic.apm.secret_token=
         -Delastic.apm.application_packages=by.arvisit.cabapp.driverservice
-      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables]
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
     expose:
       - 8082
     networks:
