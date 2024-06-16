@@ -19,14 +19,19 @@ import org.springframework.stereotype.Service;
 
 import by.arvisit.cabapp.exceptionhandlingstarter.exception.UsernameAlreadyExistsException;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KeycloakService {
 
+    private static final int FULLNAME_PARTS_COUNT = 2;
     private static final String PASSENGER_ROLE = "PASSENGER";
     private static final String EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.service.impl.KeycloakService.UsernameAlreadyExistsException.template";
+    private static final String NOT_FULLNAME_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.service.impl.KeycloakService.IllegalArgumentException.template";
 
     private final Keycloak keycloak;
     private final MessageSource messageSource;
@@ -36,7 +41,7 @@ public class KeycloakService {
     @Value("${spring.security.oauth2.client.registration.keycloak.client-id}")
     private String client;
 
-    public void addUser(PassengerRequestDto dto) {
+    public String addUser(PassengerRequestDto dto) {
         String username = dto.email();
         CredentialRepresentation credential = createPasswordCredentials(dto.password());
 
@@ -46,13 +51,15 @@ public class KeycloakService {
         user.setCredentials(Collections.singletonList(credential));
         user.setEnabled(true);
 
-        // FIXME replace user name stubbing with actual implementation
-        user.setFirstName("j");
-        user.setLastName("d");
+        setName(user, dto.name());
 
         UsersResource usersResource = getUsersResource();
+        String id;
         if (usersResource.search(username).isEmpty()) {
-            usersResource.create(user);
+            try (Response response = usersResource.create(user)) {
+                String path = response.getLocation().getPath();
+                id = path.substring(path.lastIndexOf('/') + 1);
+            }
         } else {
             String errorMessage = messageSource.getMessage(
                     EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY,
@@ -61,6 +68,8 @@ public class KeycloakService {
         }
 
         addClientRoleToUser(username, PASSENGER_ROLE);
+        log.debug("User with id {} was registered", id);
+        return id;
     }
 
     private void addClientRoleToUser(String userName, String roleName) {
@@ -81,7 +90,7 @@ public class KeycloakService {
         return keycloak.realm(realm).users();
     }
 
-    private static CredentialRepresentation createPasswordCredentials(String password) {
+    private CredentialRepresentation createPasswordCredentials(String password) {
         CredentialRepresentation passwordCredentials = new CredentialRepresentation();
         passwordCredentials.setTemporary(false);
         passwordCredentials.setType(CredentialRepresentation.PASSWORD);
@@ -89,4 +98,20 @@ public class KeycloakService {
         return passwordCredentials;
     }
 
+    private void setName(UserRepresentation user, String name) {
+        String[] parts = name.split(" ");
+        String firstName;
+        String lastName;
+        if (parts.length != FULLNAME_PARTS_COUNT) {
+            String errorMessage = messageSource.getMessage(
+                    NOT_FULLNAME_MESSAGE_TEMPLATE_KEY,
+                    new Object[] { }, null);
+            throw new IllegalArgumentException(errorMessage);
+        } else {
+            firstName = parts[0];
+            lastName = parts[1];
+        }
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+    }
 }

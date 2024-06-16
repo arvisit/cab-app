@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class PassengerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_PASSENGER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public PassengerResponseDto update(@PathVariable @UUID String id, @RequestBody @Valid PassengerRequestDto dto) {
         PassengerResponseDto response = passengerService.update(id, dto);
 
@@ -58,6 +60,7 @@ public class PassengerController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable @UUID String id) {
         passengerService.delete(id);
 
@@ -66,6 +69,7 @@ public class PassengerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("(hasRole('ROLE_PASSENGER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public PassengerResponseDto getPassengerById(@PathVariable @UUID String id) {
         PassengerResponseDto response = passengerService.getPassengerById(id);
 
@@ -74,6 +78,7 @@ public class PassengerController {
     }
 
     @GetMapping("/by-email/{email}")
+    @PreAuthorize("(hasRole('ROLE_PASSENGER') && #email == authentication.principal.username) || hasRole('ROLE_ADMIN')")
     public PassengerResponseDto getPassengerByEmail(@PathVariable @Email String email) {
         PassengerResponseDto response = passengerService.getPassengerByEmail(email);
 

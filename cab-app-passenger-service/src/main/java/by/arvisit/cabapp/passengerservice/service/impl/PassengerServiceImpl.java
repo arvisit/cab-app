@@ -98,9 +98,11 @@ public class PassengerServiceImpl implements PassengerService {
                     new Object[] { dto.email() }, null);
             throw new UsernameAlreadyExistsException(errorMessage);
         }
-        keycloakService.addUser(dto); // TODO check for exceptions
+        String id = keycloakService.addUser(dto);
+        Passenger passengerToSave = passengerMapper.fromRequestDtoToEntity(dto);
+        passengerToSave.setId(UUID.fromString(id));
         return passengerMapper.fromEntityToResponseDto(
-                passengerRepository.save(passengerMapper.fromRequestDtoToEntity(dto)));
+                passengerRepository.save(passengerToSave));
     }
 
     @Transactional
