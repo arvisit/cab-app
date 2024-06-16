@@ -30,8 +30,8 @@ public class KeycloakService {
 
     private static final int FULLNAME_PARTS_COUNT = 2;
     private static final String PASSENGER_ROLE = "PASSENGER";
-    private static final String EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.service.impl.KeycloakService.UsernameAlreadyExistsException.template";
-    private static final String NOT_FULLNAME_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.persistence.model.service.impl.KeycloakService.IllegalArgumentException.template";
+    private static final String EMAIL_ALREADY_IN_USE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.service.impl.KeycloakService.UsernameAlreadyExistsException.template";
+    private static final String NOT_FULLNAME_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.passengerservice.service.impl.KeycloakService.IllegalArgumentException.template";
 
     private final Keycloak keycloak;
     private final MessageSource messageSource;
