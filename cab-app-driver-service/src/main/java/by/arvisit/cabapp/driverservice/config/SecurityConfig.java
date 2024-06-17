@@ -3,6 +3,7 @@ package by.arvisit.cabapp.driverservice.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,12 +27,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/drivers").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(keycloakJwtConverter)))
+                .oauth2Client(Customizer.withDefaults())
                 .build();
     }
 }
