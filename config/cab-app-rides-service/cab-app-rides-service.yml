@@ -64,7 +64,7 @@ spring:
             client-id: cab-app
             client-secret: ${CAB_APP_CLIENT_SECRET}
             authorization-grant-type: client_credentials
-            provider: keycloak
+#            provider: keycloak
       provider:
         keycloak:
           token-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/token
