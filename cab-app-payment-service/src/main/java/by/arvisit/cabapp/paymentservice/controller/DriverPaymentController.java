@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import by.arvisit.cabapp.paymentservice.dto.DriverPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.DriverPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.service.DriverPaymentService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class DriverPaymentController {
     private final DriverPaymentService driverPaymentService;
 
     @PostMapping
+    @RolesAllowed("DRIVER")
     public ResponseEntity<DriverPaymentResponseDto> save(@RequestBody @Valid DriverPaymentRequestDto dto) {
         DriverPaymentResponseDto response = driverPaymentService.save(dto);
 
@@ -49,6 +52,7 @@ public class DriverPaymentController {
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public DriverPaymentResponseDto getPaymentById(@PathVariable @UUID String id) {
         DriverPaymentResponseDto response = driverPaymentService.getPaymentById(id);
 
@@ -57,6 +61,7 @@ public class DriverPaymentController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<DriverPaymentResponseDto> getPayments(
             @PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
@@ -75,6 +80,7 @@ public class DriverPaymentController {
     }
 
     @GetMapping("/drivers/{id}/balance")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public DriverAccountBalanceResponseDto getDriverAccountBalance(@PathVariable @UUID String id) {
         DriverAccountBalanceResponseDto response = driverPaymentService.getDriverAccountBalance(id);
 

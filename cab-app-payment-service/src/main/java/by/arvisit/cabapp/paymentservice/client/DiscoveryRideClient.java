@@ -9,7 +9,8 @@ import by.arvisit.cabapp.common.dto.rides.RideResponseDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Profile({ "dev" })
-@FeignClient(name = "cab-app-rides-service", configuration = CabAppFeignClientConfiguration.class)
+@FeignClient(name = "cab-app-rides-service",
+        configuration = { CabAppFeignClientConfiguration.class, OAuthFeignConfig.class })
 @CircuitBreaker(name = "discoveryRideClient")
 public interface DiscoveryRideClient extends RideClient {
 

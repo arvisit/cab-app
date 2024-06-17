@@ -14,6 +14,12 @@ RUN mvn dependency:go-offline
 COPY cab-app-exception-handling-starter/src ./src
 RUN mvn install -DskipTests --file /cab-app-exception-handling-starter/pom.xml
 
+WORKDIR /cab-app-jwt-converter-starter
+COPY cab-app-jwt-converter-starter/pom.xml .
+RUN mvn dependency:go-offline
+COPY cab-app-jwt-converter-starter/src ./src
+RUN mvn install -DskipTests --file /cab-app-jwt-converter-starter/pom.xml
+
 WORKDIR /cab-app-payment-service
 COPY cab-app-payment-service/pom.xml .
 RUN mvn dependency:go-offline

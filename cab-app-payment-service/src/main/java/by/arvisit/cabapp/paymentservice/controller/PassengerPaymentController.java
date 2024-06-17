@@ -25,6 +25,7 @@ import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.paymentservice.dto.PassengerPaymentsFilterParams;
 import by.arvisit.cabapp.paymentservice.service.PassengerPaymentService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class PassengerPaymentController {
     private final PassengerPaymentService passengerPaymentService;
 
     @PostMapping
+    @RolesAllowed("PASSENGER")
     public ResponseEntity<PassengerPaymentResponseDto> save(@RequestBody @Valid PassengerPaymentRequestDto dto) {
         PassengerPaymentResponseDto response = passengerPaymentService.save(dto);
 
@@ -48,6 +50,7 @@ public class PassengerPaymentController {
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public PassengerPaymentResponseDto getPaymentById(@PathVariable @UUID String id) {
         PassengerPaymentResponseDto response = passengerPaymentService.getPaymentById(id);
 
@@ -56,6 +59,7 @@ public class PassengerPaymentController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<PassengerPaymentResponseDto> getPayments(
             @PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
