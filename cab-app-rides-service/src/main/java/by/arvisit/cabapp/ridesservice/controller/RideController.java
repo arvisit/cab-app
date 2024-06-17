@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ import by.arvisit.cabapp.ridesservice.service.RatingService;
 import by.arvisit.cabapp.ridesservice.service.RideService;
 import by.arvisit.cabapp.ridesservice.util.AppConstants;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -64,6 +66,7 @@ public class RideController {
     private final RatingService ratingService;
 
     @PostMapping
+    @RolesAllowed("PASSENGER")
     public ResponseEntity<RideResponseDto> save(@RequestBody @Valid RideRequestDto dto) {
         RideResponseDto response = rideService.save(dto);
 
@@ -72,6 +75,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/cancel")
+    @RolesAllowed("PASSENGER")
     public RideResponseDto cancelRide(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.cancelRide(id);
 
@@ -80,6 +84,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/accept")
+    @RolesAllowed("DRIVER")
     public RideResponseDto acceptRide(@PathVariable @UUID String id,
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
@@ -97,6 +102,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/begin")
+    @RolesAllowed("DRIVER")
     public RideResponseDto beginRide(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.beginRide(id);
 
@@ -105,6 +111,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/end")
+    @RolesAllowed("DRIVER")
     public RideResponseDto endRide(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.endRide(id);
 
@@ -113,6 +120,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/finish")
+    @RolesAllowed({ "DRIVER", "ADMIN" })
     public RideResponseDto finishRide(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.finishRide(id);
 
@@ -121,6 +129,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/confirm-payment")
+    @RolesAllowed({ "DRIVER", "ADMIN" })
     public RideResponseDto confirmPayment(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.confirmPayment(id);
 
@@ -129,6 +138,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/apply-promo")
+    @RolesAllowed("PASSENGER")
     public RideResponseDto applyPromoCode(@PathVariable @UUID String id,
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
@@ -146,6 +156,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/change-payment-method")
+    @RolesAllowed("PASSENGER")
     public RideResponseDto changePaymentMethod(@PathVariable @UUID String id,
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
@@ -163,6 +174,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/score-driver")
+    @RolesAllowed("PASSENGER")
     public RideResponseDto scoreDriver(@PathVariable @UUID String id,
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
@@ -182,6 +194,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/score-passenger")
+    @RolesAllowed("DRIVER")
     public RideResponseDto scorePassenger(@PathVariable @UUID String id,
             @RequestBody
             @NotNull(message = PATCH_VALIDATION_NOT_NULL_MESSAGE_KEY)
@@ -201,6 +214,7 @@ public class RideController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable @UUID String id) {
         rideService.delete(id);
 
@@ -217,6 +231,7 @@ public class RideController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<RideResponseDto> getRides(@PageableDefault @Nullable @Valid Pageable pageable,
             @RequestParam @Nullable
             @AllowedKeys(keysHolder = RidesFilterParams.class)
@@ -230,6 +245,7 @@ public class RideController {
     }
 
     @GetMapping("/passengers/{id}")
+    @PreAuthorize("(hasRole('ROLE_PASSENGER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public ListContainerResponseDto<RideResponseDto> getRidesByPassengerId(@PathVariable @UUID String id,
             @PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<RideResponseDto> response = rideService.getRidesByPassengerId(id, pageable);
@@ -240,6 +256,7 @@ public class RideController {
     }
 
     @GetMapping("/drivers/{id}")
+    @PreAuthorize("(hasRole('ROLE_DRIVER') && #id == authentication.principal.id) || hasRole('ROLE_ADMIN')")
     public ListContainerResponseDto<RideResponseDto> getRidesByDriverId(@PathVariable @UUID String id,
             @PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<RideResponseDto> response = rideService.getRidesByDriverId(id, pageable);

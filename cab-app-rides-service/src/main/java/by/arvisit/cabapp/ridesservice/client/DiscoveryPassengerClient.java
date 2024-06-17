@@ -9,7 +9,8 @@ import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @Profile({ "dev" })
-@FeignClient(value = "cab-app-passenger-service", configuration = CabAppFeignClientConfiguration.class)
+@FeignClient(value = "cab-app-passenger-service",
+        configuration = { CabAppFeignClientConfiguration.class, OAuthFeignConfig.class })
 @CircuitBreaker(name = "discoveryPassengerClient")
 public interface DiscoveryPassengerClient extends PassengerClient {
 

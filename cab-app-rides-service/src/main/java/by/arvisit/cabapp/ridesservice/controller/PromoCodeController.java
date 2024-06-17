@@ -20,6 +20,7 @@ import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
 import by.arvisit.cabapp.ridesservice.service.PromoCodeService;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ public class PromoCodeController {
     private final PromoCodeService promoCodeService;
 
     @PostMapping
+    @RolesAllowed("ADMIN")
     public ResponseEntity<PromoCodeResponseDto> save(@RequestBody @Valid PromoCodeRequestDto dto) {
         PromoCodeResponseDto response = promoCodeService.save(dto);
 
@@ -42,6 +44,7 @@ public class PromoCodeController {
     }
 
     @PutMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public PromoCodeResponseDto update(@PathVariable Long id, @RequestBody @Valid PromoCodeRequestDto dto) {
         PromoCodeResponseDto response = promoCodeService.update(id, dto);
 
@@ -50,6 +53,7 @@ public class PromoCodeController {
     }
 
     @PatchMapping("/{id}/deactivate")
+    @RolesAllowed("ADMIN")
     public PromoCodeResponseDto deactivate(@PathVariable Long id) {
         PromoCodeResponseDto response = promoCodeService.deactivatePromoCode(id);
 
@@ -58,6 +62,7 @@ public class PromoCodeController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         promoCodeService.delete(id);
 
@@ -66,6 +71,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed("ADMIN")
     public PromoCodeResponseDto getPromoCodeById(@PathVariable Long id) {
         PromoCodeResponseDto response = promoCodeService.getPromoCodeById(id);
 
@@ -74,6 +80,7 @@ public class PromoCodeController {
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<PromoCodeResponseDto> getPromoCodes(
             @PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<PromoCodeResponseDto> response = promoCodeService.getPromoCodes(pageable);
@@ -83,6 +90,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/active")
+    @RolesAllowed("ADMIN")
     public ListContainerResponseDto<PromoCodeResponseDto> getActivePromoCodes(
             @PageableDefault @Nullable @Valid Pageable pageable) {
         ListContainerResponseDto<PromoCodeResponseDto> response = promoCodeService.getActivePromoCodes(pageable);
