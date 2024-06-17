@@ -25,9 +25,9 @@ spring:
           default:
             connect-timeout: 1000
             read-timeout: 5000
-      oauth2:
-        enabled: true
-        clientRegistrationId: keycloak
+#      oauth2:
+#        enabled: true
+#        clientRegistrationId: keycloak
     function:
       definition: confirmCardPayment
     stream:
