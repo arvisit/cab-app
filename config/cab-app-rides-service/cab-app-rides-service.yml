@@ -25,6 +25,9 @@ spring:
           default:
             connect-timeout: 1000
             read-timeout: 5000
+      oauth2:
+        enabled: true
+        clientRegistrationId: keycloak
     function:
       definition: confirmCardPayment
     stream:
@@ -52,6 +55,23 @@ spring:
         binder:
           brokers: "${KAFKA_HOST}:${KAFKA_PORT}"
           enable-observation: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: cab-app
+            client-secret: ${CAB_APP_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            provider: keycloak
+      provider:
+        keycloak:
+          token-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/token
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/cab-app-realm
+          jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
 
 management:
   endpoints:
@@ -101,3 +121,9 @@ resilience4j:
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
           - feign.RetryableException
+
+token:
+  converter:
+    include: true
+    principal-attribute: preferred_username
+    resource-id: cab-app
