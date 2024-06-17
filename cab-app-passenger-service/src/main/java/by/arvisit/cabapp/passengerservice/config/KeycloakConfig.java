@@ -18,10 +18,6 @@ public class KeycloakConfig {
     private String clientId;
     @Value("${spring.security.oauth2.client.registration.keycloak.client-secret}")
     private String clientSecret;
-    @Value("${keycloak.username}")
-    private String userName;
-    @Value("${keycloak.password}")
-    private String password;
 
     @Bean
     Keycloak keycloak() {
@@ -31,8 +27,6 @@ public class KeycloakConfig {
                 .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
-                .username(userName)
-                .password(password)
                 .build();
     }
 

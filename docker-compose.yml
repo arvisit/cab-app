@@ -18,8 +18,6 @@ x-keycloak-variables: &keycloak-variables
   KEYCLOAK_HOST: keycloak
   KEYCLOAK_PORT: 8080
   CAB_APP_CLIENT_SECRET: wZpxwHzxVfPmqi46Ck5BUD6wxMD5QlSe
-  KEYCLOAK_ADMIN: admin
-  KEYCLOAK_ADMIN_PASSWORD: admin
 
 services:
 

@@ -76,5 +76,3 @@ token:
 keycloak:
   server-url: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}
   realm: cab-app-realm
-  username: ${KEYCLOAK_ADMIN}
-  password: ${KEYCLOAK_ADMIN_PASSWORD}
