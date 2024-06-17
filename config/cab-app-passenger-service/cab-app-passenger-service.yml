@@ -35,7 +35,6 @@ spring:
             client-secret: ${CAB_APP_CLIENT_SECRET}
       resourceserver:
         jwt:
-#          issuer-uri: http://localhost:8180/realms/cab-app-realm
           jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
 
 management:

@@ -25,9 +25,9 @@ spring:
           default:
             connect-timeout: 1000
             read-timeout: 5000
-#      oauth2:
-#        enabled: true
-#        clientRegistrationId: keycloak
+      oauth2:
+        enabled: true
+        clientRegistrationId: keycloak
     function:
       definition: confirmCardPayment
     stream:
@@ -64,13 +64,12 @@ spring:
             client-id: cab-app
             client-secret: ${CAB_APP_CLIENT_SECRET}
             authorization-grant-type: client_credentials
-#            provider: keycloak
-      provider:
-        keycloak:
-          token-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/token
+            provider: keycloak
+        provider:
+          keycloak:
+            token-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/token
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/cab-app-realm
           jwk-set-uri: http://${KEYCLOAK_HOST}:${KEYCLOAK_PORT}/realms/cab-app-realm/protocol/openid-connect/certs
 
 management:
