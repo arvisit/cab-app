@@ -1,14 +1,14 @@
 package by.arvisit.cabapp.ridesservice.e2e;
 
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BRILLIANT10_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_PROMO_CODES_ID_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedPromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBRILLIANT10ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewPromoCodeRequestDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getPAIN49ActivePromoCodeResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getRICE23NotActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BRILLIANT10_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ID_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getAddedPromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBRILLIANT10ActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getNewPromoCodeRequestDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPAIN49ActivePromoCodeResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getRICE23NotActivePromoCodeResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;

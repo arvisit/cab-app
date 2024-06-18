@@ -1,9 +1,9 @@
 package by.arvisit.cabapp.paymentservice.e2e;
 
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS_ID_TEMPLATE;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentRequestDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentResponseDto1;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_PASSENGER_PAYMENTS;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_PASSENGER_PAYMENTS_ID_TEMPLATE;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentRequestDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentResponseDto1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;

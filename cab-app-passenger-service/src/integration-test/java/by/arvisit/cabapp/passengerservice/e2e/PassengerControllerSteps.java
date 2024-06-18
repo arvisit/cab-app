@@ -1,11 +1,13 @@
 package by.arvisit.cabapp.passengerservice.e2e;
 
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.JOHN_DOE_ID_STRING;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_EMAIL_TEMPLATE;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.URL_PASSENGERS_ID_TEMPLATE;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getAddedPassengerResponse;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getUpdatedPassengerResponse;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.JOHN_DOE_ID_STRING;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS_EMAIL_TEMPLATE;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.URL_PASSENGERS_ID_TEMPLATE;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getAddedPassengerResponse;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getJohnnyDoe;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getSavePassengerRequest;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getUpdatedPassengerResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -17,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerRequestDto;
 import by.arvisit.cabapp.passengerservice.dto.PassengerResponseDto;
-import by.arvisit.cabapp.passengerservice.util.PassengerITData;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -40,7 +41,7 @@ public class PassengerControllerSteps {
 
     @Given("User wants to save a new passenger with name {string}, email {string} and card number {string}")
     public void prepareNewPassengerToSave(String name, String email, String cardNumber) {
-        passengerRequest = PassengerITData.getSavePassengerRequest()
+        passengerRequest = getSavePassengerRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
@@ -74,7 +75,7 @@ public class PassengerControllerSteps {
 
     @Given("User wants to update an existing passenger with new name {string}, email {string} and card number {string} values")
     public void prepareUpdateRequest(String name, String email, String cardNumber) {
-        passengerRequest = PassengerITData.getSavePassengerRequest()
+        passengerRequest = getSavePassengerRequest()
                 .withName(name)
                 .withEmail(email)
                 .withCardNumber(cardNumber)
@@ -158,7 +159,7 @@ public class PassengerControllerSteps {
                 .contentType(ContentType.JSON);
 
         PassengerResponseDto actual = response.as(PassengerResponseDto.class);
-        PassengerResponseDto expected = PassengerITData.getJohnnyDoe().build();
+        PassengerResponseDto expected = getJohnnyDoe().build();
 
         assertThat(actual)
                 .usingRecursiveComparison()
@@ -184,7 +185,7 @@ public class PassengerControllerSteps {
                 .contentType(ContentType.JSON);
 
         PassengerResponseDto actual = response.as(PassengerResponseDto.class);
-        PassengerResponseDto expected = PassengerITData.getJohnnyDoe().build();
+        PassengerResponseDto expected = getJohnnyDoe().build();
 
         assertThat(actual)
                 .usingRecursiveComparison()

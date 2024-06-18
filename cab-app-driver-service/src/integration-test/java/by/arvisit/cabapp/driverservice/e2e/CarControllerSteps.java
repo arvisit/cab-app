@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.driverservice.e2e;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_CARS_ID_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_CARS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnDoeCar;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.springframework.http.HttpStatus;

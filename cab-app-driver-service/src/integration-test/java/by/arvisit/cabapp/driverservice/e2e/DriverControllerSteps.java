@@ -1,18 +1,19 @@
 package by.arvisit.cabapp.driverservice.e2e;
 
-import static by.arvisit.cabapp.driverservice.util.CarManufacturerITData.CAR_MANUFACTURERS;
-import static by.arvisit.cabapp.driverservice.util.ColorITData.COLORS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.JOHN_DOE_ID_STRING;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.SHIFT;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS_EMAIL_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.URL_DRIVERS_ID_TEMPLATE;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getAddedDriverResponse;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getJohnnyDoe;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getNewCarRequest;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getSaveDriverRequest;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdateDriverRequest;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getUpdatedDriverResponse;
+import static by.arvisit.cabapp.driverservice.util.CarManufacturerIntegrationTestData.CAR_MANUFACTURERS;
+import static by.arvisit.cabapp.driverservice.util.ColorIntegrationTestData.COLORS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.JOHN_DOE_ID_STRING;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.SHIFT;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS_EMAIL_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.URL_DRIVERS_ID_TEMPLATE;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getAddedDriverResponse;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnDoeCar;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getJohnnyDoe;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getNewCarRequest;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getSaveDriverRequest;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getUpdateDriverRequest;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getUpdatedDriverResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import by.arvisit.cabapp.driverservice.dto.CarRequestDto;
 import by.arvisit.cabapp.driverservice.dto.CarResponseDto;
 import by.arvisit.cabapp.driverservice.dto.DriverRequestDto;
 import by.arvisit.cabapp.driverservice.dto.DriverResponseDto;
-import by.arvisit.cabapp.driverservice.util.DriverITData;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -120,7 +120,7 @@ public class DriverControllerSteps {
                 .contentType(ContentType.JSON);
 
         DriverResponseDto actual = response.as(DriverResponseDto.class);
-        CarResponseDto expectedCar = DriverITData.getJohnDoeCar()
+        CarResponseDto expectedCar = getJohnDoeCar()
                 .withColor(COLORS.get(colorId - SHIFT))
                 .withManufacturer(CAR_MANUFACTURERS.get(manufacturerId - SHIFT))
                 .withRegistrationNumber(registrationNumber)
