@@ -73,6 +73,21 @@ public final class PaymentIntegrationTestData {
     public static final String OPERATION_REQUEST_PARAM = "operation";
     public static final String PAYMENT_METHOD_REQUEST_PARAM = "paymentMethod";
 
+    public static final ZonedDateTime CONTRACT_PASSENGER_PAYMENT_RIDES_TIMESTAMP = ZonedDateTime.of(2024, 4, 4, 12, 6,
+            0, 0, EUROPE_MINSK_TIMEZONE);
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_STATUS = "SUCCESS";
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_CARD_NUMBER = null;
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_PAYMENT_METHOD = "CASH";
+    public static final BigDecimal CONTRACT_PASSENGER_PAYMENT_RIDES_FEE_AMOUNT = BigDecimal.valueOf(5);
+    public static final BigDecimal CONTRACT_PASSENGER_PAYMENT_RIDES_AMOUNT = BigDecimal.valueOf(100);
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_DRIVER_ID = "d9343856-ad27-4256-9534-4c59fa5e6422";
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_PASSENGER_ID = "deecaeef-454b-487d-987c-54df212385b3";
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_RIDE_ID = "ffe34487-dfa3-4660-96dc-ed108e06ab77";
+    public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_ID = "cce748fb-1a3a-468e-a49e-08a26fe2a418";
+
+    private PaymentITData() {
+    }
+
     public static PassengerResponseDto.PassengerResponseDtoBuilder getPassengerResponseDto() {
         return PassengerResponseDto.builder()
                 .withId(PASSENGER_ID_STRING)
@@ -250,6 +265,30 @@ public final class PaymentIntegrationTestData {
         return DriverAccountBalanceResponseDto.builder()
                 .withDriverId(DRIVER_ID_STRING)
                 .withBalance(DRIVER_ACCOUNT_BALANCE);
+    }
+
+    public static PassengerPaymentRequestDto.PassengerPaymentRequestDtoBuilder getPassengerPaymentRequestToSaveFromRides() {
+        return PassengerPaymentRequestDto.builder()
+                .withRideId(CONTRACT_PASSENGER_PAYMENT_RIDES_RIDE_ID)
+                .withPassengerId(CONTRACT_PASSENGER_PAYMENT_RIDES_PASSENGER_ID)
+                .withDriverId(CONTRACT_PASSENGER_PAYMENT_RIDES_DRIVER_ID)
+                .withPaymentMethod(CONTRACT_PASSENGER_PAYMENT_RIDES_PAYMENT_METHOD)
+                .withCardNumber(CONTRACT_PASSENGER_PAYMENT_RIDES_CARD_NUMBER)
+                .withAmount(CONTRACT_PASSENGER_PAYMENT_RIDES_AMOUNT);
+    }
+
+    public static PassengerPaymentResponseDto.PassengerPaymentResponseDtoBuilder getSavedPassengerPaymentForRides() {
+        return PassengerPaymentResponseDto.builder()
+                .withId(CONTRACT_PASSENGER_PAYMENT_RIDES_ID)
+                .withRideId(CONTRACT_PASSENGER_PAYMENT_RIDES_RIDE_ID)
+                .withPassengerId(CONTRACT_PASSENGER_PAYMENT_RIDES_PASSENGER_ID)
+                .withDriverId(CONTRACT_PASSENGER_PAYMENT_RIDES_DRIVER_ID)
+                .withAmount(CONTRACT_PASSENGER_PAYMENT_RIDES_AMOUNT)
+                .withFeeAmount(CONTRACT_PASSENGER_PAYMENT_RIDES_FEE_AMOUNT)
+                .withPaymentMethod(CONTRACT_PASSENGER_PAYMENT_RIDES_PAYMENT_METHOD)
+                .withCardNumber(CONTRACT_PASSENGER_PAYMENT_RIDES_CARD_NUMBER)
+                .withStatus(CONTRACT_PASSENGER_PAYMENT_RIDES_STATUS)
+                .withTimestamp(CONTRACT_PASSENGER_PAYMENT_RIDES_TIMESTAMP);
     }
 
     public static <T> ListContainerResponseDto.ListContainerResponseDtoBuilder<T> getListContainerForResponse(
