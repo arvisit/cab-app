@@ -58,6 +58,8 @@ class PassengerServiceImplTest {
     private PassengerSpecs passengerSpecs;
     @Mock
     private PassengersFilterParamsMapper filterParamsMapper;
+    @Mock
+    private KeycloakService keycloakService;
 
     @Test
     void shouldReturnContainerWithPassengerResponseDto_whenGetPassengers() {
@@ -144,6 +146,8 @@ class PassengerServiceImplTest {
                 .thenReturn(passengerResponseDto);
         when(passengerRepository.save(any(Passenger.class)))
                 .thenReturn(passenger);
+        when(keycloakService.addUser(any(PassengerRequestDto.class)))
+                .thenReturn(DEFAULT_ID_STRING);
 
         assertThat(passengerService.save(passengerRequestDto))
                 .isEqualTo(passengerResponseDto);

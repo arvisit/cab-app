@@ -27,6 +27,7 @@ public final class PassengerTestData {
     public static final String DEFAULT_CARD_NUMBER = "7853471929691513";
     public static final String NEW_CARD_NUMBER = "1111222233334444";
     public static final String DEFAULT_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
+    public static final String DEFAULT_PASSWORD = "password";
     public static final String NEW_EMAIL = "jane.doe@mail.com";
     public static final String DEFAULT_NAME = "Vivienne Gutierrez";
     public static final String NEW_NAME = "Jane Doe";
@@ -52,6 +53,7 @@ public final class PassengerTestData {
         return PassengerRequestDto.builder()
                 .withName(DEFAULT_NAME)
                 .withEmail(DEFAULT_EMAIL)
+                .withPassword(DEFAULT_PASSWORD)
                 .withCardNumber(DEFAULT_CARD_NUMBER);
     }
 

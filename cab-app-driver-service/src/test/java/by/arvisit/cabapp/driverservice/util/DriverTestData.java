@@ -38,6 +38,7 @@ public final class DriverTestData {
     public static final String DEFAULT_DRIVER_NAME = "Jeremias Olsen";
     public static final String DEFAULT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
     public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
+    public static final String DEFAULT_PASSWORD = "password";
     public static final Boolean DEFAULT_IS_AVAILABLE = true;
     public static final Integer DEFAULT_PAGEABLE_SIZE = 10;
     public static final String UNSORTED = "UNSORTED";
@@ -126,6 +127,7 @@ public final class DriverTestData {
         return DriverRequestDto.builder()
                 .withName(DEFAULT_DRIVER_NAME)
                 .withEmail(DEFAULT_DRIVER_EMAIL)
+                .withPassword(DEFAULT_PASSWORD)
                 .withCardNumber(DEFAULT_DRIVER_CARD_NUMBER)
                 .withCar(getCarRequestDto().build());
     }

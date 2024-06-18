@@ -62,6 +62,8 @@ class DriverServiceImplTest {
     private MessageSource messageSource;
     @Mock
     private DriverSpecs driverSpecs;
+    @Mock
+    private KeycloakService keycloakService;
 
     @Test
     void shouldReturnContainerWithDriverResponseDto_whenGetDrivers() {
@@ -168,6 +170,8 @@ class DriverServiceImplTest {
                 .thenReturn(driverResponseDto);
         when(driverRepository.save(any(Driver.class)))
                 .thenReturn(driver);
+        when(keycloakService.addUser(any(DriverRequestDto.class)))
+                .thenReturn(DEFAULT_DRIVER_ID_STRING);
 
         assertThat(driverService.save(driverRequestDto))
                 .isEqualTo(driverResponseDto);
