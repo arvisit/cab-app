@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import org.springframework.test.context.ActiveProfiles;
 
+import by.arvisit.cabapp.driverservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.driverservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.driverservice.controller.DriverController;
 import by.arvisit.cabapp.driverservice.service.DriverService;
@@ -23,6 +24,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
+@ExtendWith(KafkaTestContainerExtension.class)
 @AutoConfigureMessageVerifier
 public class BaseTestClass {
 
