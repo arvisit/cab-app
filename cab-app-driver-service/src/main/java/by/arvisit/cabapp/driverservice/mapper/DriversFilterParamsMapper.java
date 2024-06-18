@@ -23,6 +23,8 @@ public class DriversFilterParamsMapper {
             String value = params.get(parameter.getName());
             if (parameter.getType().equals(Boolean.class)) {
                 args[i] = getNullOrBoolean(value);
+            } else if (parameter.getType().equals(Integer.class)) {
+                args[i] = getNullOrInteger(value);
             } else {
                 args[i] = value;
             }
@@ -34,6 +36,12 @@ public class DriversFilterParamsMapper {
     private Boolean getNullOrBoolean(String str) {
         return str != null
                 ? Boolean.parseBoolean(str)
+                : null;
+    }
+
+    private Integer getNullOrInteger(String str) {
+        return str != null
+                ? Integer.parseInt(str)
                 : null;
     }
 }

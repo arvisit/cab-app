@@ -27,6 +27,8 @@ public class DriverPaymentsFilterParamsMapper {
                 args[i] = getNullOrUUID(value);
             } else if (parameter.getType().equals(DateRange.class)) {
                 args[i] = getNullOrDateRange(value);
+            } else if (parameter.getType().equals(Integer.class)) {
+                args[i] = getNullOrInteger(value);
             } else {
                 args[i] = value;
             }
@@ -44,6 +46,12 @@ public class DriverPaymentsFilterParamsMapper {
     private DateRange getNullOrDateRange(String str) {
         return str != null
                 ? DateRange.fromSingleValue(str)
+                : null;
+    }
+
+    private Integer getNullOrInteger(String str) {
+        return str != null
+                ? Integer.parseInt(str)
                 : null;
     }
 }

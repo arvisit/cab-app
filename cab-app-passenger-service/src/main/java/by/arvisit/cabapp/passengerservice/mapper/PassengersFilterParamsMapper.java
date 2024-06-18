@@ -19,9 +19,21 @@ public class PassengersFilterParamsMapper {
 
         Object[] args = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            args[i] = params.get(parameters[i].getName());
+            Parameter parameter = parameters[i];
+            String value = params.get(parameter.getName());
+            if (parameter.getType().equals(Integer.class)) {
+                args[i] = getNullOrInteger(value);
+            } else {
+                args[i] = value;
+            }
         }
 
         return (PassengersFilterParams) constructor.newInstance(args);
+    }
+
+    private Integer getNullOrInteger(String str) {
+        return str != null
+                ? Integer.parseInt(str)
+                : null;
     }
 }
