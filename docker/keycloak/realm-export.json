@@ -525,6 +525,11 @@
         "default-roles-cab-app-realm"
       ],
       "clientRoles": {
+        "cab-app": [
+          "ADMIN",
+          "PASSENGER",
+          "DRIVER"
+        ],
         "realm-management": [
           "view-users",
           "query-users",
