@@ -149,9 +149,6 @@ public final class RideIntegrationTestData {
     public static final ZonedDateTime CONTRACT_RIDE_PAYMENT_DEFAULT_TIMESTAMP = ZonedDateTime.of(2024, 4, 4, 12, 2, 0,
             0, EUROPE_MINSK_TIMEZONE);
 
-    private RideITData() {
-    }
-
     public static PromoCodeRequestDto.PromoCodeRequestDtoBuilder getNewPromoCodeRequestDto() {
         return PromoCodeRequestDto.builder()
                 .withKeyword(NEW_PROMO_CODE_KEYWORD)

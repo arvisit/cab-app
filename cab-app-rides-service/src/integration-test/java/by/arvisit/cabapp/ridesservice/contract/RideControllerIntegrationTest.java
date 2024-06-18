@@ -1,19 +1,19 @@
 package by.arvisit.cabapp.ridesservice.contract;
 
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BEGAN_BANK_CARD_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.BOOKED_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_1_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.DRIVER_ID_KEY;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.ENDED_CASH_NOT_PAID_RIDE_ID;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_ACCEPT_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.URL_RIDES_ID_END_TEMPLATE;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getAddedRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBeganBankCardRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getBookedRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getEndedCashNotPaidRideResponseDto;
-import static by.arvisit.cabapp.ridesservice.util.RideITData.getNewRideRequestDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_BANK_CARD_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BOOKED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_ID_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_CASH_NOT_PAID_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_ACCEPT_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_END_TEMPLATE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getAddedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBeganBankCardRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getBookedRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getEndedCashNotPaidRideResponseDto;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getNewRideRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
@@ -52,7 +52,7 @@ import io.restassured.response.Response;
         ids = { "by.arvisit:cab-app-passenger-service:+:stubs:8480",
                 "by.arvisit:cab-app-driver-service:+:stubs:8481",
                 "by.arvisit:cab-app-payment-service:+:stubs:8482" })
-class RideControllerIT {
+class RideControllerIntegrationTest {
 
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
             "finishRide" };

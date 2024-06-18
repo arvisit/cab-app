@@ -1,8 +1,8 @@
 package by.arvisit.cabapp.paymentservice.contract;
 
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_PASSENGER_PAYMENTS;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedPassengerPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getPassengerPaymentRequestDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_PASSENGER_PAYMENTS;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getAddedPassengerPaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ import io.restassured.response.Response;
 @AutoConfigureStubRunner(stubsMode = StubsMode.LOCAL,
         ids = { "by.arvisit:cab-app-passenger-service:+:stubs:8480",
                 "by.arvisit:cab-app-rides-service:+:stubs:8482" })
-class PassengerPaymentControllerIT {
+class PassengerPaymentControllerIntegrationTest {
 
     private static final String ID_FIELD = "id";
     private static final String TIMESTAMP_FIELD = "timestamp";

@@ -85,9 +85,6 @@ public final class PaymentIntegrationTestData {
     public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_RIDE_ID = "ffe34487-dfa3-4660-96dc-ed108e06ab77";
     public static final String CONTRACT_PASSENGER_PAYMENT_RIDES_ID = "cce748fb-1a3a-468e-a49e-08a26fe2a418";
 
-    private PaymentITData() {
-    }
-
     public static PassengerResponseDto.PassengerResponseDtoBuilder getPassengerResponseDto() {
         return PassengerResponseDto.builder()
                 .withId(PASSENGER_ID_STRING)

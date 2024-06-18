@@ -1,9 +1,9 @@
 package by.arvisit.cabapp.driverservice.contract;
 
-import static by.arvisit.cabapp.driverservice.util.DriverITData.CONTRACT_DRIVER_PAYMENT_ID;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.CONTRACT_DRIVER_RIDES_ID;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getDriverForPaymentService;
-import static by.arvisit.cabapp.driverservice.util.DriverITData.getDriverForRidesService;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.CONTRACT_DRIVER_PAYMENT_ID;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.CONTRACT_DRIVER_RIDES_ID;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getDriverForPaymentService;
+import static by.arvisit.cabapp.driverservice.util.DriverIntegrationTestData.getDriverForRidesService;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;

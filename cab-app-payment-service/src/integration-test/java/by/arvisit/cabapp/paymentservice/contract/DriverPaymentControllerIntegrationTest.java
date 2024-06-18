@@ -1,10 +1,10 @@
 package by.arvisit.cabapp.paymentservice.contract;
 
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.DRIVER_ACCOUNT_BALANCE_AFTER_REPAYMENT;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.DRIVER_ACCOUNT_BALANCE_AFTER_WITHDRAWAL;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.URL_DRIVER_PAYMENTS;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getAddedDriverPaymentResponseDto;
-import static by.arvisit.cabapp.paymentservice.util.PaymentITData.getDriverPaymentRequestDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.DRIVER_ACCOUNT_BALANCE_AFTER_REPAYMENT;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.DRIVER_ACCOUNT_BALANCE_AFTER_WITHDRAWAL;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.URL_DRIVER_PAYMENTS;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getAddedDriverPaymentResponseDto;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getDriverPaymentRequestDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
@@ -47,7 +47,7 @@ import io.restassured.response.Response;
 })
 @AutoConfigureStubRunner(stubsMode = StubsMode.LOCAL,
         ids = { "by.arvisit:cab-app-driver-service:+:stubs:8481" })
-class DriverPaymentControllerIT {
+class DriverPaymentControllerIntegrationTest {
 
     private static final String AMOUNT_FIELD = "amount";
     private static final String ID_FIELD = "id";

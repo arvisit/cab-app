@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.paymentservice.contract;
 
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getPassengerPaymentRequestToSaveFromRides;
+import static by.arvisit.cabapp.paymentservice.util.PaymentIntegrationTestData.getSavedPassengerPaymentForRides;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +22,6 @@ import by.arvisit.cabapp.paymentservice.KafkaTestContainerExtension;
 import by.arvisit.cabapp.paymentservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.paymentservice.controller.PassengerPaymentController;
 import by.arvisit.cabapp.paymentservice.service.PassengerPaymentService;
-import by.arvisit.cabapp.paymentservice.util.PaymentITData;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 
 @ActiveProfiles("itest")
@@ -43,7 +44,7 @@ public class BaseTestClass {
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper)).build();
         RestAssuredMockMvc.mockMvc(mockMvc);
 
-        when(passengerPaymentService.save(PaymentITData.getPassengerPaymentRequestToSaveFromRides().build()))
-                .thenReturn(PaymentITData.getSavedPassengerPaymentForRides().build());
+        when(passengerPaymentService.save(getPassengerPaymentRequestToSaveFromRides().build()))
+                .thenReturn(getSavedPassengerPaymentForRides().build());
     }
 }

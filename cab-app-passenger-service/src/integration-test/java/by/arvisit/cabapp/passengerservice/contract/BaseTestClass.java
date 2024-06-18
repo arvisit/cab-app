@@ -1,11 +1,11 @@
 package by.arvisit.cabapp.passengerservice.contract;
 
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.CONTRACT_PASSENGER_3_RIDES_ID;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.CONTRACT_PASSENGER_5_RIDES_ID;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.CONTRACT_PASSENGER_PAYMENT_ID;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getPassenger3ForRidesService;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getPassenger5ForRidesService;
-import static by.arvisit.cabapp.passengerservice.util.PassengerITData.getPassengerForPaymentService;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.CONTRACT_PASSENGER_3_RIDES_ID;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.CONTRACT_PASSENGER_5_RIDES_ID;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.CONTRACT_PASSENGER_PAYMENT_ID;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getPassenger3ForRidesService;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getPassenger5ForRidesService;
+import static by.arvisit.cabapp.passengerservice.util.PassengerIntegrationTestData.getPassengerForPaymentService;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
