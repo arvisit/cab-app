@@ -65,12 +65,12 @@ jobs:
             fi
         done
         for service in *service/; do
+            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
+            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
+
             artifactId=${service::-1}
             stubsJarFullPath=$(ls "$service"target/*-stubs.jar)
             stubsJar=${stubsJarFullPath//$service/}
-
-            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
-            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
 
             mvn install:install-file \
                 -Dfile="$stubsJar" \
@@ -105,12 +105,12 @@ jobs:
             fi
         done
         for service in *service/; do
+            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
+            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
+
             artifactId=${service::-1}
             stubsJarFullPath=$(ls "$service"target/*-stubs.jar)
             stubsJar=${stubsJarFullPath//$service/}
-
-            mvn clean spring-cloud-contract:convert --file "$service"pom.xml
-            mvn spring-cloud-contract:generateStubs --file "$service"pom.xml
 
             mvn install:install-file \
                 -Dfile="$stubsJar" \
