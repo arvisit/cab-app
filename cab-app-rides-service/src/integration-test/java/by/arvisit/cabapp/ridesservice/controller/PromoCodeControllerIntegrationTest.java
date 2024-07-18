@@ -25,7 +25,8 @@ import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getPAI
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.getRICE23NotActivePromoCodeResponseDto;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -55,15 +56,8 @@ import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.internal.http.URIBuilder;
 import io.restassured.response.Response;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedHashMap;
-import jakarta.ws.rs.core.MultivaluedMap;
 
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -93,25 +87,33 @@ class PromoCodeControllerIntegrationTest {
     }
 
     private Header getAuthenticationHeader(String username, String password) {
-        Client client = ClientBuilder.newClient();
         String authUrl = System.getProperty(TOKEN_URI_PROPERTY_KEY);
+        URI authenticationUri;
 
-        MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
-        formData.put(GRANT_TYPE_KEY, Collections.singletonList("password"));
-        formData.put(CLIENT_ID_KEY, Collections.singletonList(clientId));
-        formData.put(CLIENT_SECRET_KEY, Collections.singletonList(clientSecret));
-        formData.put(USERNAME_KEY, Collections.singletonList(username));
-        formData.put(PASSWORD_KEY, Collections.singletonList(password));
-
-        jakarta.ws.rs.core.Response response = client.target(authUrl)
-                .request(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
-                .post(Entity.form(new Form(formData)));
-
-        if (response.getStatus() != HttpStatus.OK.value()) {
-            throw new RuntimeException("Failed to get token: " + response.getStatus());
+        try {
+            authenticationUri = URIBuilder.convertToURI(authUrl);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Malformed URI");
         }
 
-        Map<String, String> responseBody = response.readEntity(new GenericType<Map<String, String>>() {
+        int keycloakPort = authenticationUri.getPort();
+        String authPath = authenticationUri.getPath();
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.URLENC)
+                .formParam(GRANT_TYPE_KEY, "password")
+                .formParam(CLIENT_ID_KEY, clientId)
+                .formParam(CLIENT_SECRET_KEY, clientSecret)
+                .formParam(USERNAME_KEY, username)
+                .formParam(PASSWORD_KEY, password)
+                .port(keycloakPort)
+                .when().post(authPath);
+
+        if (response.statusCode() != HttpStatus.OK.value()) {
+            throw new RuntimeException("Failed to get token: " + response.statusCode());
+        }
+
+        Map<String, String> responseBody = response.as(new TypeRef<Map<String, String>>() {
         });
         String token = responseBody.get(ACCESS_TOKEN_KEY);
 
