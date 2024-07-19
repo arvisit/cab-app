@@ -77,26 +77,52 @@ public final class RideIntegrationTestData {
     public static final String DEFAULT_PASSENGER_CARD_NUMBER = "7853471929691513";
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
+    public static final String DEFAULT_PASSENGER_PASSWORD = "password";
 
     public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
     public static final String DEFAULT_DRIVER_EMAIL = "jeremias.olsen@frontiernet.net";
     public static final String DEFAULT_DRIVER_NAME = "Jeremias Olsen";
     public static final boolean DEFAULT_DRIVER_IS_AVAILABLE = true;
+    public static final String DEFAULT_DRIVER_PASSWORD = "password";
 
+    public static final String ADMIN_EMAIL = "testadmin@mail.com";
+    public static final String ADMIN_PASSWORD = "password";
+    
     public static final int DEFAULT_SCORE = 5;
     public static final double PASSENGER_1_RATING = 4.0;
     public static final double DRIVER_4_RATING = 5.0;
     public static final String RIDE_DEFAULT_DESTINATION_ADDRESS = "Llewellyn Street, 35";
     public static final String RIDE_DEFAULT_START_ADDRESS = "Bramcote Grove, 42";
+    
     public static final String DRIVER_2_ID = "e90dbf58-e20d-458a-9a6d-68ac2ede9c37";
+    public static final String DRIVER_2_EMAIL = "wylder.little@gmx.de";
+    
     public static final String DRIVER_3_ID = "d9343856-ad27-4256-9534-4c59fa5e6422";
+    public static final String DRIVER_3_EMAIL = "julia.beck@libero.it";
+    
     public static final String DRIVER_1_ID = "4c2b3a93-1d97-4ccf-a7b8-824daea08671";
+    public static final String DRIVER_1_EMAIL = "darren.randolph@virgilio.it";
+    
     public static final String DRIVER_4_ID = "19ee7917-8e48-4b3e-8b21-28c3d1e53ca4";
+    
+    public static final String DRIVER_5_ID = "d80e3e08-5b82-4551-9428-bc5d45e6f3f6";
+    public static final String DRIVER_5_EMAIL = "janny.doe@yahoo.com.br";
+    
     public static final String PASSENGER_4_ID = "deecaeef-454b-487d-987c-54df212385b3";
+    public static final String PASSENGER_4_EMAIL = "kamila.russo@mail.ru";
+    
     public static final String PASSENGER_3_ID = "2b6716c3-0c8d-4a3d-90f5-49ebcc2b77d8";
+    public static final String PASSENGER_3_EMAIL = "alvaro.marquez@googlemail.com";
+    
     public static final String PASSENGER_2_ID = "3c4e9fdf-f9c1-4a59-8bc0-c3758151f7e0";
+    public static final String PASSENGER_2_EMAIL = "rita.wolf@mail.com";
+    
     public static final String PASSENGER_1_ID = "072f635e-0ee7-461e-aa7e-1901ae3d0c5e";
+    public static final String PASSENGER_1_EMAIL = "frances.mccann@yahoo.fr";
+    
     public static final String PASSENGER_5_ID = "3abcc6a1-94da-4185-aaa1-8a11c1b8efd2";
+    public static final String PASSENGER_5_EMAIL = "jane.doe@yahoo.com.ar";
+    
     public static final String BOOKED_RIDE_ID = "69b509c6-20fe-4b70-a07e-31e52ea05a54";
     public static final String ACCEPTED_RIDE_ID = "a5b0a1f9-f45d-4287-bbad-ea6253976d0d";
     public static final String BEGAN_BANK_CARD_RIDE_ID = "72b20027-23d1-4651-865a-a2f7cd74fdb6";
