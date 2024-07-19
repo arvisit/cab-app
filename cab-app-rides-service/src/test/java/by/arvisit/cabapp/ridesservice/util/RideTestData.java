@@ -4,17 +4,22 @@ import static by.arvisit.cabapp.common.util.CommonConstants.EUROPE_MINSK_TIMEZON
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentRequestDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
+import by.arvisit.cabapp.common.security.AppUser;
+import by.arvisit.cabapp.common.util.AppUserRole;
 import by.arvisit.cabapp.common.util.DateRange;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
@@ -80,6 +85,7 @@ public final class RideTestData {
     public static final String DEFAULT_PASSENGER_CARD_NUMBER = "7853471929691513";
     public static final String DEFAULT_PASSENGER_EMAIL = "vivienne.gutierrez@yahoo.com.ar";
     public static final String DEFAULT_PASSENGER_NAME = "Vivienne Gutierrez";
+    public static final String ANOTHER_PASSENGER_ID_STRING = "a3575b27-0f96-4725-b280-609a11fcd0ab";
     public static final String ENCODING_UTF_8 = "UTF-8";
 
     public static final String DEFAULT_DRIVER_CARD_NUMBER = "1522613953683617";
@@ -87,6 +93,9 @@ public final class RideTestData {
     public static final String DEFAULT_DRIVER_NAME = "Jeremias Olsen";
     public static final boolean DEFAULT_DRIVER_IS_AVAILABLE = true;
     public static final String ANOTHER_DRIVER_ID_STRING = "a3575427-0f96-4725-b280-609a11fcd0ab";
+
+    public static final String ADMIN_EMAIL = "testadmin@mail.com";
+    public static final String ADMIN_ID_STRING = "667a7db5-51f1-46ad-abad-e4ce34344625";
 
     public static final String URL_PROMO_CODES = "/api/v1/promo-codes";
     public static final String URL_PROMO_CODES_ACTIVE = "/api/v1/promo-codes/active";
@@ -721,6 +730,39 @@ public final class RideTestData {
         params.put(END_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
         params.put(FINISH_RIDE_REQUEST_PARAM, DATE_REQUEST_VALUE);
         return params;
+    }
+
+    public static AppUser.AppUserBuilder getAdminPrincipal() {
+        return AppUser.builder()
+                .withId(ADMIN_ID_STRING)
+                .withEmail(ADMIN_EMAIL)
+                .withAuthorities(
+                        Collections.singletonList(new SimpleGrantedAuthority(AppUserRole.ROLE_ADMIN.toString())))
+                .withUsername(ADMIN_EMAIL)
+                .withPassword("")
+                .withEnabled(true);
+    }
+
+    public static AppUser.AppUserBuilder getPassengerPrincipal() {
+        return AppUser.builder()
+                .withId(RIDE_DEFAULT_PASSENGER_ID_STRING)
+                .withEmail(DEFAULT_PASSENGER_EMAIL)
+                .withAuthorities(
+                        Collections.singletonList(new SimpleGrantedAuthority(AppUserRole.ROLE_PASSENGER.toString())))
+                .withUsername(DEFAULT_PASSENGER_EMAIL)
+                .withPassword("")
+                .withEnabled(true);
+    }
+
+    public static AppUser.AppUserBuilder getDriverPrincipal() {
+        return AppUser.builder()
+                .withId(RIDE_DEFAULT_DRIVER_ID_STRING)
+                .withEmail(DEFAULT_DRIVER_EMAIL)
+                .withAuthorities(
+                        Collections.singletonList(new SimpleGrantedAuthority(AppUserRole.ROLE_DRIVER.toString())))
+                .withUsername(DEFAULT_DRIVER_EMAIL)
+                .withPassword("")
+                .withEnabled(true);
     }
 
     public static Stream<String> blankStrings() {
