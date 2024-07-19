@@ -120,7 +120,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/finish")
-    @RolesAllowed({ "DRIVER", "ADMIN" })
+    @RolesAllowed("DRIVER")
     public RideResponseDto finishRide(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.finishRide(id);
 
@@ -129,7 +129,7 @@ public class RideController {
     }
 
     @PatchMapping("/{id}/confirm-payment")
-    @RolesAllowed({ "DRIVER", "ADMIN" })
+    @RolesAllowed("DRIVER")
     public RideResponseDto confirmPayment(@PathVariable @UUID String id) {
         RideResponseDto response = rideService.confirmPayment(id);
 
