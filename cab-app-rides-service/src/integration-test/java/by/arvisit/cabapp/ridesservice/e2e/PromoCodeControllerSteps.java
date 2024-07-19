@@ -1,5 +1,7 @@
 package by.arvisit.cabapp.ridesservice.e2e;
 
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_PASSWORD;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BRILLIANT10_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import by.arvisit.cabapp.common.dto.ListContainerResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.PromoCodeResponseDto;
+import by.arvisit.cabapp.ridesservice.util.KeycloakE2ETestAuth;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -28,7 +31,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class PromoCodeControllerSteps {
+public class PromoCodeControllerSteps extends KeycloakE2ETestAuth{
 
     private static final String PAGE_REQUEST_PARAM = "page";
 
@@ -51,6 +54,7 @@ public class PromoCodeControllerSteps {
     public void sendSaveNewPromoCodeRequest() {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .body(promoCodeRequest)
                 .when().post(URL_PROMO_CODES);
     }
@@ -84,6 +88,7 @@ public class PromoCodeControllerSteps {
     public void sendUpdatePromoCodeRequest(int id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .body(promoCodeRequest)
                 .when().put(URL_PROMO_CODES_ID_TEMPLATE, id);
     }
@@ -113,6 +118,7 @@ public class PromoCodeControllerSteps {
     public void sendDeactivatePromoCodeRequest(int id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().patch(URL_PROMO_CODES_ID_DEACTIVATE_TEMPLATE, id);
     }
 
@@ -142,6 +148,7 @@ public class PromoCodeControllerSteps {
     public void sendDeletePromoCodeRequest() {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().delete(URL_PROMO_CODES_ID_TEMPLATE, promoCodeId);
     }
 
@@ -172,6 +179,7 @@ public class PromoCodeControllerSteps {
     public void sendGetPromoCodeByIdRequest() {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_PROMO_CODES_ID_TEMPLATE, promoCodeId);
     }
 
@@ -198,6 +206,7 @@ public class PromoCodeControllerSteps {
         do {
             Response tmpResponse = RestAssured.given()
                     .contentType(ContentType.JSON)
+                    .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                     .queryParam(PAGE_REQUEST_PARAM, nextPage)
                     .when().get(URL_PROMO_CODES);
             ListContainerResponseDto<PromoCodeResponseDto> itemsContainer = tmpResponse

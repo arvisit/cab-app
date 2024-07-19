@@ -1,10 +1,21 @@
 package by.arvisit.cabapp.ridesservice.e2e;
 
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_PASSWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_PASSENGER_PASSWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_DRIVER_PASSWORD;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BOOKED_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DIAMOND10_KEYWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_2_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_3_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_5_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_ID_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_SCORE_KEY;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_1_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_2_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_5_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_SCORE_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PAYMENT_METHOD_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PROMO_CODE_KEYWORD_KEY;
@@ -49,6 +60,7 @@ import by.arvisit.cabapp.ridesservice.dto.RideRequestDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
 import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
+import by.arvisit.cabapp.ridesservice.util.KeycloakE2ETestAuth;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -57,7 +69,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class RideControllerSteps {
+public class RideControllerSteps extends KeycloakE2ETestAuth {
 
     private static final String PAGE_REQUEST_PARAM = "page";
     private static final String RIDE_ID_QUERY_PARAM = "rideId";
@@ -87,6 +99,7 @@ public class RideControllerSteps {
     public void sendSaveNewRideRequest() {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_5_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(rideRequest)
                 .when().post(URL_RIDES);
     }
@@ -127,6 +140,7 @@ public class RideControllerSteps {
 
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_ID_TEMPLATE, rideId);
 
         RideResponseDto actual = tmpResponse.as(RideResponseDto.class);
@@ -145,6 +159,7 @@ public class RideControllerSteps {
     public void sendCancelRideRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_2_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CANCEL_TEMPLATE, id);
     }
 
@@ -181,6 +196,7 @@ public class RideControllerSteps {
 
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_DRIVERS_ID_TEMPLATE, driverId);
         DriverResponseDto actual = tmpResponse.as(DriverResponseDto.class);
 
@@ -198,6 +214,7 @@ public class RideControllerSteps {
 
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_1_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_ACCEPT_TEMPLATE, BOOKED_RIDE_ID);
     }
@@ -233,6 +250,7 @@ public class RideControllerSteps {
 
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_DRIVERS_ID_TEMPLATE, driverId);
         DriverResponseDto actual = tmpResponse.as(DriverResponseDto.class);
 
@@ -248,6 +266,7 @@ public class RideControllerSteps {
     public void sendBeginRideRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_5_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_BEGIN_TEMPLATE, id);
     }
 
@@ -273,6 +292,7 @@ public class RideControllerSteps {
     public void sendEndRideRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_2_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, id);
     }
 
@@ -307,6 +327,7 @@ public class RideControllerSteps {
         RideResponseDto ride = response.as(RideResponseDto.class);
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_ID_TEMPLATE, ride.id());
 
         RideResponseDto actual = tmpResponse.as(RideResponseDto.class);
@@ -320,6 +341,7 @@ public class RideControllerSteps {
         RideResponseDto ride = response.as(RideResponseDto.class);
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .queryParam(RIDE_ID_QUERY_PARAM, ride.id())
                 .when().get(URL_PASSENGER_PAYMENTS);
 
@@ -356,6 +378,7 @@ public class RideControllerSteps {
         RideResponseDto ride = response.as(RideResponseDto.class);
         Response tmpResponse = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_ID_TEMPLATE, ride.id());
 
         RideResponseDto actual = tmpResponse.as(RideResponseDto.class);
@@ -372,6 +395,7 @@ public class RideControllerSteps {
     public void sendConfirmPaymentRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, id);
     }
 
@@ -412,6 +436,8 @@ public class RideControllerSteps {
 
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(
+                        PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_APPLY_PROMO_TEMPLATE, BOOKED_RIDE_ID);
     }
@@ -441,6 +467,7 @@ public class RideControllerSteps {
 
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_CHANGE_PAYMENT_METHOD_TEMPLATE, id);
     }
@@ -467,6 +494,7 @@ public class RideControllerSteps {
 
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_DRIVER_TEMPLATE, rideId);
     }
@@ -493,6 +521,7 @@ public class RideControllerSteps {
 
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_1_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_PASSENGER_TEMPLATE, rideId);
 
@@ -519,6 +548,7 @@ public class RideControllerSteps {
     public void sendDeleteRideRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().delete(URL_RIDES_ID_TEMPLATE, id);
     }
 
@@ -548,6 +578,7 @@ public class RideControllerSteps {
     public void sendGetRideByIdRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_ID_TEMPLATE, id);
     }
 
@@ -579,6 +610,7 @@ public class RideControllerSteps {
     public void sendGetPassengerRatingRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_PASSENGER_ID_RATING_TEMPLATE, id);
     }
 
@@ -604,6 +636,7 @@ public class RideControllerSteps {
     public void sendGetDriverRatingRequest(String id) {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_DRIVER_ID_RATING_TEMPLATE, id);
     }
 
@@ -636,6 +669,7 @@ public class RideControllerSteps {
         do {
             Response tmpResponse = RestAssured.given()
                     .contentType(ContentType.JSON)
+                    .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                     .queryParam(PAGE_REQUEST_PARAM, nextPage)
                     .when().get(URL_RIDES);
             ListContainerResponseDto<RideResponseDto> itemsContainer = tmpResponse

@@ -7,4 +7,5 @@ INSERT INTO passengers(id, name, email, card_number) VALUES
     ('3abcc6a1-94da-4185-aaa1-8a11c1b8efd2', 'Jane Doe', 'jane.doe@yahoo.com.ar', '7853471929691513'),
     ('2b6716c3-0c8d-4a3d-90f5-49ebcc2b77d8', 'Alvaro Marquez', 'alvaro.marquez@googlemail.com', '8698775965474617'),
     ('deecaeef-454b-487d-987c-54df212385b3', 'Kamila Russo', 'kamila.russo@mail.ru', '5538411806914853'),
+    ('3c4e9fdf-f9c1-4a59-8bc0-c3758151f7e0', 'Rita Wolf', 'rita.wolf@mail.com', '5538422806914853'),
     ('072f635e-0ee7-461e-aa7e-1901ae3d0c5e', 'Frances McCann', 'frances.mccann@yahoo.fr', '5538411806914853');

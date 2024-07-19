@@ -1,0 +1,594 @@
+x-kafka-variables: &kafka-variables
+  KAFKA_HOST: kafkaserver
+  KAFKA_PORT: 9092
+
+x-eureka-variables: &eureka-variables
+  EUREKA_HOST: discovery-server
+  EUREKA_PORT: 8070
+
+x-logstash-variables: &logstash-variables
+  LOGSTASH_HOST: logstash
+  LOGSTASH_PORT: 5000
+
+x-zipkin-variables: &zipkin-variables
+  ZIPKIN_HOST: zipkin
+  ZIPKIN_PORT: 9411
+
+x-keycloak-variables: &keycloak-variables
+  KEYCLOAK_HOST: keycloak
+  KEYCLOAK_PORT: 8080
+  CAB_APP_CLIENT_SECRET: wZpxwHzxVfPmqi46Ck5BUD6wxMD5QlSe
+
+services:
+
+  passenger-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-passenger-service/Dockerfile
+    image: cab-app-passenger-service
+    container_name: passenger-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8081
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      DB_URL: jdbc:postgresql://db-passenger:5432/passenger_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-passenger-service
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.passengerservice
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
+    expose:
+      - 8081
+    networks:
+      - cab_app_net
+    depends_on:
+      db-passenger:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      api-gateway:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  db-passenger:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-passenger
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d passenger_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5433:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-passenger.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  driver-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-driver-service/Dockerfile
+    image: cab-app-driver-service
+    container_name: driver-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8082
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      DB_URL: jdbc:postgresql://db-driver:5432/driver_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-driver-service
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.driverservice
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
+    expose:
+      - 8082
+    networks:
+      - cab_app_net
+    depends_on:
+      db-driver:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      api-gateway:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  db-driver:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-driver
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d driver_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5434:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-driver.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  rides-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-rides-service/Dockerfile
+    image: cab-app-rides-service
+    container_name: rides-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8083
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      DB_URL: jdbc:postgresql://db-rides:5432/rides_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-rides-service
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.ridesservice
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
+    expose:
+      - 8083
+    networks:
+      - cab_app_net
+    depends_on:
+      db-rides:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      api-gateway:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  db-rides:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-rides
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d rides_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5435:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-rides.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  payment-service:
+    build:
+      context: ./
+      dockerfile: ./cab-app-payment-service/Dockerfile
+    image: cab-app-payment-service
+    container_name: payment-service
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8084
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      DB_URL: jdbc:postgresql://db-payment:5432/payment_service_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: root
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-payment-service
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.paymentservice
+      <<: [*kafka-variables, *eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
+    expose:
+      - 8084
+    networks:
+      - cab_app_net
+    depends_on:
+      db-payment:
+        condition: service_healthy
+      kafkaserver:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      api-gateway:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  db-payment:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-payment
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d payment_service_db
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5436:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-payment.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+  discovery-server:
+    image: cab-app-discovery-server
+    build: cab-app-discovery-server
+    container_name: discovery-server
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8070
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+    healthcheck:
+      test: wget -qO- http://localhost:8070/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 8070:8070
+    expose:
+      - 8070
+    networks:
+      - cab_app_net
+
+  api-gateway:
+    image: cab-app-api-gateway
+    build: cab-app-api-gateway
+    container_name: api-gateway
+    restart: always
+    healthcheck:
+      test: wget -qO- http://localhost:8080/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8080
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      JVM_OPTIONS:
+        -Delastic.apm.service_name=cab-app-api-gateway
+        -Delastic.apm.server_urls=http://apm-server:8200
+        -Delastic.apm.secret_token=
+        -Delastic.apm.application_packages=by.arvisit.cabapp.apigateway
+      <<: [*eureka-variables, *logstash-variables, *zipkin-variables, *keycloak-variables]
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    networks:
+      - cab_app_net
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+  config-server:
+    build: cab-app-config-server
+    image: cab-app-config-server
+    container_name: config-server
+    restart: always
+    healthcheck:
+      test: wget -qO- http://localhost:8071/actuator/health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SERVER_PORT: 8071
+      SPRING_OUTPUT_ANSI_ENABLED: ALWAYS
+      <<: *eureka-variables
+    ports:
+      - 8071:8071
+    expose:
+      - 8071
+    networks:
+      - cab_app_net
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    container_name: zookeeper
+    ports:
+      - 22181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=stat"
+    healthcheck:
+      test: "echo stat | nc localhost 2181 | grep Mode"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - cab_app_net
+
+  kafkaserver:
+    image: confluentinc/cp-kafka:7.4.4
+    container_name: kafkaserver
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafkaserver:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    networks:
+      - cab_app_net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.21
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - node.name=elasticsearch
+      - discovery.seed_hosts=elasticsearch
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms4096m -Xmx4096m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9300:9300
+      - 9200:9200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - cab_app_net
+
+  kibana:
+    build:
+      context: ./
+      dockerfile: ./docker/kibana/Dockerfile
+    image: kibana-extended
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9300
+    volumes:
+      - ./docker/kibana/index-patterns:/usr/share/kibana/index-patterns
+    ports:
+      - 5601:5601
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - cab_app_net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.21
+    container_name: logstash
+    command:
+      logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+     - ./docker/logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf
+    ports:
+      - 5000:5000
+    networks:
+      - cab_app_net
+
+#  setup-metricbeat:
+#    build:
+#      context: ./
+#      dockerfile: ./docker/setup-metricbeat/Dockerfile
+#    image: setup-metricbeat
+#    container_name: setup-metricbeat
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#    networks:
+#      - cab_app_net
+#    depends_on:
+#      elasticsearch:
+#        condition: service_healthy
+#      kibana:
+#        condition: service_healthy
+#
+#  metricbeat:
+#    build:
+#      context: ./
+#      dockerfile: ./docker/metricbeat/Dockerfile
+#    image: metricbeat-extended
+#    container_name: metricbeat
+#    user: root
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+#      - /proc:/hostfs/proc:ro
+#      - /:/hostfs:ro
+#    networks:
+#     - cab_app_net
+#    depends_on:
+#      setup-metricbeat:
+#        condition: service_completed_successfully
+#
+#  heartbeat:
+#    image: docker.elastic.co/beats/heartbeat:7.17.21
+#    container_name: heartbeat
+#    volumes:
+#      - ./docker/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+#      - ./docker/heartbeat/monitors.yml:/usr/share/heartbeat/monitors.d/monitors.yml
+#    networks:
+#     - cab_app_net
+#    depends_on:
+#      setup-metricbeat:
+#        condition: service_completed_successfully
+
+  apm-server:
+    build:
+      context: ./
+      dockerfile: ./docker/apm/Dockerfile
+    image: apm-server-custom
+    container_name: apm-server
+    user: apm-server
+    ports:
+      - 8200:8200
+    networks:
+      - cab_app_net
+    depends_on:
+      kibana:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana:9.5.19
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - 3000:3000
+    networks:
+      - cab_app_net
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - cab_app_net
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=elasticsearch
+      - "ES_HOSTS=elasticsearch:9200"
+    ports:
+      - 9411:9411
+    networks:
+      - cab_app_net
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: keycloak
+    restart: always
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db-keycloak:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: root
+    command:
+      - start-dev
+      - "--import-realm"
+    ports:
+      - 8180:8080
+    volumes:
+      - ./script/e2e_config/test-realm.json:/opt/keycloak/data/import/test-realm.json
+    networks:
+      - cab_app_net
+    depends_on:
+      db-keycloak:
+        condition: service_healthy
+
+  db-keycloak:
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    image: postgres-extended
+    container_name: db-keycloak
+    restart: always
+    healthcheck:
+      test: pg_isready -U postgres -d keycloak
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - 5437:5432
+    expose:
+      - 5432
+    volumes:
+      - ./db-init/db-keycloak.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/pgdata
+    networks:
+      - cab_app_net
+
+volumes:
+  pgdata:
+  esdata:
+
+networks:
+  cab_app_net:

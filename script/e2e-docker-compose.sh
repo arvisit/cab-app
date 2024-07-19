@@ -36,11 +36,12 @@ cd ..
 mvn clean --file pom.xml
 mvn install --file cab-app-common/pom.xml
 mvn install --file cab-app-exception-handling-starter/pom.xml
+mvn install --file cab-app-jwt-converter-starter/pom.xml
 
 initializeEnvironment() {
     tmpLog=/tmp/e2e-docker-compose-up.log
 
-    docker compose up --build 2>&1 | tee $tmpLog &
+    docker compose -f docker-compose-e2e.yml up --build 2>&1 | tee $tmpLog &
 
     for spiedService in *-service/; do
         while [[ "$(grep -E "${spiedService::-1}.+freshExecutor.+eureka/apps/(delta)?$" $tmpLog)" == "" ]]; do
@@ -67,7 +68,7 @@ initializeEnvironment() {
 }
 
 killEnvironment() {
-    docker compose down --volumes
+    docker compose -f docker-compose-e2e.yml down --volumes
 }
 
 testedServices=()
