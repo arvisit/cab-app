@@ -1,7 +1,6 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.ANOTHER_DRIVER_ID_STRING;
-import static by.arvisit.cabapp.ridesservice.util.RideTestData.ANOTHER_PASSENGER_ID_STRING;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.RIDE_DEFAULT_DRIVER_ID_STRING;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getAcceptedRide;
 import static by.arvisit.cabapp.ridesservice.util.RideTestData.getBeganRide;
@@ -27,9 +26,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
@@ -38,7 +34,6 @@ import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
 import by.arvisit.cabapp.ridesservice.util.RideTestData;
-import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class RideVerifierTest {
@@ -53,10 +48,6 @@ class RideVerifierTest {
     private PassengerClient passengerClient;
     @Mock
     private DriverClient driverClient;
-    @Mock
-    private SecurityContext securityContext;
-    @Mock
-    private Authentication authentication;
 
     @Test
     void shouldThrowNoException_whenVerifyCreateRideWithExistingPassenger() {
@@ -85,31 +76,13 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceled")
     void shouldThrowNoException_whenVerifyCancelRideWithValidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyCancelRide(ride));
     }
 
     @ParameterizedTest
-    @MethodSource("bookedAndCanceled")
-    void shouldThrowEntityNotFoundException_whenVerifyCancelRideWithInvalidPassenger(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal()
-                .withId(ANOTHER_PASSENGER_ID_STRING)
-                .build();
-        setupSecurityContext(rawPrincipal);
-
-        assertThatThrownBy(() -> rideVerifier.verifyCancelRide(ride))
-                .isInstanceOf(EntityNotFoundException.class);
-    }
-
-    @ParameterizedTest
     @MethodSource("beganAndEndedAndFinished")
     void shouldThrowIllegalStateException_whenVerifyCancelRideWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyCancelRide(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -173,9 +146,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("acceptedAndBegan")
     void shouldThrowNoException_whenVerifyBeginRideWithValidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyBeginRide(ride));
     }
@@ -183,31 +153,13 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndEndedAndFinished")
     void shouldThrowIllegalStateException_whenVerifyBeginRideWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyBeginRide(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest
-    @MethodSource("endedAndFinished")
-    void shouldThrowEntityNotFoundException_whenVerifyBeginRideWithInvalidDriver(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal()
-                .withId(ANOTHER_DRIVER_ID_STRING)
-                .build();
-        setupSecurityContext(rawPrincipal);
-
-        assertThatThrownBy(() -> rideVerifier.verifyBeginRide(ride))
-                .isInstanceOf(EntityNotFoundException.class);
-    }
-
-    @ParameterizedTest
     @MethodSource("beganAndEnded")
     void shouldThrowNoException_whenVerifyEndRideWithValidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyEndRide(ride));
     }
@@ -215,9 +167,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndAcceptedAndCanceledAndFinished")
     void shouldThrowIllegalStateException_whenVerifyEndRideWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyEndRide(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -225,18 +174,12 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("endedAndFinishedPaid")
     void shouldThrowNoException_whenVerifyFinishRideWithValidStatePaid(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyFinishRide(ride));
     }
 
     @Test
     void shouldThrowNoException_whenVerifyFinishRideWithFinishedNotPaid() {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         Ride ride = getFinishedRide().withIsPaid(false).build();
 
         assertThatNoException()
@@ -246,9 +189,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganAndEndedNotPaid")
     void shouldThrowIllegalStateException_whenVerifyFinishRideWithInvalidStateNotPaid(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyFinishRide(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -256,9 +196,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganPaid")
     void shouldThrowIllegalStateException_whenVerifyFinishRideWithInvalidStatePaid(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyFinishRide(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -266,9 +203,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("endedAndFinished")
     void shouldThrowNoException_whenVerifyConfirmPaymentWithValidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyConfirmPayment(ride));
     }
@@ -276,9 +210,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBegan")
     void shouldThrowIllegalStateException_whenVerifyConfirmPaymentWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyConfirmPayment(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -286,9 +217,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndAcceptedAndBeganAndEndedNotPaid")
     void shouldThrowNoException_whenVerifyApplyPromoCodeWithValidState(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyApplyPromoCode(ride));
     }
@@ -296,9 +224,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("canceledAndFinished")
     void shouldThrowIllegalStateException_whenVerifyApplyPromoCodeWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyApplyPromoCode(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -306,9 +231,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganAndEndedAndFinishedPaid")
     void shouldThrowIllegalStateException_whenVerifyApplyPromoCodeWithInvalidStatePaid(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyApplyPromoCode(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -316,9 +238,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndAcceptedAndBeganAndEndedNotPaid")
     void shouldThrowNoException_whenVerifyChangePaymentMethodWithValidState(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatNoException()
                 .isThrownBy(() -> rideVerifier.verifyChangePaymentMethod(ride));
     }
@@ -326,9 +245,6 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("canceledAndFinished")
     void shouldThrowIllegalStateException_whenVerifyChangePaymentMethodWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyChangePaymentMethod(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -336,18 +252,12 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganAndEndedAndFinishedPaid")
     void shouldThrowIllegalStateException_whenVerifyChangePaymentMethodWithInvalidStatePaid(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyChangePaymentMethod(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void shouldThrowNoException_whenVerifyScoreDriverWithFinishedNotScored() {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         Ride ride = getFinishedRide().build();
 
         assertThatNoException()
@@ -356,9 +266,6 @@ class RideVerifierTest {
 
     @Test
     void shouldThrowIllegalStateException_whenVerifyScoreDriverWithFinishedScored() {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         Ride ride = getFinishedWithScoresRide().build();
 
         assertThatThrownBy(() -> rideVerifier.verifyScoreDriver(ride))
@@ -368,18 +275,12 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganAndEnded")
     void shouldThrowIllegalStateException_whenVerifyScoreDriverWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getPassengerPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyScoreDriver(ride))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void shouldThrowNoException_whenVerifyScorePassengerWithFinishedNotScored() {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         Ride ride = getFinishedRide().build();
 
         assertThatNoException()
@@ -388,9 +289,6 @@ class RideVerifierTest {
 
     @Test
     void shouldThrowIllegalStateException_whenVerifyScorePassengerWithFinishedScored() {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         Ride ride = getFinishedWithScoresRide().build();
 
         assertThatThrownBy(() -> rideVerifier.verifyScorePassenger(ride))
@@ -400,19 +298,8 @@ class RideVerifierTest {
     @ParameterizedTest
     @MethodSource("bookedAndCanceledAndAcceptedAndBeganAndEnded")
     void shouldThrowIllegalStateException_whenVerifyScorePassengerWithInvalidStatus(Ride ride) {
-        Object rawPrincipal = RideTestData.getDriverPrincipal().build();
-        setupSecurityContext(rawPrincipal);
-
         assertThatThrownBy(() -> rideVerifier.verifyScorePassenger(ride))
                 .isInstanceOf(IllegalStateException.class);
-    }
-
-    private void setupSecurityContext(Object rawPrincipal) {
-        SecurityContextHolder.setContext(securityContext);
-        when(securityContext.getAuthentication())
-                .thenReturn(authentication);
-        when(authentication.getPrincipal())
-                .thenReturn(rawPrincipal);
     }
 
     private static Stream<Ride> canceledAndFinished() {

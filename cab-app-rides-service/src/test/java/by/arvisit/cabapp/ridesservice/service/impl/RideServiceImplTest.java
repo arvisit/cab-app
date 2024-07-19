@@ -107,6 +107,8 @@ class RideServiceImplTest {
     @Mock
     private RideVerifier rideVerifier;
     @Mock
+    private RideSecurityVerifier rideSecurityVerifier;
+    @Mock
     private PaymentClient paymentClient;
     @Mock
     private PassengerClient passengerClient;
