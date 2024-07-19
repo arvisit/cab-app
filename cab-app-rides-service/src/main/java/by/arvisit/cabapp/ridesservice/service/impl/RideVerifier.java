@@ -1,22 +1,16 @@
 package by.arvisit.cabapp.ridesservice.service.impl;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.MessageSource;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
-import by.arvisit.cabapp.common.security.AppUser;
-import by.arvisit.cabapp.common.util.AppUserRole;
 import by.arvisit.cabapp.ridesservice.client.DriverClient;
 import by.arvisit.cabapp.ridesservice.client.PassengerClient;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 class RideVerifier {
 
     private static final String STATUS_COULD_NOT_BE_CHANGED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.status.IllegalStateException.template";
-    private static final String NOT_FOUND_FOR_ILLEGAL_PRINCIPAL_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.principal.EntityNotFoundException.template";
     private static final String RIDE_ALREADY_ACCEPTED_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.IllegalStateException.template";
     private static final String DRIVER_NOT_AVAILABLE_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.driverId.isAvailable.IllegalStateException.template";
     private static final String ILLEGAL_STATUS_FOR_PAYMENT_CONFIRMATION_MESSAGE_TEMPLATE_KEY = "by.arvisit.cabapp.ridesservice.persistence.model.Ride.paid.IllegalStateException.template";
@@ -52,11 +45,6 @@ class RideVerifier {
     }
 
     public void verifyCancelRide(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!UUID.fromString(principal.getId()).equals(ride.getPassengerId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.CANCELED;
 
@@ -93,11 +81,6 @@ class RideVerifier {
     }
 
     public void verifyBeginRide(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (ride.getDriverId() != null && !UUID.fromString(principal.getId()).equals(ride.getDriverId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.BEGIN_RIDE;
 
@@ -107,11 +90,6 @@ class RideVerifier {
     }
 
     public void verifyEndRide(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (ride.getDriverId() != null && !UUID.fromString(principal.getId()).equals(ride.getDriverId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.END_RIDE;
 
@@ -121,15 +99,6 @@ class RideVerifier {
     }
 
     public void verifyFinishRide(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<String> authorities = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-        if (ride.getDriverId() != null && !UUID.fromString(principal.getId()).equals(ride.getDriverId())
-                && !authorities.contains(AppUserRole.ROLE_ADMIN.toString())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
         RideStatusEnum newStatus = RideStatusEnum.FINISHED;
 
@@ -140,15 +109,6 @@ class RideVerifier {
     }
 
     public void verifyConfirmPayment(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<String> authorities = principal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-        if (ride.getDriverId() != null && !UUID.fromString(principal.getId()).equals(ride.getDriverId())
-                && !authorities.contains(AppUserRole.ROLE_ADMIN.toString())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
 
         if (currentStatus != RideStatusEnum.END_RIDE && currentStatus != RideStatusEnum.FINISHED) {
@@ -160,11 +120,6 @@ class RideVerifier {
     }
 
     public void verifyApplyPromoCode(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!UUID.fromString(principal.getId()).equals(ride.getPassengerId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
 
         if (currentStatus == RideStatusEnum.CANCELED || currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
@@ -176,11 +131,6 @@ class RideVerifier {
     }
 
     public void verifyChangePaymentMethod(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!UUID.fromString(principal.getId()).equals(ride.getPassengerId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
 
         if (currentStatus == RideStatusEnum.CANCELED || currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
@@ -192,11 +142,6 @@ class RideVerifier {
     }
 
     public void verifyScoreDriver(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!UUID.fromString(principal.getId()).equals(ride.getPassengerId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
 
         if (currentStatus != RideStatusEnum.FINISHED || ride.getDriverScore() != null) {
@@ -208,11 +153,6 @@ class RideVerifier {
     }
 
     public void verifyScorePassenger(Ride ride) {
-        AppUser principal = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (ride.getDriverId() != null && !UUID.fromString(principal.getId()).equals(ride.getDriverId())) {
-            throwExceptionForIllegalPrincipal(ride);
-        }
-
         RideStatusEnum currentStatus = ride.getStatus();
 
         if (currentStatus != RideStatusEnum.FINISHED || ride.getPassengerScore() != null) {
@@ -230,10 +170,4 @@ class RideVerifier {
         throw new IllegalStateException(errorMessage);
     }
 
-    private void throwExceptionForIllegalPrincipal(Ride ride) {
-        String errorMessage = messageSource.getMessage(
-                NOT_FOUND_FOR_ILLEGAL_PRINCIPAL_MESSAGE_TEMPLATE_KEY,
-                new Object[] { ride.getId() }, null);
-        throw new EntityNotFoundException(errorMessage);
-    }
 }

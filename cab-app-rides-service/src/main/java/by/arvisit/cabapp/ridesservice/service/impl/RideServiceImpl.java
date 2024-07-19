@@ -67,6 +67,7 @@ public class RideServiceImpl implements RideService {
     private final CostService costService;
     private final PromoCodeService promoCodeService;
     private final RideVerifier rideVerifier;
+    private final RideSecurityVerifier rideSecurityVerifier;
     private final PaymentClient paymentClient;
     private final PassengerClient passengerClient;
     private final StreamBridge streamBridge;
@@ -112,6 +113,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum newStatus = RideStatusEnum.CANCELED;
 
         rideVerifier.verifyCancelRide(ride);
+        rideSecurityVerifier.verifyAllowedForTheRidePassenger(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -169,6 +171,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum newStatus = RideStatusEnum.BEGIN_RIDE;
 
         rideVerifier.verifyBeginRide(ride);
+        rideSecurityVerifier.verifyAllowedForTheRideDriver(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -190,6 +193,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum newStatus = RideStatusEnum.END_RIDE;
 
         rideVerifier.verifyEndRide(ride);
+        rideSecurityVerifier.verifyAllowedForTheRideDriver(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -222,6 +226,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum newStatus = RideStatusEnum.FINISHED;
 
         rideVerifier.verifyFinishRide(ride);
+        rideSecurityVerifier.verifyAllowedForTheRideDriver(ride);
 
         if (currentStatus == newStatus) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -242,6 +247,7 @@ public class RideServiceImpl implements RideService {
         RideStatusEnum currentStatus = ride.getStatus();
 
         rideVerifier.verifyConfirmPayment(ride);
+        rideSecurityVerifier.verifyAllowedForTheRideDriverOrMessageBroker(ride);
 
         if (currentStatus == RideStatusEnum.FINISHED || ride.getIsPaid()) {
             return rideMapper.fromEntityToResponseDto(ride);
@@ -276,6 +282,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = findRideByIdOrThrowException(rideId);
 
         rideVerifier.verifyApplyPromoCode(ride);
+        rideSecurityVerifier.verifyAllowedForTheRidePassenger(ride);
 
         PromoCodeResponseDto promoCodeDto = promoCodeService.getActivePromoCodeByKeyword(promoCodeKeyword);
         PromoCode promoCodeEntity = PromoCode.builder()
@@ -306,6 +313,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = findRideByIdOrThrowException(rideId);
 
         rideVerifier.verifyChangePaymentMethod(ride);
+        rideSecurityVerifier.verifyAllowedForTheRidePassenger(ride);
 
         PaymentMethodEnum newPaymentMethod;
         try {
@@ -334,6 +342,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = findRideByIdOrThrowException(rideId);
 
         rideVerifier.verifyScoreDriver(ride);
+        rideSecurityVerifier.verifyAllowedForTheRidePassenger(ride);
 
         ride.setDriverScore(score);
         return rideMapper.fromEntityToResponseDto(
@@ -348,6 +357,7 @@ public class RideServiceImpl implements RideService {
         Ride ride = findRideByIdOrThrowException(rideId);
 
         rideVerifier.verifyScorePassenger(ride);
+        rideSecurityVerifier.verifyAllowedForTheRideDriver(ride);
 
         ride.setPassengerScore(score);
         return rideMapper.fromEntityToResponseDto(
@@ -374,8 +384,11 @@ public class RideServiceImpl implements RideService {
     public RideResponseDto getRideById(String id) {
         log.debug("Call for RideService.getRideById() with id {}", id);
 
-        return rideMapper.fromEntityToResponseDto(
-                findRideByIdOrThrowException(id));
+        Ride ride = findRideByIdOrThrowException(id);
+
+        rideSecurityVerifier.verifyAllowedForRidePassengerOrDriverOrAdmin(ride);
+
+        return rideMapper.fromEntityToResponseDto(ride);
     }
 
     @Transactional(readOnly = true)
