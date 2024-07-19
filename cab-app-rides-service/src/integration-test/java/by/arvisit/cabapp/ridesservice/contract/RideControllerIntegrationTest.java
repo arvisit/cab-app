@@ -2,9 +2,15 @@ package by.arvisit.cabapp.ridesservice.contract;
 
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_BANK_CARD_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BOOKED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_PASSENGER_PASSWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_DRIVER_PASSWORD;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_2_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_3_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_ID_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_CASH_NOT_PAID_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_5_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_ACCEPT_TEMPLATE;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE;
@@ -32,9 +38,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import by.arvisit.cabapp.ridesservice.KafkaTestContainerExtension;
+import by.arvisit.cabapp.ridesservice.KeycloakTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
+import by.arvisit.cabapp.ridesservice.util.KeycloakIntegrationTestAuth;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -43,6 +51,7 @@ import io.restassured.response.Response;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @ExtendWith(KafkaTestContainerExtension.class)
+@ExtendWith(KeycloakTestContainerExtension.class)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-promo-codes.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/add-rides.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
@@ -52,7 +61,7 @@ import io.restassured.response.Response;
         ids = { "by.arvisit:cab-app-passenger-service:+:stubs:8480",
                 "by.arvisit:cab-app-driver-service:+:stubs:8481",
                 "by.arvisit:cab-app-payment-service:+:stubs:8482" })
-class RideControllerIntegrationTest {
+class RideControllerIntegrationTest extends KeycloakIntegrationTestAuth {
 
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
             "finishRide" };
@@ -71,6 +80,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_5_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(getNewRideRequestDto().build())
                 .when().post(URL_RIDES);
 
@@ -100,6 +110,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_2_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, BEGAN_BANK_CARD_RIDE_ID);
 
         response.then()
@@ -132,6 +143,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_1_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_ACCEPT_TEMPLATE, BOOKED_RIDE_ID);
 
@@ -163,6 +175,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, ENDED_CASH_NOT_PAID_RIDE_ID);
 
         response.then()

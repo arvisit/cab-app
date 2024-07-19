@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.arvisit.cabapp.ridesservice.KafkaTestContainerExtension;
+import by.arvisit.cabapp.ridesservice.KeycloakTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.controller.RideController;
 import by.arvisit.cabapp.ridesservice.service.RideService;
@@ -28,6 +29,7 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @ExtendWith(KafkaTestContainerExtension.class)
+@ExtendWith(KeycloakTestContainerExtension.class)
 @AutoConfigureMessageVerifier
 public class BaseTestClass {
 
