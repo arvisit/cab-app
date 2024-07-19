@@ -1,12 +1,20 @@
 package by.arvisit.cabapp.ridesservice.controller;
 
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ACCEPTED_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ADMIN_PASSWORD;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_BANK_CARD_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BEGAN_CASH_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BOOKED_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.BRILLIANT10_KEYWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_DRIVER_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_DRIVER_PASSWORD;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_PASSENGER_PASSWORD;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DEFAULT_SCORE;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_1_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_2_EMAIL;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_3_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_3_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_4_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.DRIVER_ID_KEY;
@@ -15,8 +23,10 @@ import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_BANK_CARD_PAID_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.ENDED_CASH_NOT_PAID_RIDE_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.FINISHED_NO_SCORES_RIDE_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_1_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_1_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_3_ID;
+import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_4_EMAIL;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_4_ID;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PASSENGER_SCORE_KEY;
 import static by.arvisit.cabapp.ridesservice.util.RideIntegrationTestData.PAYMENT_METHOD_KEY;
@@ -81,6 +91,7 @@ import by.arvisit.cabapp.common.dto.driver.DriverResponseDto;
 import by.arvisit.cabapp.common.dto.passenger.PassengerResponseDto;
 import by.arvisit.cabapp.common.dto.payment.PassengerPaymentResponseDto;
 import by.arvisit.cabapp.ridesservice.KafkaTestContainerExtension;
+import by.arvisit.cabapp.ridesservice.KeycloakTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.PostgreSQLTestContainerExtension;
 import by.arvisit.cabapp.ridesservice.dto.RatingResponseDto;
 import by.arvisit.cabapp.ridesservice.dto.RideResponseDto;
@@ -89,6 +100,7 @@ import by.arvisit.cabapp.ridesservice.persistence.model.PaymentMethodEnum;
 import by.arvisit.cabapp.ridesservice.persistence.model.Ride;
 import by.arvisit.cabapp.ridesservice.persistence.model.RideStatusEnum;
 import by.arvisit.cabapp.ridesservice.persistence.repository.RideRepository;
+import by.arvisit.cabapp.ridesservice.util.KeycloakIntegrationTestAuth;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
@@ -98,13 +110,14 @@ import io.restassured.response.Response;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(PostgreSQLTestContainerExtension.class)
 @ExtendWith(KafkaTestContainerExtension.class)
+@ExtendWith(KeycloakTestContainerExtension.class)
 @SqlGroup({
         @Sql(scripts = "classpath:sql/add-promo-codes.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/add-rides.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-rides.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
         @Sql(scripts = "classpath:sql/delete-promo-codes.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) })
 @WireMockTest(httpPort = 8480)
-class RideControllerIntegrationTest {
+class RideControllerIntegrationTest extends KeycloakIntegrationTestAuth {
 
     private static final String PASSENGER_ID_REQUEST_PARAM = "passengerId";
     private static final String[] TIMESTAMP_FIELDS = { "bookRide", "cancelRide", "acceptRide", "beginRide", "endRide",
@@ -133,6 +146,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(passenger.email(), DEFAULT_PASSENGER_PASSWORD))
                 .body(getNewRideRequestDto().build())
                 .when().post(URL_RIDES);
 
@@ -161,6 +175,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenCancelRide() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CANCEL_TEMPLATE, BOOKED_RIDE_ID);
 
         response.then()
@@ -199,6 +214,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DEFAULT_DRIVER_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_ACCEPT_TEMPLATE, BOOKED_RIDE_ID);
 
@@ -229,6 +245,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenBeginRide() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_1_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_BEGIN_TEMPLATE, ACCEPTED_RIDE_ID);
 
         response.then()
@@ -262,6 +279,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_2_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, BEGAN_BANK_CARD_RIDE_ID);
 
         response.then()
@@ -290,6 +308,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenEndRidePaidWithCash() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_2_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_END_TEMPLATE, BEGAN_CASH_RIDE_ID);
 
         response.then()
@@ -318,6 +337,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenFinishRide() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_FINISH_TEMPLATE, ENDED_BANK_CARD_PAID_RIDE_ID);
 
         response.then()
@@ -349,6 +369,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, ENDED_CASH_NOT_PAID_RIDE_ID);
 
         response.then()
@@ -380,6 +401,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenConfirmPaymentBankCard() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().patch(URL_RIDES_ID_CONFIRM_PAYMENT_TEMPLATE, ENDED_BANK_CARD_NOT_PAID_RIDE_ID);
 
         response.then()
@@ -414,6 +436,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_APPLY_PROMO_TEMPLATE, BOOKED_RIDE_ID);
 
@@ -445,6 +468,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_CHANGE_PAYMENT_METHOD_TEMPLATE, BOOKED_RIDE_ID);
 
@@ -475,6 +499,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_1_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_DRIVER_TEMPLATE, FINISHED_NO_SCORES_RIDE_ID);
 
@@ -505,6 +530,7 @@ class RideControllerIntegrationTest {
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_1_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .body(requestDto)
                 .when().patch(URL_RIDES_ID_SCORE_PASSENGER_TEMPLATE, FINISHED_NO_SCORES_RIDE_ID);
 
@@ -535,6 +561,7 @@ class RideControllerIntegrationTest {
         String rideId = FINISHED_NO_SCORES_RIDE_ID;
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().delete(URL_RIDES_ID_TEMPLATE, rideId);
 
         response.then()
@@ -557,6 +584,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetRideById() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_ID_TEMPLATE, FINISHED_NO_SCORES_RIDE_ID);
 
         response.then()
@@ -581,6 +609,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetRidesWithNoRequestParams() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES);
 
         response.then()
@@ -617,6 +646,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetRidesWithPassengerIdRequestParam() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .queryParam(PASSENGER_ID_REQUEST_PARAM, PASSENGER_4_ID)
                 .when().get(URL_RIDES);
 
@@ -648,6 +678,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetRidesByPassengerId() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(PASSENGER_4_EMAIL, DEFAULT_PASSENGER_PASSWORD))
                 .when().get(URL_RIDES_PASSENGER_ID_TEMPLATE, PASSENGER_4_ID);
 
         response.then()
@@ -678,6 +709,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetRidesByDriverId() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(DRIVER_3_EMAIL, DEFAULT_DRIVER_PASSWORD))
                 .when().get(URL_RIDES_DRIVER_ID_TEMPLATE, DRIVER_3_ID);
 
         response.then()
@@ -709,6 +741,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetPassengerRating() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_PASSENGER_ID_RATING_TEMPLATE, PASSENGER_1_ID);
 
         response.then()
@@ -727,6 +760,7 @@ class RideControllerIntegrationTest {
     void shouldReturn200AndExpectedResponse_whenGetDriverRating() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
+                .header(getAuthenticationHeader(ADMIN_EMAIL, ADMIN_PASSWORD))
                 .when().get(URL_RIDES_DRIVER_ID_RATING_TEMPLATE, DRIVER_4_ID);
 
         response.then()
