@@ -11,8 +11,17 @@ spring:
     cab-app-payment-service:
       uri: http://localhost:8482/api/v1/passenger-payments
 
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: cab-app
+            client-secret: wZpxwHzxVfPmqi46Ck5BUD6wxMD5QlSe
+            authorization-grant-type: client_credentials
+            provider: keycloak
+
 logging:
-  config: classpath:logback-dev.xml
   level:
     '[by.arvisit.cabapp]': debug
     '[org.springframework.security]': debug

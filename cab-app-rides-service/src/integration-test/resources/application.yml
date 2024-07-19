@@ -52,3 +52,9 @@ logging:
 exception:
   handling:
     include: true
+
+token:
+  converter:
+    include: true
+    principal-attribute: preferred_username
+    resource-id: cab-app
